@@ -35,7 +35,7 @@
             <div class="grid lg:grid-cols-4 gap-8">
                 <!-- Left Sidebar - Filters -->
                 <div class="lg:col-span-1">
-                    <div class="bg-heritage-white p-6 shadow-lg sticky top-24">
+                    <div id="filtersSidebar" class="bg-heritage-white p-6 shadow-lg sticky top-24 hidden lg:block">
                         <h3 class="font-serif text-2xl text-deep-maroon mb-6">Filter Products</h3>
                         
                         <!-- Price Range Filter -->
@@ -162,9 +162,10 @@
                             <h2 class="font-serif text-3xl text-deep-maroon mb-2">Our Collection</h2>
                             <p class="text-deep-maroon/70" id="resultsCount">Showing 12 products</p>
                         </div>
-                        <div class="flex items-center gap-4">
+                        <div class="flex gap-2">
+                        <div class="items-center gap-4">
                             <span class="text-deep-maroon/70 font-medium">Sort by:</span>
-                            <select id="sortSelect" class="bg-heritage-white border border-deep-maroon/20 text-deep-maroon px-4 py-2 font-medium focus:outline-none focus:border-royal-gold shadow-lg">
+                            <select id="sortSelect" class="bg-heritage-white border border-deep-maroon/20 text-deep-maroon text-sm px-3 py-2 font-medium focus:outline-none focus:border-royal-gold shadow-lg">
                                 <option value="featured">Featured</option>
                                 <option value="price-low">Price: Low to High</option>
                                 <option value="price-high">Price: High to Low</option>
@@ -172,6 +173,13 @@
                                 <option value="popular">Most Popular</option>
                             </select>
                         </div>
+                        <button id="mobileFilterToggle" class="sm:hidden inline-flex items-center gap-2 px-2 py-2 border border-deep-maroon/20 bg-soft-cream text-deep-maroon rounded-md">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h18l-7 8v6l-4 2v-8z" />
+                            </svg>
+                            <span class="text-sm font-medium">Filters</span>
+                        </button>
+                    </div>
                     </div>
 
                     <!-- Product Grid -->
@@ -337,6 +345,8 @@
         const minPriceDisplay = document.getElementById('minPriceDisplay');
         const maxPriceDisplay = document.getElementById('maxPriceDisplay');
         const rangeTrack = document.getElementById('rangeTrack');
+        const mobileFilterToggle = document.getElementById('mobileFilterToggle');
+        const filtersSidebar = document.getElementById('filtersSidebar');
 
         function updatePriceRange() {
             const minVal = parseInt(priceRangeMin.value);
@@ -364,6 +374,16 @@
             priceRangeMax.value = 50000;
             updatePriceRange();
         });
+
+        if (mobileFilterToggle && filtersSidebar) {
+            mobileFilterToggle.addEventListener('click', function() {
+                filtersSidebar.classList.toggle('hidden');
+
+                if (!filtersSidebar.classList.contains('hidden')) {
+                    filtersSidebar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        }
     });
 </script>
 @endpush
