@@ -7,8 +7,10 @@
             <!-- Navigation Left -->
             <nav class="flex space-x-8 justify-start">
                 <a href="{{ route('latest-collections') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">Latest Collections</a>
-                <a href="{{ route('products') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">Premium</a>
-                <a href="{{ route('products') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">Best Sellers</a>
+                <a href="{{ route('products') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">Collections</a>
+                {{-- <a href="{{ route('products') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">Best Sellers</a> --}}
+                <a href="{{ route('about') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">About Us</a>
+                <a href="{{ route('contact') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">Contact</a>
             </nav>
             
             <!-- Brand Logo Center -->

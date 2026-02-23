@@ -35,20 +35,20 @@
             </a>
             <a href="{{ route('products') }}" class="block py-4 px-4 text-deep-maroon hover:text-royal-gold hover:bg-soft-cream transition-colors font-medium border-b border-deep-maroon/10 relative overflow-hidden">
                 <div class="flex items-center justify-between">
-                    <span>Premium</span>
+                    <span>Collections</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
                 </div>
             </a>
-            <a href="{{ route('products') }}" class="block py-4 px-4 text-deep-maroon hover:text-royal-gold hover:bg-soft-cream transition-colors font-medium border-b border-deep-maroon/10 relative overflow-hidden">
+            {{-- <a href="{{ route('products') }}" class="block py-4 px-4 text-deep-maroon hover:text-royal-gold hover:bg-soft-cream transition-colors font-medium border-b border-deep-maroon/10 relative overflow-hidden">
                 <div class="flex items-center justify-between">
                     <span>Best Sellers</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
                 </div>
-            </a>
+            </a> --}}
             <a href="{{ route('products') }}" class="block py-4 px-4 text-deep-maroon hover:text-royal-gold hover:bg-soft-cream transition-colors font-medium border-b border-deep-maroon/10 relative overflow-hidden">
                 <div class="flex items-center justify-between">
                     <span>All Products</span>
@@ -65,7 +65,7 @@
                     </svg>
                 </div>
             </a>
-            <a href="#about" class="block py-4 px-4 text-deep-maroon hover:text-royal-gold hover:bg-soft-cream transition-colors font-medium border-b border-deep-maroon/10 relative overflow-hidden">
+            <a href="{{ route('about') }}" class="block py-4 px-4 text-deep-maroon hover:text-royal-gold hover:bg-soft-cream transition-colors font-medium border-b border-deep-maroon/10 relative overflow-hidden">
                 <div class="flex items-center justify-between">
                     <span>About Us</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,7 +73,7 @@
                     </svg>
                 </div>
             </a>
-            <a href="#contact" class="block py-4 px-4 text-deep-maroon hover:text-royal-gold hover:bg-soft-cream transition-colors font-medium border-b border-deep-maroon/10 relative overflow-hidden">
+            <a href="{{ route('contact') }}" class="block py-4 px-4 text-deep-maroon hover:text-royal-gold hover:bg-soft-cream transition-colors font-medium border-b border-deep-maroon/10 relative overflow-hidden">
                 <div class="flex items-center justify-between">
                     <span>Contact</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
