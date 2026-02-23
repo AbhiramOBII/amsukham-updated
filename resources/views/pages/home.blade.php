@@ -1,0 +1,436 @@
+@extends('layouts.app')
+
+@section('title', 'Amsukham by Ram - Heritage Sarees')
+
+
+@section('content')
+    <!-- Hero Slider Section -->
+    <section class="relative w-full overflow-hidden" style="height: 600px;">
+        <!-- Hero Slide 1 -->
+        <div class="hero-slide absolute inset-0 w-full h-full">
+            <div class="absolute inset-0 w-full h-full">
+                <img src="{{ asset('images/slider-02-01.jpg') }}" alt="Heritage Saree Collection" class="w-full h-full object-cover">
+            </div>
+            
+            <div class="relative z-10 h-full flex items-center">
+                <div class="container mx-auto px-6">
+                    <div class="max-w-2xl ml-20">
+                        <h2 class="font-serif text-4xl md:text-5xl lg:text-6xl text-deep-maroon mb-4 leading-tight">
+                            Timeless Heritage
+                            <span class="block text-royal-gold">Woven with Love</span>
+                        </h2>
+                        <p class="text-lg md:text-xl text-deep-maroon mb-6 leading-relaxed">
+                            Exquisite handcrafted sarees where centuries-old traditions meet contemporary elegance.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <a href="{{ route('latest-collections') }}" class="bg-royal-gold text-deep-maroon px-8 py-3 font-medium hover:bg-heritage-white transition-colors shadow-lg text-center">
+                                Explore Collections
+                            </a>
+                            <button class="border-2 border-heritage-white text-heritage-white px-8 py-3 font-medium hover:bg-heritage-white hover:text-deep-maroon transition-colors">
+                                Our Heritage Story
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Slide 2 -->
+        <div class="hero-slide absolute inset-0 w-full h-full hidden">
+            <div class="absolute inset-0 w-full h-full">
+                <img src="{{ asset('images/slider-02-02.jpg') }}" alt="Premium Silk Collection" class="w-full h-full object-cover">
+            </div>
+            
+            <div class="relative z-10 h-full flex items-center">
+                <div class="container mx-auto px-6">
+                    <div class="max-w-2xl ml-20">
+                        <h2 class="font-serif text-4xl md:text-5xl lg:text-6xl text-deep-maroon mb-4 leading-tight">
+                            Premium Silk
+                            <span class="block text-royal-gold">Artisan Crafted</span>
+                        </h2>
+                        <p class="text-lg md:text-xl text-deep-maroon mb-6 leading-relaxed">
+                            Finest silk sarees meticulously crafted by master artisans with generations of traditional techniques.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <a href="{{ route('products') }}" class="bg-royal-gold text-deep-maroon px-8 py-3 font-medium hover:bg-heritage-white transition-colors shadow-lg text-center">
+                                Shop Premium
+                            </a>
+                            <button class="border-2 border-heritage-white text-heritage-white px-8 py-3 font-medium hover:bg-heritage-white hover:text-deep-maroon transition-colors">
+                                View Artisans
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Arrow Navigation -->
+        <button class="absolute left-6 top-1/2 transform -translate-y-1/2 z-20 bg-heritage-white/20 hover:bg-heritage-white/30 text-heritage-white hover:text-royal-gold transition-all p-3 rounded-full backdrop-blur-sm" id="hero-prev">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+        <button class="absolute right-6 top-1/2 transform -translate-y-1/2 z-20 bg-heritage-white/20 hover:bg-heritage-white/30 text-heritage-white hover:text-royal-gold transition-all p-3 rounded-full backdrop-blur-sm" id="hero-next">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+        </button>
+        
+        <!-- Slide Indicators -->
+        <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 flex space-x-3">
+            <button class="w-3 h-3 rounded-full bg-heritage-white transition-colors slide-indicator active" data-slide="0"></button>
+            <button class="w-3 h-3 rounded-full bg-heritage-white/50 transition-colors slide-indicator" data-slide="1"></button>
+        </div>
+    </section>
+
+    <!-- Latest Collections Carousel -->
+    <section id="collections" class="py-32 bg-heritage-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h3 class="decorative-title font-serif text-5xl md:text-5xl text-deep-maroon mb-4">
+                    Latest Collections
+                </h3>
+                <div class="w-24 h-1 bg-gradient-to-r from-royal-gold to-yellow-400 mx-auto mb-6"></div>
+                <p class="text-deep-maroon/70 max-w-2xl mx-auto">
+                    Discover our newest arrivals, featuring contemporary designs that honor traditional craftsmanship and celebrate timeless elegance.
+                </p>
+            </div>
+            
+            <!-- Carousel Container -->
+            <div class="relative">
+                <div class="overflow-hidden">
+                    <div id="collections-carousel" class="py-8 flex transition-transform duration-500 ease-in-out">
+                        <!-- Collection 1 -->
+                        <div class="w-full md:w-1/3 flex-shrink-0 px-4">
+                            <div class="bg-heritage-white overflow-hidden shadow-lg hover:-translate-y-1 transition-all duration-300">
+                                <div class="h-64 relative">
+                                    <img src="{{ asset('images/latest-collections.jpg') }}" alt="Silk Elegance Collection" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                    <div class="absolute bottom-4 left-4 text-white">
+                                        <span class="text-sm font-medium bg-royal-gold px-3 py-1 rounded-full text-deep-maroon">NEW</span>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <h4 class="font-serif text-xl text-deep-maroon mb-2">Mysuru Silk Elegance</h4>
+                                    <p class="text-deep-maroon/70 mb-4">Contemporary silk sarees with modern patterns and traditional craftsmanship.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-royal-gold">From ₹15,000</span>
+                                        <a href="{{ route('latest-collections') }}" class="text-deep-maroon font-medium hover:text-royal-gold transition-colors">
+                                            View Collection →
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Collection 2 -->
+                        <div class="w-full md:w-1/3 flex-shrink-0 px-4">
+                            <div class="bg-heritage-white overflow-hidden shadow-lg hover:-translate-y-1 transition-all duration-300">
+                                <div class="h-64 relative">
+                                    <img src="{{ asset('images/latest-collections-02.jpg') }}" alt="Festive Grandeur Collection" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                    <div class="absolute bottom-4 left-4 text-white">
+                                        <span class="text-sm font-medium bg-royal-gold px-3 py-1 rounded-full text-deep-maroon">NEW</span>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <h4 class="font-serif text-xl text-deep-maroon mb-2">Kanchipuram Festive Grandeur</h4>
+                                    <p class="text-deep-maroon/70 mb-4">Rich brocade sarees perfect for celebrations and special occasions.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-royal-gold">From ₹25,000</span>
+                                        <a href="{{ route('latest-collections') }}" class="text-deep-maroon font-medium hover:text-royal-gold transition-colors">
+                                            View Collection →
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Collection 3 -->
+                        <div class="w-full md:w-1/3 flex-shrink-0 px-4">
+                            <div class="bg-heritage-white overflow-hidden shadow-lg hover:-translate-y-1 transition-all duration-300">
+                                <div class="h-64 relative">
+                                    <img src="{{ asset('images/latest-collections-03.jpg') }}" alt="Artisan Craft Collection" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                    <div class="absolute bottom-4 left-4 text-white">
+                                        <span class="text-sm font-medium bg-royal-gold px-3 py-1 rounded-full text-deep-maroon">NEW</span>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <h4 class="font-serif text-xl text-deep-maroon mb-2">Benaras Artisan Craft</h4>
+                                    <p class="text-deep-maroon/70 mb-4">Hand-woven masterpieces showcasing traditional regional techniques.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-royal-gold">From ₹18,000</span>
+                                        <a href="{{ route('latest-collections') }}" class="text-deep-maroon font-medium hover:text-royal-gold transition-colors">
+                                            View Collection →
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Carousel Navigation -->
+                <button id="collections-prev" class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 bg-heritage-white heritage-shadow p-3 rounded-full hover:bg-royal-gold hover:text-heritage-white transition-colors z-10">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <button id="collections-next" class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 bg-heritage-white heritage-shadow p-3 rounded-full hover:bg-royal-gold hover:text-heritage-white transition-colors z-10">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="{{ route('latest-collections') }}" class="inline-block bg-deep-maroon text-heritage-white px-8 py-4 font-medium hover:bg-royal-gold transition-colors shadow-lg">
+                    View All Collections
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Best Sellers Section -->
+    <section id="best-sellers" class="py-32 bg-soft-cream">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h3 class="decorative-title font-serif text-5xl text-deep-maroon mb-4">Best Sellers</h3>
+                <div class="w-24 h-1 bg-gradient-to-r from-royal-gold to-yellow-400 mx-auto mb-6"></div>
+                <p class="text-deep-maroon/70 max-w-2xl mx-auto">
+                    Our most beloved pieces, chosen by discerning connoisseurs who appreciate the art of traditional weaving.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Product 1 -->
+                <div class="bg-heritage-white overflow-hidden shadow-lg hover:-translate-y-1 transition-all duration-300">
+                    <div class="h-64 relative">
+                        <img src="{{ asset('images/best-seller-01.jpg') }}" alt="Maharani Silk Saree" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h4 class="font-serif text-lg text-deep-maroon mb-2">Maharani Silk</h4>
+                        <p class="text-deep-maroon/70 text-sm mb-3">Pure silk with gold zari work</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="font-serif text-xl text-royal-gold">₹25,000</span>
+                            <button class="text-deep-maroon hover:text-royal-gold transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <a href="{{ route('product.show', 1) }}" class="block w-full bg-deep-maroon text-heritage-white py-2 font-medium hover:bg-royal-gold transition-colors text-center">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="bg-heritage-white overflow-hidden shadow-lg hover:-translate-y-1 transition-all duration-300">
+                    <div class="h-64 relative">
+                        <img src="{{ asset('images/best-seller-02.jpg') }}" alt="Heritage Banarasi Saree" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h4 class="font-serif text-lg text-deep-maroon mb-2">Heritage Banarasi</h4>
+                        <p class="text-deep-maroon/70 text-sm mb-3">Traditional Banarasi weave</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="font-serif text-xl text-royal-gold">₹18,500</span>
+                            <button class="text-deep-maroon hover:text-royal-gold transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <a href="{{ route('product.show', 2) }}" class="block w-full bg-deep-maroon text-heritage-white py-2 font-medium hover:bg-royal-gold transition-colors text-center">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="bg-heritage-white overflow-hidden shadow-lg hover:-translate-y-1 transition-all duration-300">
+                    <div class="h-64 relative">
+                        <img src="{{ asset('images/best-seller-03.jpg') }}" alt="Royal Kanjivaram Saree" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h4 class="font-serif text-lg text-deep-maroon mb-2">Royal Kanjivaram</h4>
+                        <p class="text-deep-maroon/70 text-sm mb-3">Handwoven Kanjivaram silk</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="font-serif text-xl text-royal-gold">₹32,000</span>
+                            <button class="text-deep-maroon hover:text-royal-gold transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <a href="{{ route('product.show', 3) }}" class="block w-full bg-deep-maroon text-heritage-white py-2 font-medium hover:bg-royal-gold transition-colors text-center">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="bg-heritage-white overflow-hidden shadow-lg hover:-translate-y-1 transition-all duration-300">
+                    <div class="h-64 relative">
+                        <img src="{{ asset('images/best-seller-04.jpg') }}" alt="Bridal Lehenga" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h4 class="font-serif text-lg text-deep-maroon mb-2">Bridal Lehenga</h4>
+                        <p class="text-deep-maroon/70 text-sm mb-3">Exquisite bridal collection</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="font-serif text-xl text-royal-gold">₹45,000</span>
+                            <button class="text-deep-maroon hover:text-royal-gold transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <a href="{{ route('product.show', 4) }}" class="block w-full bg-deep-maroon text-heritage-white py-2 font-medium hover:bg-royal-gold transition-colors text-center">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="{{ route('products') }}" class="inline-block bg-deep-maroon text-heritage-white px-8 py-4 font-medium hover:bg-royal-gold transition-colors shadow-lg">
+                    Shop All Products
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Heritage Story Section -->
+    <section id="about" class="py-32 bg-heritage-white">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="relative">
+                    <div class="aspect-square bg-soft-cream overflow-hidden shadow-lg">
+                        <img src="{{ asset('images/slider-02.jpg') }}" alt="Heritage Craftsmanship" class="w-full h-full object-cover">
+                    </div>
+                    <div class="absolute -bottom-8 -right-8 bg-royal-gold p-8 shadow-lg">
+                        <p class="font-serif text-4xl text-deep-maroon">70+</p>
+                        <p class="text-deep-maroon font-medium">Years of Heritage</p>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-serif text-5xl text-deep-maroon mb-6">Our Heritage Story</h3>
+                    <div class="w-24 h-1 gold-accent mb-8"></div>
+                    <p class="text-deep-maroon/80 text-lg leading-relaxed mb-6">
+                        For three generations, our family has been dedicated to preserving the timeless art of traditional Indian textiles. Each saree we create is a testament to the rich cultural heritage passed down through our artisan community.
+                    </p>
+                    <p class="text-deep-maroon/80 text-lg leading-relaxed mb-8">
+                        From the finest Mysuru silk to the intricate zari work of Kanchipuram, we bring you authentic handcrafted pieces that celebrate India's textile legacy while embracing contemporary elegance.
+                    </p>
+                    <button class="bg-deep-maroon text-heritage-white px-8 py-4 font-medium hover:bg-royal-gold transition-colors shadow-lg">
+                        Discover Our Journey
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+@endsection
+
+@push('scripts')
+<script>
+    // Hero Slider Functionality
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.hero-slide');
+    const indicators = document.querySelectorAll('.slide-indicator');
+    const totalSlides = slides.length;
+    let isTransitioning = false;
+
+    function updateIndicators() {
+        indicators.forEach((indicator, index) => {
+            if (index === currentSlide) {
+                indicator.classList.add('active');
+                indicator.classList.remove('bg-heritage-white/50');
+                indicator.classList.add('bg-heritage-white');
+            } else {
+                indicator.classList.remove('active');
+                indicator.classList.remove('bg-heritage-white');
+                indicator.classList.add('bg-heritage-white/50');
+            }
+        });
+    }
+
+    function showSlide(index) {
+        if (isTransitioning) return;
+        isTransitioning = true;
+
+        slides.forEach((slide, i) => {
+            if (i === index) {
+                slide.classList.remove('hidden');
+            } else {
+                slide.classList.add('hidden');
+            }
+        });
+
+        currentSlide = index;
+        updateIndicators();
+
+        setTimeout(() => {
+            isTransitioning = false;
+        }, 600);
+    }
+
+    function nextSlide() {
+        if (isTransitioning) return;
+        const nextIndex = (currentSlide + 1) % totalSlides;
+        showSlide(nextIndex);
+    }
+
+    function prevSlide() {
+        if (isTransitioning) return;
+        const prevIndex = (currentSlide - 1 + totalSlides) % totalSlides;
+        showSlide(prevIndex);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const prevButton = document.getElementById('hero-prev');
+        const nextButton = document.getElementById('hero-next');
+        
+        if (prevButton) prevButton.addEventListener('click', prevSlide);
+        if (nextButton) nextButton.addEventListener('click', nextSlide);
+
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => showSlide(index));
+        });
+
+        updateIndicators();
+        setInterval(nextSlide, 6000);
+    });
+
+    // Collections Carousel
+    let currentCollectionSlide = 0;
+    const collectionsCarousel = document.getElementById('collections-carousel');
+
+    function updateCollectionsCarousel() {
+        if (collectionsCarousel) {
+            const translateX = -(currentCollectionSlide * 33.333);
+            collectionsCarousel.style.transform = `translateX(${translateX}%)`;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const collectionsNextBtn = document.getElementById('collections-next');
+        const collectionsPrevBtn = document.getElementById('collections-prev');
+        
+        if (collectionsNextBtn) {
+            collectionsNextBtn.addEventListener('click', function() {
+                currentCollectionSlide = (currentCollectionSlide + 1) % 3;
+                updateCollectionsCarousel();
+            });
+        }
+        
+        if (collectionsPrevBtn) {
+            collectionsPrevBtn.addEventListener('click', function() {
+                currentCollectionSlide = (currentCollectionSlide - 1 + 3) % 3;
+                updateCollectionsCarousel();
+            });
+        }
+    });
+</script>
+@endpush
