@@ -495,6 +495,13 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Initialize price with first color's adjustment if colors exist
+        if (colorData && colorData.length > 0) {
+            const firstColor = colorData[0];
+            updatePriceDisplay(firstColor.price_adjustment);
+            document.getElementById('product_color_id').value = firstColor.id;
+        }
+
         // Quantity selector
         const quantityInput = document.getElementById('quantity');
         const decreaseBtn = document.getElementById('decreaseQty');

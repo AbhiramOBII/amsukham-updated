@@ -14,7 +14,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with(['category', 'fabric', 'work', 'primaryImage.media'])
+        $query = Product::with(['category', 'fabric', 'work', 'primaryImage.media', 'productColors'])
             ->active();
 
         if ($request->filled('categories')) {

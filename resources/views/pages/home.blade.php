@@ -223,10 +223,14 @@
                         <p class="text-deep-maroon/70 text-sm mb-3">{{ $product->short_description ?? $product->category->name ?? '' }}</p>
                         <div class="flex justify-between items-center mb-4">
                             <div>
+                                @php
+                                    $firstColor = $product->productColors->first();
+                                    $displayPrice = $product->discounted_price + ($firstColor ? $firstColor->price_adjustment : 0);
+                                @endphp
                                 @if($product->discount > 0)
-                                    <span class="text-deep-maroon/50 line-through text-sm">₹{{ number_format($product->price) }}</span>
+                                    <span class="text-deep-maroon/50 line-through text-sm">₹{{ number_format($product->price + ($firstColor ? $firstColor->price_adjustment : 0)) }}</span>
                                 @endif
-                                <span class="font-serif text-xl text-royal-gold">₹{{ number_format($product->discounted_price) }}</span>
+                                <span class="font-serif text-xl text-royal-gold">₹{{ number_format($displayPrice) }}</span>
                             </div>
                             <button class="text-deep-maroon hover:text-royal-gold transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
