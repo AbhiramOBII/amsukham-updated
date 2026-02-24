@@ -43,6 +43,9 @@
     <script>
     const selected = new Map();
     let clickTimeout = null;
+    const mode = '{{ $mode }}';
+    const maxImages = {{ $max }};
+    const isMultiSelect = mode === 'multi';
 
     function updateUI() {
         const count = selected.size;
@@ -53,7 +56,11 @@
         if (count > 0) {
             insertBtn.classList.remove('hidden');
             insertCount.textContent = count;
-            selectedCount.textContent = '(' + count + ' selected)';
+            if (maxImages > 0) {
+                selectedCount.textContent = '(' + count + '/' + maxImages + ' selected)';
+            } else {
+                selectedCount.textContent = '(' + count + ' selected)';
+            }
         } else {
             insertBtn.classList.add('hidden');
             selectedCount.textContent = '';
@@ -80,19 +87,32 @@
             const id = this.dataset.id;
             const url = this.dataset.url;
 
-            // If nothing selected yet, use single-click quick insert (with small delay for double-click detection)
+            // Multi-select mode (for color variants)
+            if (isMultiSelect) {
+                if (selected.has(id)) {
+                    selected.delete(id);
+                } else {
+                    if (maxImages > 0 && selected.size >= maxImages) {
+                        alert('Maximum ' + maxImages + ' images allowed.');
+                        return;
+                    }
+                    selected.set(id, url);
+                }
+                updateUI();
+                return;
+            }
+
+            // Single select mode with auto-close
             if (selected.size === 0) {
                 if (clickTimeout) {
                     clearTimeout(clickTimeout);
                     clickTimeout = null;
-                    // Double click: toggle selection mode
                     selected.set(id, url);
                     updateUI();
                     return;
                 }
                 clickTimeout = setTimeout(() => {
                     clickTimeout = null;
-                    // Single click: immediate insert
                     if (window.opener && window.opener.selectMedia) {
                         window.opener.selectMedia(parseInt(id), url);
                         window.close();
@@ -101,7 +121,7 @@
                 return;
             }
 
-            // Multi-select mode
+            // Toggle selection in single mode after first selection
             if (selected.has(id)) {
                 selected.delete(id);
             } else {
@@ -116,6 +136,9 @@
             selected.forEach((url, id) => {
                 window.opener.selectMedia(parseInt(id), url);
             });
+            if (window.opener.closeMediaBrowser) {
+                window.opener.closeMediaBrowser();
+            }
             window.close();
         }
     });

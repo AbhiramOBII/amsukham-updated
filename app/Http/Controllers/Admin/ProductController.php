@@ -78,13 +78,15 @@ class ProductController extends Controller
 
         $product = Product::create($validated);
 
-        if ($request->filled('product_image')) {
-            ProductImage::create([
-                'product_id' => $product->id,
-                'media_id' => $request->product_image,
-                'is_primary' => true,
-                'sort_order' => 0,
-            ]);
+        if ($request->filled('product_images') && is_array($request->product_images)) {
+            foreach ($request->product_images as $index => $mediaId) {
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'media_id' => $mediaId,
+                    'is_primary' => $index === 0,
+                    'sort_order' => $index,
+                ]);
+            }
         }
 
         if (!empty($request->faqs)) {
@@ -104,10 +106,10 @@ class ProductController extends Controller
         if (!empty($request->product_colors)) {
             foreach ($request->product_colors as $colorData) {
                 if (empty($colorData['color_id'])) continue;
-                
+
                 $color = Color::find($colorData['color_id']);
                 $sku = $this->generateSku($product, $color);
-                
+
                 $productColor = ProductColor::create([
                     'product_id' => $product->id,
                     'color_id' => $colorData['color_id'],
@@ -139,7 +141,7 @@ class ProductController extends Controller
         $colorCode = strtoupper(substr($color->name, 0, 3));
         $uniqueId = str_pad($product->id, 4, '0', STR_PAD_LEFT);
         $colorId = str_pad($color->id, 2, '0', STR_PAD_LEFT);
-        
+
         return $categoryCode . '-' . $colorCode . '-' . $uniqueId . $colorId;
     }
 
@@ -151,17 +153,21 @@ class ProductController extends Controller
         $works = Work::active()->get();
         $colors = Color::active()->get();
 
-        // Prepare product image data (single primary image)
-        $primaryImg = $product->images->where('is_primary', true)->first() ?? $product->images->first();
-        $productImageData = $primaryImg ? ['id' => $primaryImg->media_id, 'url' => $primaryImg->media->url] : null;
+        // Prepare product images data
+        $productImagesData = $product->images->sortBy('sort_order')->map(function ($img) {
+            return [
+                'id' => $img->media_id,
+                'url' => $img->media->url
+            ];
+        })->values()->toArray();
 
         // Prepare product colors data
-        $productColors = $product->productColors->map(function($pc) {
+        $productColors = $product->productColors->map(function ($pc) {
             return [
                 'color_id' => $pc->color_id,
                 'stock' => $pc->stock,
                 'price_adjustment' => $pc->price_adjustment,
-                'images' => $pc->images->map(function($img) {
+                'images' => $pc->images->map(function ($img) {
                     return [
                         'id' => $img->media_id,
                         'url' => $img->media->url
@@ -170,7 +176,7 @@ class ProductController extends Controller
             ];
         });
 
-        return view('admin.products.edit', compact('product', 'categories', 'fabrics', 'works', 'colors', 'productImageData', 'productColors'));
+        return view('admin.products.edit', compact('product', 'categories', 'fabrics', 'works', 'colors', 'productImagesData', 'productColors'));
     }
 
     public function update(Request $request, Product $product)
@@ -195,9 +201,8 @@ class ProductController extends Controller
             'meta_keywords' => 'nullable|string|max:255',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
-            'images' => 'nullable|array',
-            'images.*' => 'exists:media,id',
-            'primary_image' => 'nullable|exists:media,id',
+            'product_images' => 'nullable|array',
+            'product_images.*' => 'exists:media,id',
             'faqs' => 'nullable|array',
             'faqs.*.question' => 'required_with:faqs|string',
             'faqs.*.answer' => 'required_with:faqs|string',
@@ -216,13 +221,15 @@ class ProductController extends Controller
         $product->update($validated);
 
         $product->images()->delete();
-        if ($request->filled('product_image')) {
-            ProductImage::create([
-                'product_id' => $product->id,
-                'media_id' => $request->product_image,
-                'is_primary' => true,
-                'sort_order' => 0,
-            ]);
+        if ($request->filled('product_images') && is_array($request->product_images)) {
+            foreach ($request->product_images as $index => $mediaId) {
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'media_id' => $mediaId,
+                    'is_primary' => $index === 0,
+                    'sort_order' => $index,
+                ]);
+            }
         }
 
         $product->faqs()->delete();
@@ -244,14 +251,14 @@ class ProductController extends Controller
             $pc->images()->delete();
         }
         $product->productColors()->delete();
-        
+
         if (!empty($request->product_colors)) {
             foreach ($request->product_colors as $colorData) {
                 if (empty($colorData['color_id'])) continue;
-                
+
                 $color = Color::find($colorData['color_id']);
                 $sku = $this->generateSku($product, $color);
-                
+
                 $productColor = ProductColor::create([
                     'product_id' => $product->id,
                     'color_id' => $colorData['color_id'],
