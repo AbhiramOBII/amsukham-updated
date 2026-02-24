@@ -94,27 +94,30 @@
             <div class="bg-white rounded-lg shadow p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-medium text-gray-800">Color Variants</h3>
-                    <button type="button" onclick="addColorVariant()" class="text-sm text-amber-600 hover:text-amber-700">+ Add Color</button>
                 </div>
                 <p class="text-sm text-gray-500 mb-4">Add color variants with their own images. SKU will be auto-generated.</p>
                 <div id="colorVariantsContainer" class="space-y-4"></div>
+                <div class="flex justify-end">
+                <button type="button" onclick="addColorVariant()" class="text-sm text-amber-600 hover:text-amber-700">+ Add Color</button>
+            </div>
             </div>
 
             <div class="bg-white rounded-lg shadow p-6">
-                <h3 class="text-lg font-medium text-gray-800 mb-4">Product Image</h3>
-                <p class="text-sm text-gray-500 mb-3">Select one main product image (used as thumbnail).</p>
-                <div id="selectedImages" class="flex gap-3 mb-4"></div>
-                <input type="hidden" name="product_image" id="product_image">
-                <button type="button" onclick="openImageBrowser()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Select Image from Media</button>
+                <h3 class="text-lg font-medium text-gray-800 mb-4">Product Images</h3>
+                <div id="selectedImages" class="flex flex-wrap gap-4 mb-4"></div>
+                <button type="button" onclick="openImageBrowser()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Select Images from Media</button>
             </div>
 
             <div class="bg-white rounded-lg shadow p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-medium text-gray-800">FAQs</h3>
-                    <button type="button" onclick="addFaq()" class="text-sm text-amber-600 hover:text-amber-700">+ Add FAQ</button>
                 </div>
                 <div id="faqContainer" class="space-y-4"></div>
+                <div class="flex justify-end">
+                <button type="button" onclick="addFaq()" class="text-sm text-amber-600 hover:text-amber-700">+ Add FAQ</button>
+                </div>
             </div>
+
 
             <div class="bg-white rounded-lg shadow p-6">
                 <h3 class="text-lg font-medium text-gray-800 mb-4">SEO Settings</h3>
@@ -176,13 +179,14 @@
 <script>
     ClassicEditor.create(document.querySelector('#description')).catch(console.error);
 
-    let productImage = null;
+    let productImages = [];
     let faqCount = 0;
     let colorCount = 0;
     let currentColorIndex = null;
     let colorImages = {};
     const availableColors = @json($colors);
     const MAX_COLOR_IMAGES = 5;
+    const MAX_PRODUCT_IMAGES = 5;
 
     function toggleBlouseLength() {
         const checkbox = document.getElementById('with_blouse');
@@ -192,7 +196,7 @@
 
     function openImageBrowser() {
         currentColorIndex = null;
-        window.open('{{ route("admin.media.browse") }}', 'mediaBrowser', 'width=900,height=600');
+        window.open('{{ route("admin.media.browse") }}?mode=multi&max=5', 'mediaBrowser', 'width=900,height=600');
     }
 
     function openColorImageBrowser(colorIndex) {
@@ -202,7 +206,7 @@
             return;
         }
         currentColorIndex = colorIndex;
-        window.open('{{ route("admin.media.browse") }}', 'mediaBrowser', 'width=900,height=600');
+        window.open('{{ route("admin.media.browse") }}?mode=multi&max=5', 'mediaBrowser', 'width=900,height=600');
     }
 
     function selectMedia(id, url) {
@@ -210,41 +214,45 @@
             if (!colorImages[currentColorIndex]) colorImages[currentColorIndex] = [];
             if (colorImages[currentColorIndex].length >= MAX_COLOR_IMAGES) {
                 alert('Maximum ' + MAX_COLOR_IMAGES + ' images per color.');
-                currentColorIndex = null;
                 return;
             }
             if (!colorImages[currentColorIndex].find(img => img.id === id)) {
                 colorImages[currentColorIndex].push({ id, url });
                 renderColorImages(currentColorIndex);
             }
-            currentColorIndex = null;
         } else {
-            productImage = { id, url };
-            renderProductImage();
+            if (productImages.length >= MAX_PRODUCT_IMAGES) {
+                alert('Maximum ' + MAX_PRODUCT_IMAGES + ' images allowed.');
+                return;
+            }
+            if (!productImages.find(img => img.id === id)) {
+                productImages.push({ id, url });
+                renderProductImages();
+            }
         }
     }
+    
+    function closeMediaBrowser() {
+        currentColorIndex = null;
+    }
 
-    function renderProductImage() {
+    function renderProductImages() {
         const container = document.getElementById('selectedImages');
-        if (!productImage) {
-            container.innerHTML = '';
-            document.getElementById('product_image').value = '';
-            return;
-        }
-        document.getElementById('product_image').value = productImage.id;
-        container.innerHTML = `
+        container.innerHTML = productImages.map((img, index) => `
             <div class="relative w-32">
-                <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-amber-500">
-                    <img src="${productImage.url}" class="w-full h-full object-cover">
+                <input type="hidden" name="product_images[]" value="${img.id}">
+                <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden ${index === 0 ? 'border-2 border-amber-500' : 'border border-gray-300'}">
+                    <img src="${img.url}" class="w-full h-full object-cover">
                 </div>
-                <button type="button" onclick="removeProductImage()" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs">×</button>
+                ${index === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-amber-500 text-white text-[10px] text-center py-1">Thumbnail</span>' : ''}
+                <button type="button" onclick="removeProductImage(${index})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">×</button>
             </div>
-        `;
+        `).join('');
     }
 
-    function removeProductImage() {
-        productImage = null;
-        renderProductImage();
+    function removeProductImage(index) {
+        productImages.splice(index, 1);
+        renderProductImages();
     }
 
     function addFaq() {

@@ -83,6 +83,8 @@ class MediaController extends Controller
     public function browse(Request $request)
     {
         $media = Media::latest()->paginate(24);
-        return view('admin.media.browse', compact('media'));
+        $mode = $request->get('mode', 'single'); // 'single' or 'multi'
+        $max = (int) $request->get('max', 0); // 0 = no limit
+        return view('admin.media.browse', compact('media', 'mode', 'max'));
     }
 }

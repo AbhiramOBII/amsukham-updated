@@ -31,12 +31,12 @@
                     <div id="thumbnailContainer" class="grid grid-cols-4 gap-4">
                         @if($firstColor && $firstColor->images->count() > 0)
                             @foreach($firstColor->images as $index => $cImg)
-                            <div class="thumb-item aspect-square bg-soft-cream overflow-hidden shadow-lg cursor-pointer border-2 {{ $index === 0 ? 'border-royal-gold' : 'border-transparent' }} hover:border-deep-maroon transition-colors" onclick="changeMainImage('{{ $cImg->media->url }}', this)">
+                            <div class="thumb-item aspect-square bg-soft-cream overflow-hidden shadow-lg cursor-pointer border-2 {{ $index === 0 ? 'border-royal-gold hidden' : 'border-transparent' }} hover:border-deep-maroon transition-colors" onclick="changeMainImage('{{ $cImg->media->url }}', this)">
                                 <img src="{{ $cImg->media->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
                             </div>
                             @endforeach
                         @elseif($primaryImage && $primaryImage->media)
-                            <div class="thumb-item aspect-square bg-soft-cream overflow-hidden shadow-lg cursor-pointer border-2 border-royal-gold hover:border-deep-maroon transition-colors" onclick="changeMainImage('{{ $primaryImage->media->url }}', this)">
+                            <div class="thumb-item aspect-square bg-soft-cream overflow-hidden shadow-lg cursor-pointer border-2 border-royal-gold hidden hover:border-deep-maroon transition-colors" onclick="changeMainImage('{{ $primaryImage->media->url }}', this)">
                                 <img src="{{ $primaryImage->media->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
                             </div>
                         @endif
@@ -340,16 +340,24 @@
     function changeMainImage(src, element) {
         const mainImg = document.getElementById('mainProductImage');
         const placeholder = document.getElementById('mainProductImagePlaceholder');
+        
+        // Get the previous main image src before changing it
+        const previousMainSrc = mainImg.src;
+        
+        // Update main image
         mainImg.src = src;
         mainImg.classList.remove('hidden');
         if (placeholder) placeholder.classList.add('hidden');
 
+        // Show all thumbnails first
         document.querySelectorAll('.thumb-item').forEach(thumb => {
+            thumb.classList.remove('hidden');
             thumb.classList.remove('border-royal-gold');
             thumb.classList.add('border-transparent');
         });
-        element.classList.remove('border-transparent');
-        element.classList.add('border-royal-gold');
+        
+        // Hide the clicked thumbnail (it's now the main image)
+        element.classList.add('hidden');
     }
 
     function switchColor(colorId) {
@@ -385,7 +393,7 @@
             if (placeholder) placeholder.classList.add('hidden');
 
             thumbContainer.innerHTML = color.images.map((img, i) => `
-                <div class="thumb-item aspect-square bg-soft-cream overflow-hidden shadow-lg cursor-pointer border-2 ${i === 0 ? 'border-royal-gold' : 'border-transparent'} hover:border-deep-maroon transition-colors" onclick="changeMainImage('${img.url}', this)">
+                <div class="thumb-item aspect-square bg-soft-cream overflow-hidden shadow-lg cursor-pointer border-2 ${i === 0 ? 'border-royal-gold hidden' : 'border-transparent'} hover:border-deep-maroon transition-colors" onclick="changeMainImage('${img.url}', this)">
                     <img src="${img.url}" alt="" class="w-full h-full object-cover">
                 </div>
             `).join('');
