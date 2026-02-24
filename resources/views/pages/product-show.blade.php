@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Maharani Silk - Amsukham by Ram')
-
+@section('title', $product->meta_title ?? $product->name . ' - Amsukham by Ram')
 
 @section('content')
     <!-- Product Detail Section -->
@@ -12,79 +11,140 @@
                 <div class="space-y-4">
                     <!-- Main Image -->
                     <div class="aspect-square bg-soft-cream overflow-hidden shadow-lg">
-                        <img id="mainProductImage" src="{{ asset('images/best-seller-01.jpg') }}" alt="Maharani Silk Saree" class="w-full h-full object-cover">
+                        @php
+                            $firstColor = $product->productColors->first();
+                            $firstColorImage = $firstColor ? $firstColor->images->first() : null;
+                            $primaryImage = $product->images->where('is_primary', true)->first() ?? $product->images->first();
+                            $defaultMainUrl = $firstColorImage && $firstColorImage->media ? $firstColorImage->media->url : ($primaryImage && $primaryImage->media ? $primaryImage->media->url : null);
+                        @endphp
+                        @if($defaultMainUrl)
+                            <img id="mainProductImage" src="{{ $defaultMainUrl }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+                        @else
+                            <div id="mainProductImagePlaceholder" class="w-full h-full bg-gradient-to-br from-deep-maroon/10 to-royal-gold/10 flex items-center justify-center">
+                                <svg class="w-24 h-24 text-deep-maroon/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                            <img id="mainProductImage" src="" alt="{{ $product->name }}" class="w-full h-full object-cover hidden">
+                        @endif
                     </div>
                     
                     <!-- Thumbnail Images -->
-                    <div class="grid grid-cols-4 gap-4">
-                        <div class="aspect-square bg-soft-cream overflow-hidden shadow-lg cursor-pointer border-3 border-royal-gold hover:border-deep-maroon transition-colors" onclick="changeMainImage('{{ asset('images/best-seller-01.jpg') }}', this)">
-                            <img src="{{ asset('images/best-seller-01.jpg') }}" alt="Maharani Silk Saree" class="w-full h-full object-cover">
-                        </div>
-                        <div class="aspect-square bg-soft-cream overflow-hidden shadow-lg cursor-pointer border-2 border-transparent hover:border-deep-maroon transition-colors" onclick="changeMainImage('{{ asset('images/best-seller-02.jpg') }}', this)">
-                            <img src="{{ asset('images/best-seller-02.jpg') }}" alt="Maharani Silk Saree" class="w-full h-full object-cover">
-                        </div>
-                        <div class="aspect-square bg-soft-cream overflow-hidden heritage-shadow cursor-pointer thumbnail-container" onclick="changeMainImage('{{ asset('images/best-seller-03.jpg') }}', this)">
-                            <img src="{{ asset('images/best-seller-03.jpg') }}" alt="Maharani Silk Saree" class="w-full h-full object-cover">
-                        </div>
-                        <div class="aspect-square bg-soft-cream overflow-hidden heritage-shadow cursor-pointer thumbnail-container" onclick="changeMainImage('{{ asset('images/best-seller-04.jpg') }}', this)">
-                            <img src="{{ asset('images/best-seller-04.jpg') }}" alt="Maharani Silk Saree" class="w-full h-full object-cover">
+                    <div id="thumbnailContainer" class="grid grid-cols-4 gap-4">
+                        @if($firstColor && $firstColor->images->count() > 0)
+                            @foreach($firstColor->images as $index => $cImg)
+                            <div class="thumb-item aspect-square bg-soft-cream overflow-hidden shadow-lg cursor-pointer border-2 {{ $index === 0 ? 'border-royal-gold' : 'border-transparent' }} hover:border-deep-maroon transition-colors" onclick="changeMainImage('{{ $cImg->media->url }}', this)">
+                                <img src="{{ $cImg->media->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+                            </div>
+                            @endforeach
+                        @elseif($primaryImage && $primaryImage->media)
+                            <div class="thumb-item aspect-square bg-soft-cream overflow-hidden shadow-lg cursor-pointer border-2 border-royal-gold hover:border-deep-maroon transition-colors" onclick="changeMainImage('{{ $primaryImage->media->url }}', this)">
+                                <img src="{{ $primaryImage->media->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Color Variants -->
+                    @if($product->productColors->count() > 0)
+                    <div class="mt-2">
+                        <h4 class="font-medium text-deep-maroon mb-3">Available Colors</h4>
+                        <div class="flex flex-wrap gap-3" id="colorSwatches">
+                            @foreach($product->productColors as $pcIndex => $productColor)
+                            <div class="text-center cursor-pointer group color-swatch {{ $pcIndex === 0 ? 'active' : '' }}" data-color-id="{{ $productColor->id }}" onclick="switchColor({{ $productColor->id }})">
+                                <div class="w-10 h-10 rounded-full border-2 {{ $pcIndex === 0 ? 'border-royal-gold ring-2 ring-royal-gold/50' : 'border-deep-maroon/20' }} group-hover:border-royal-gold transition-colors" style="background-color: {{ $productColor->color->hex_code ?? '#ccc' }}"></div>
+                                <span class="text-xs text-deep-maroon/70 mt-1 block">{{ $productColor->color->name }}</span>
+                            </div>
+                            @endforeach
                         </div>
                     </div>
+                    @endif
                 </div>
 
                 <!-- Product Info -->
                 <div class="space-y-6">
                     <div>
-                        <h1 class="font-serif text-4xl text-deep-maroon mb-4">Maharani Silk</h1>
-                        <p class="text-deep-maroon/70 text-lg mb-6">Pure silk with gold zari work</p>
+                        <h1 class="font-serif text-4xl text-deep-maroon mb-4">{{ $product->name }}</h1>
+                        @if($product->short_description)
+                        <p class="text-deep-maroon/70 text-lg mb-6">{{ $product->short_description }}</p>
+                        @endif
                         <div class="flex items-center space-x-4 mb-6">
-                            <span class="font-serif text-3xl text-royal-gold">₹25,000</span>
-                            <span class="text-deep-maroon/50 line-through text-xl">₹30,000</span>
-                            <span class="bg-royal-gold text-deep-maroon px-3 py-1 text-sm font-medium">17% OFF</span>
+                            <span id="displayPrice" class="font-serif text-3xl text-royal-gold">₹{{ number_format($product->discounted_price) }}</span>
+                            @if($product->discount > 0)
+                            <span id="displayOriginalPrice" class="text-deep-maroon/50 line-through text-xl">₹{{ number_format($product->price) }}</span>
+                            <span class="bg-royal-gold text-deep-maroon px-3 py-1 text-sm font-medium">{{ number_format($product->discount) }}% OFF</span>
+                            @endif
                         </div>
                     </div>
 
                     <!-- Product Details -->
                     <div class="space-y-4">
                         <div class="grid grid-cols-2 gap-4">
+                            @if($product->fabric)
                             <div>
                                 <span class="text-deep-maroon/70 font-medium">Fabric:</span>
-                                <span class="text-deep-maroon ml-2">Pure Silk</span>
+                                <span class="text-deep-maroon ml-2">{{ $product->fabric->name }}</span>
                             </div>
+                            @endif
+                            @if($product->work)
                             <div>
                                 <span class="text-deep-maroon/70 font-medium">Work:</span>
-                                <span class="text-deep-maroon ml-2">Gold Zari</span>
+                                <span class="text-deep-maroon ml-2">{{ $product->work->name }}</span>
                             </div>
+                            @endif
+                            @if($product->length)
                             <div>
                                 <span class="text-deep-maroon/70 font-medium">Length:</span>
-                                <span class="text-deep-maroon ml-2">5.5 meters</span>
+                                <span class="text-deep-maroon ml-2">{{ $product->length }}</span>
                             </div>
+                            @endif
+                            @if($product->with_blouse && $product->blouse_length)
                             <div>
                                 <span class="text-deep-maroon/70 font-medium">Blouse:</span>
-                                <span class="text-deep-maroon ml-2">0.8 meters</span>
+                                <span class="text-deep-maroon ml-2">{{ $product->blouse_length }}</span>
+                            </div>
+                            @endif
+                            @if($product->category)
+                            <div>
+                                <span class="text-deep-maroon/70 font-medium">Category:</span>
+                                <span class="text-deep-maroon ml-2">{{ $product->category->name }}</span>
+                            </div>
+                            @endif
+                            <div>
+                                <span class="text-deep-maroon/70 font-medium">Stock:</span>
+                                <span class="text-deep-maroon ml-2">{{ $product->stock > 0 ? 'In Stock' : 'Out of Stock' }}</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Actions -->
                     <div class="space-y-4">
+                        <!-- Success/Error Message -->
+                        <div id="cartMessage" class="hidden px-4 py-3 rounded-lg text-sm font-medium"></div>
+
+                        <input type="hidden" id="product_id" value="{{ $product->id }}">
+                        <input type="hidden" id="product_color_id" value="{{ $firstColor ? $firstColor->id : '' }}">
                         <div class="flex items-center space-x-4">
                             <!-- Quantity Selector -->
                             <div class="flex items-center border border-deep-maroon/20 rounded-full">
-                                <button id="decreaseQty" class="w-10 h-10 flex items-center justify-center text-deep-maroon hover:bg-soft-cream transition-colors rounded-l-full">
+                                <button type="button" id="decreaseQty" class="w-10 h-10 flex items-center justify-center text-deep-maroon hover:bg-soft-cream transition-colors rounded-l-full">
                                     <span class="text-lg font-medium">−</span>
                                 </button>
-                                <span id="quantity" class="px-4 py-2 text-deep-maroon font-medium min-w-[3rem] text-center">1</span>
-                                <button id="increaseQty" class="w-10 h-10 flex items-center justify-center text-deep-maroon hover:bg-soft-cream transition-colors rounded-r-full">
+                                <input type="number" id="quantity" value="1" min="1" max="10" class="px-4 py-2 text-deep-maroon font-medium w-16 text-center border-0 focus:ring-0">
+                                <button type="button" id="increaseQty" class="w-10 h-10 flex items-center justify-center text-deep-maroon hover:bg-soft-cream transition-colors rounded-r-full">
                                     <span class="text-lg font-medium">+</span>
                                 </button>
                             </div>
 
                             <!-- Add to Cart Button -->
-                            <button class="flex-1 bg-deep-maroon text-heritage-white py-3 px-8 font-medium hover:bg-royal-gold transition-colors rounded-full shadow-lg">
-                                ADD TO CART
+                            <button type="button" id="addToCartBtn" onclick="addToCart()" class="flex-1 bg-deep-maroon text-heritage-white py-3 px-8 font-medium hover:bg-royal-gold transition-colors rounded-full shadow-lg {{ $product->stock <= 0 ? 'opacity-50 cursor-not-allowed' : '' }}" {{ $product->stock <= 0 ? 'disabled' : '' }}>
+                                {{ $product->stock > 0 ? 'ADD TO CART' : 'OUT OF STOCK' }}
                             </button>
                         </div>
+
+                        <!-- Buy Now Button -->
+                        @if($product->stock > 0)
+                        <button type="button" id="buyNowBtn" onclick="buyNow()" class="w-full bg-royal-gold text-deep-maroon py-3 px-8 font-medium hover:bg-deep-maroon hover:text-heritage-white transition-colors rounded-full shadow-lg">
+                            BUY NOW
+                        </button>
+                        @endif
 
                         <!-- Secondary Actions -->
                         <div class="flex items-center space-x-6 text-deep-maroon">
@@ -102,12 +162,14 @@
                     </div>
 
                     <!-- Product Description -->
+                    @if($product->description)
                     <div class="border-t border-deep-maroon/20 pt-6 mt-6">
                         <h3 class="font-serif text-xl text-deep-maroon mb-4">Product Description</h3>
-                        <p class="text-deep-maroon/80 leading-relaxed">
-                            Experience the royal elegance of our Maharani Silk saree, crafted with the finest pure silk and adorned with intricate gold zari work. This timeless piece represents the pinnacle of traditional Indian craftsmanship, perfect for special occasions and celebrations. The rich texture and lustrous finish make it a treasured addition to any wardrobe.
-                        </p>
+                        <div class="text-deep-maroon/80 leading-relaxed prose max-w-none">
+                            {!! $product->description !!}
+                        </div>
                     </div>
+                    @endif
 
                     <!-- Customer Support -->
                     <div class="border-t border-deep-maroon/20 pt-6 space-y-4">
@@ -180,73 +242,38 @@
     </section>
 
     <!-- FAQ Section -->
+    @if($product->faqs->count() > 0)
     <section class="py-20 bg-soft-cream">
         <div class="container mx-auto px-6">
             <div class="max-w-4xl mx-auto">
                 <div class="text-center mb-12">
                     <h2 class="font-serif text-4xl text-deep-maroon mb-4 decorative-title">Frequently Asked Questions</h2>
                     <div class="w-24 h-1 bg-gradient-to-r from-royal-gold to-yellow-400 mb-6 mx-auto"></div>
-                    <p class="text-deep-maroon/70 text-lg">Everything you need to know about our heritage sarees</p>
+                    <p class="text-deep-maroon/70 text-lg">Everything you need to know about this product</p>
                 </div>
 
                 <div class="space-y-4">
-                    <!-- FAQ Item 1 -->
+                    @foreach($product->faqs as $index => $faq)
                     <div class="bg-heritage-white shadow-lg overflow-hidden">
-                        <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-soft-cream/50 transition-colors" data-target="faq1">
-                            <span class="font-medium text-deep-maroon">What is the fabric composition of this saree?</span>
+                        <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-soft-cream/50 transition-colors" data-target="faq{{ $index }}">
+                            <span class="font-medium text-deep-maroon">{{ $faq->question }}</span>
                             <svg class="w-5 h-5 text-deep-maroon transform transition-transform duration-200 faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div id="faq1" class="faq-content hidden px-6 pb-4">
-                            <p class="text-deep-maroon/80 leading-relaxed">Our Maharani Silk saree is crafted from 100% pure mulberry silk with intricate gold zari work. The saree includes 5.5 meters of premium silk fabric and 0.8 meters of matching blouse piece, ensuring authentic traditional quality.</p>
+                        <div id="faq{{ $index }}" class="faq-content hidden px-6 pb-4">
+                            <p class="text-deep-maroon/80 leading-relaxed">{{ $faq->answer }}</p>
                         </div>
                     </div>
-
-                    <!-- FAQ Item 2 -->
-                    <div class="bg-heritage-white shadow-lg overflow-hidden">
-                        <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-soft-cream/50 transition-colors" data-target="faq2">
-                            <span class="font-medium text-deep-maroon">How should I care for this saree?</span>
-                            <svg class="w-5 h-5 text-deep-maroon transform transition-transform duration-200 faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </button>
-                        <div id="faq2" class="faq-content hidden px-6 pb-4">
-                            <p class="text-deep-maroon/80 leading-relaxed">We recommend dry cleaning only to preserve the silk quality and gold zari work. Store in a cool, dry place wrapped in cotton cloth. Avoid direct sunlight and moisture to maintain the fabric's luster and longevity.</p>
-                        </div>
-                    </div>
-
-                    <!-- FAQ Item 3 -->
-                    <div class="bg-heritage-white shadow-lg overflow-hidden">
-                        <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-soft-cream/50 transition-colors" data-target="faq3">
-                            <span class="font-medium text-deep-maroon">What is your return policy?</span>
-                            <svg class="w-5 h-5 text-deep-maroon transform transition-transform duration-200 faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </button>
-                        <div id="faq3" class="faq-content hidden px-6 pb-4">
-                            <p class="text-deep-maroon/80 leading-relaxed">We offer a 7-day return policy for unworn items in original condition with tags attached. The saree must be returned in its original packaging. Return shipping costs are borne by the customer unless the item is defective.</p>
-                        </div>
-                    </div>
-
-                    <!-- FAQ Item 4 -->
-                    <div class="bg-heritage-white shadow-lg overflow-hidden">
-                        <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-soft-cream/50 transition-colors" data-target="faq4">
-                            <span class="font-medium text-deep-maroon">Do you offer international shipping?</span>
-                            <svg class="w-5 h-5 text-deep-maroon transform transition-transform duration-200 faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </button>
-                        <div id="faq4" class="faq-content hidden px-6 pb-4">
-                            <p class="text-deep-maroon/80 leading-relaxed">Yes, we ship worldwide! International shipping takes 7-14 business days depending on the destination. Shipping costs and customs duties vary by location and are calculated at checkout. All international orders are fully insured.</p>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
     </section>
+    @endif
 
     <!-- Related Products Section -->
+    @if($relatedProducts->count() > 0)
     <section class="py-20 bg-heritage-white">
         <div class="container mx-auto px-6">
             <div class="text-center mb-12">
@@ -256,108 +283,234 @@
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Related Product 1 -->
+                @foreach($relatedProducts as $relatedProduct)
                 <div class="bg-heritage-white overflow-hidden shadow-lg hover:-translate-y-1 transition-all duration-300">
                     <div class="h-64 relative">
-                        <img src="{{ asset('images/best-seller-02.jpg') }}" alt="Heritage Banarasi" class="w-full h-full object-cover">
+                        @if($relatedProduct->primaryImage && $relatedProduct->primaryImage->media)
+                            <img src="{{ $relatedProduct->primaryImage->media->url }}" alt="{{ $relatedProduct->name }}" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full bg-gradient-to-br from-deep-maroon/10 to-royal-gold/10 flex items-center justify-center">
+                                <svg class="w-12 h-12 text-deep-maroon/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                        @endif
+                        @if($relatedProduct->discount > 0)
+                            <span class="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 text-xs font-medium">{{ number_format($relatedProduct->discount) }}% OFF</span>
+                        @endif
                     </div>
                     <div class="p-6">
-                        <h4 class="font-serif text-lg text-deep-maroon mb-2">Heritage Banarasi</h4>
-                        <p class="text-deep-maroon/70 text-sm mb-3">Traditional Banarasi weave</p>
+                        <h4 class="font-serif text-lg text-deep-maroon mb-2">{{ $relatedProduct->name }}</h4>
+                        <p class="text-deep-maroon/70 text-sm mb-3 line-clamp-1">{{ $relatedProduct->short_description ?? '' }}</p>
                         <div class="flex justify-between items-center mb-4">
-                            <span class="font-serif text-xl text-royal-gold">₹18,500</span>
+                            <div>
+                                @if($relatedProduct->discount > 0)
+                                    <span class="text-deep-maroon/50 line-through text-sm">₹{{ number_format($relatedProduct->price) }}</span>
+                                @endif
+                                <span class="font-serif text-xl text-royal-gold">₹{{ number_format($relatedProduct->discounted_price) }}</span>
+                            </div>
                         </div>
-                        <a href="{{ route('product.show', 2) }}" class="block w-full bg-deep-maroon text-heritage-white py-2 font-medium hover:bg-royal-gold transition-colors text-center">
+                        <a href="{{ route('product.show', $relatedProduct->slug) }}" class="block w-full bg-deep-maroon text-heritage-white py-2 font-medium hover:bg-royal-gold transition-colors text-center">
                             View Details
                         </a>
                     </div>
                 </div>
-
-                <!-- Related Product 2 -->
-                <div class="bg-heritage-white overflow-hidden shadow-lg hover:-translate-y-1 transition-all duration-300">
-                    <div class="h-64 relative">
-                        <img src="{{ asset('images/best-seller-03.jpg') }}" alt="Royal Kanjivaram" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-6">
-                        <h4 class="font-serif text-lg text-deep-maroon mb-2">Royal Kanjivaram</h4>
-                        <p class="text-deep-maroon/70 text-sm mb-3">Handwoven Kanjivaram silk</p>
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="font-serif text-xl text-royal-gold">₹32,000</span>
-                        </div>
-                        <a href="{{ route('product.show', 3) }}" class="block w-full bg-deep-maroon text-heritage-white py-2 font-medium hover:bg-royal-gold transition-colors text-center">
-                            View Details
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Related Product 3 -->
-                <div class="bg-heritage-white overflow-hidden shadow-lg hover:-translate-y-1 transition-all duration-300">
-                    <div class="h-64 relative">
-                        <img src="{{ asset('images/best-seller-04.jpg') }}" alt="Bridal Lehenga" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-6">
-                        <h4 class="font-serif text-lg text-deep-maroon mb-2">Bridal Lehenga</h4>
-                        <p class="text-deep-maroon/70 text-sm mb-3">Exquisite bridal collection</p>
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="font-serif text-xl text-royal-gold">₹45,000</span>
-                        </div>
-                        <a href="{{ route('product.show', 4) }}" class="block w-full bg-deep-maroon text-heritage-white py-2 font-medium hover:bg-royal-gold transition-colors text-center">
-                            View Details
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Related Product 4 -->
-                <div class="bg-heritage-white overflow-hidden shadow-lg hover:-translate-y-1 transition-all duration-300">
-                    <div class="h-64 relative">
-                        <img src="{{ asset('images/latest-collections.jpg') }}" alt="Mysore Silk" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-6">
-                        <h4 class="font-serif text-lg text-deep-maroon mb-2">Mysore Silk</h4>
-                        <p class="text-deep-maroon/70 text-sm mb-3">Premium Mysore silk weave</p>
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="font-serif text-xl text-royal-gold">₹22,000</span>
-                        </div>
-                        <a href="{{ route('product.show', 5) }}" class="block w-full bg-deep-maroon text-heritage-white py-2 font-medium hover:bg-royal-gold transition-colors text-center">
-                            View Details
-                        </a>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>
+    @endif
 @endsection
 
 @push('scripts')
 <script>
+    const basePrice = {{ $product->discounted_price }};
+    const originalPrice = {{ $product->price }};
+    const discount = {{ $product->discount ?? 0 }};
+    const colorData = @json($colorData);
+
+    function formatPrice(num) {
+        return '₹' + Math.round(num).toLocaleString('en-IN');
+    }
+
+    function updatePriceDisplay(adjustment) {
+        const currentPrice = basePrice + adjustment;
+        const priceEl = document.getElementById('displayPrice');
+        if (priceEl) priceEl.textContent = formatPrice(currentPrice);
+    }
+
     function changeMainImage(src, element) {
-        document.getElementById('mainProductImage').src = src;
-        document.querySelectorAll('[onclick*="changeMainImage"]').forEach(thumb => {
-            thumb.classList.remove('border-royal-gold', 'border-3');
-            thumb.classList.add('border-transparent', 'border-2');
+        const mainImg = document.getElementById('mainProductImage');
+        const placeholder = document.getElementById('mainProductImagePlaceholder');
+        mainImg.src = src;
+        mainImg.classList.remove('hidden');
+        if (placeholder) placeholder.classList.add('hidden');
+
+        document.querySelectorAll('.thumb-item').forEach(thumb => {
+            thumb.classList.remove('border-royal-gold');
+            thumb.classList.add('border-transparent');
         });
-        element.classList.remove('border-transparent', 'border-2');
-        element.classList.add('border-royal-gold', 'border-3');
+        element.classList.remove('border-transparent');
+        element.classList.add('border-royal-gold');
+    }
+
+    function switchColor(colorId) {
+        const color = colorData.find(c => c.id === colorId);
+        if (!color) return;
+
+        // Set selected color
+        document.getElementById('product_color_id').value = colorId;
+
+        // Update price
+        updatePriceDisplay(color.price_adjustment);
+
+        // Update swatch borders
+        document.querySelectorAll('.color-swatch').forEach(s => {
+            const circle = s.querySelector('div');
+            circle.classList.remove('border-royal-gold', 'ring-2', 'ring-royal-gold/50');
+            circle.classList.add('border-deep-maroon/20');
+        });
+        const activeSwatch = document.querySelector(`.color-swatch[data-color-id="${colorId}"]`);
+        if (activeSwatch) {
+            const circle = activeSwatch.querySelector('div');
+            circle.classList.remove('border-deep-maroon/20');
+            circle.classList.add('border-royal-gold', 'ring-2', 'ring-royal-gold/50');
+        }
+
+        // Update thumbnails and main image
+        const thumbContainer = document.getElementById('thumbnailContainer');
+        if (color.images.length > 0) {
+            const mainImg = document.getElementById('mainProductImage');
+            const placeholder = document.getElementById('mainProductImagePlaceholder');
+            mainImg.src = color.images[0].url;
+            mainImg.classList.remove('hidden');
+            if (placeholder) placeholder.classList.add('hidden');
+
+            thumbContainer.innerHTML = color.images.map((img, i) => `
+                <div class="thumb-item aspect-square bg-soft-cream overflow-hidden shadow-lg cursor-pointer border-2 ${i === 0 ? 'border-royal-gold' : 'border-transparent'} hover:border-deep-maroon transition-colors" onclick="changeMainImage('${img.url}', this)">
+                    <img src="${img.url}" alt="" class="w-full h-full object-cover">
+                </div>
+            `).join('');
+        }
+    }
+
+    function showCartMessage(message, isSuccess) {
+        const msgEl = document.getElementById('cartMessage');
+        msgEl.textContent = message;
+        msgEl.className = 'px-4 py-3 rounded-lg text-sm font-medium ' +
+            (isSuccess ? 'bg-green-100 text-green-800 border border-green-300' : 'bg-red-100 text-red-800 border border-red-300');
+        msgEl.classList.remove('hidden');
+        setTimeout(() => msgEl.classList.add('hidden'), 4000);
+    }
+
+    function updateCartCountBadges(count) {
+        document.querySelectorAll('.cart-count-badge').forEach(badge => {
+            badge.textContent = count;
+        });
+    }
+
+    function addToCart() {
+        const productId = document.getElementById('product_id').value;
+        const colorId = document.getElementById('product_color_id').value;
+        const quantity = parseInt(document.getElementById('quantity').value) || 1;
+        const btn = document.getElementById('addToCartBtn');
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'ADDING...';
+
+        fetch('{{ route("cart.add") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                product_color_id: colorId || null,
+                quantity: quantity,
+            })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showCartMessage(data.message, true);
+                updateCartCountBadges(data.cartCount);
+            } else {
+                showCartMessage(data.message || 'Failed to add to cart.', false);
+            }
+        })
+        .catch(() => showCartMessage('Something went wrong. Please try again.', false))
+        .finally(() => {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        });
+    }
+
+    function buyNow() {
+        const productId = document.getElementById('product_id').value;
+        const colorId = document.getElementById('product_color_id').value;
+        const quantity = parseInt(document.getElementById('quantity').value) || 1;
+        const btn = document.getElementById('buyNowBtn');
+        btn.disabled = true;
+        btn.textContent = 'PROCESSING...';
+
+        fetch('{{ route("cart.add") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                product_color_id: colorId || null,
+                quantity: quantity,
+            })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                updateCartCountBadges(data.cartCount);
+                window.location.href = '{{ route("checkout.index") }}';
+            } else {
+                showCartMessage(data.message || 'Failed to add to cart.', false);
+                btn.disabled = false;
+                btn.textContent = 'BUY NOW';
+            }
+        })
+        .catch(() => {
+            showCartMessage('Something went wrong. Please try again.', false);
+            btn.disabled = false;
+            btn.textContent = 'BUY NOW';
+        });
     }
 
     document.addEventListener('DOMContentLoaded', function() {
         // Quantity selector
-        const quantity = document.getElementById('quantity');
+        const quantityInput = document.getElementById('quantity');
         const decreaseBtn = document.getElementById('decreaseQty');
         const increaseBtn = document.getElementById('increaseQty');
-        let qty = 1;
 
-        decreaseBtn.addEventListener('click', function() {
-            if (qty > 1) {
-                qty--;
-                quantity.textContent = qty;
-            }
-        });
+        if (decreaseBtn) {
+            decreaseBtn.addEventListener('click', function() {
+                let val = parseInt(quantityInput.value) || 1;
+                if (val > 1) quantityInput.value = val - 1;
+            });
+        }
 
-        increaseBtn.addEventListener('click', function() {
-            qty++;
-            quantity.textContent = qty;
-        });
+        if (increaseBtn) {
+            increaseBtn.addEventListener('click', function() {
+                let val = parseInt(quantityInput.value) || 1;
+                if (val < 10) quantityInput.value = val + 1;
+            });
+        }
+
+        // Load initial cart count
+        fetch('{{ route("cart.count") }}', { headers: { 'Accept': 'application/json' } })
+            .then(r => r.json())
+            .then(data => updateCartCountBadges(data.count))
+            .catch(() => {});
 
         // FAQ toggles
         document.querySelectorAll('.faq-toggle').forEach(button => {

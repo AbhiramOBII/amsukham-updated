@@ -16,7 +16,7 @@
             <!-- Brand Logo Center -->
             <div class="flex justify-center">
                 <a href="{{ route('home') }}">
-                    <img src="{{ asset('images/logo-amsukham-03.webp') }}" alt="Amsukham by Ram" class="h-32">
+                    <img src="{{ asset('images/logo-amsukham-03.webp') }}" alt="Amsukham by Ram" class="h-28">
                 </a>
             </div>
             
@@ -33,10 +33,10 @@
                 </button>
                 
                 <!-- Cart Icon -->
-                <button class="text-deep-maroon hover:text-royal-gold transition-colors relative">
+                <a href="{{ route('cart.index') }}" class="text-deep-maroon hover:text-royal-gold transition-colors relative">
                     <img src="{{ asset('images/shopping-cart.svg') }}" alt="Cart" class="w-6 h-6">
-                    <span class="absolute -top-2 -right-2 bg-royal-gold text-heritage-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">0</span>
-                </button>
+                    <span class="cart-count-badge absolute -top-2 -right-2 bg-royal-gold text-heritage-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">0</span>
+                </a>
             </div>
         </div>
         
@@ -64,10 +64,10 @@
                     </button>
                     
                     <!-- Cart Icon -->
-                    <button class="text-deep-maroon hover:text-royal-gold transition-colors relative">
+                    <a href="{{ route('cart.index') }}" class="text-deep-maroon hover:text-royal-gold transition-colors relative">
                         <img src="{{ asset('images/shopping-cart.svg') }}" alt="Cart" class="w-5 h-5">
-                        <span class="absolute -top-1 -right-1 bg-royal-gold text-heritage-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium text-xs">0</span>
-                    </button>
+                        <span class="cart-count-badge absolute -top-1 -right-1 bg-royal-gold text-heritage-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-medium text-xs">0</span>
+                    </a>
                 </div>
                 
                 <!-- Mobile Menu Button -->

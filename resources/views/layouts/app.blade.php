@@ -57,6 +57,18 @@
 
     @include('partials.footer')
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('{{ route("cart.count") }}', { headers: { 'Accept': 'application/json' } })
+                .then(r => r.json())
+                .then(data => {
+                    document.querySelectorAll('.cart-count-badge').forEach(badge => {
+                        badge.textContent = data.count;
+                    });
+                })
+                .catch(() => {});
+        });
+    </script>
     @stack('scripts')
 </body>
 </html>

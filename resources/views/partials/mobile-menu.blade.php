@@ -95,11 +95,11 @@
                     <img src="{{ asset('images/heart.svg') }}" alt="Wishlist" class="w-6 h-6 mb-2">
                     <span class="text-xs font-medium">Wishlist</span>
                 </button>
-                <button class="flex flex-col items-center p-4 bg-soft-cream hover:bg-royal-gold hover:text-heritage-white transition-colors rounded-lg relative">
+                <a href="{{ route('cart.index') }}" class="flex flex-col items-center p-4 bg-soft-cream hover:bg-royal-gold hover:text-heritage-white transition-colors rounded-lg relative">
                     <img src="{{ asset('images/shopping-cart.svg') }}" alt="Cart" class="w-6 h-6 mb-2">
                     <span class="text-xs font-medium">Cart</span>
-                    <span class="absolute -top-1 -right-1 bg-deep-maroon text-heritage-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
-                </button>
+                    <span class="cart-count-badge absolute -top-1 -right-1 bg-deep-maroon text-heritage-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                </a>
             </div>
         </div>
 
