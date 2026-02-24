@@ -93,10 +93,12 @@
             <div class="bg-white rounded-lg shadow p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-medium text-gray-800">Color Variants</h3>
-                    <button type="button" onclick="addColorVariant()" class="text-sm text-amber-600 hover:text-amber-700">+ Add Color</button>
                 </div>
                 <p class="text-sm text-gray-500 mb-4">Add color variants with their own images. SKU will be auto-generated.</p>
                 <div id="colorVariantsContainer" class="space-y-4"></div>
+                 <div class="flex justify-end">
+                <button type="button" onclick="addColorVariant()" class="text-sm text-amber-600 hover:text-amber-700">+ Add Color</button>
+            </div>
             </div>
 
             <div class="bg-white rounded-lg shadow p-6">
@@ -108,9 +110,11 @@
             <div class="bg-white rounded-lg shadow p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-medium text-gray-800">FAQs</h3>
-                    <button type="button" onclick="addFaq()" class="text-sm text-amber-600 hover:text-amber-700">+ Add FAQ</button>
                 </div>
                 <div id="faqContainer" class="space-y-4"></div>
+                <div class="flex justify-end">
+                <button type="button" onclick="addFaq()" class="text-sm text-amber-600 hover:text-amber-700">+ Add FAQ</button>
+                </div>
             </div>
 
             <div class="bg-white rounded-lg shadow p-6">
