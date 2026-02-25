@@ -149,7 +149,7 @@
                         </div>
 
                         <!-- Secondary Actions -->
-                        <div class="flex items-center space-x-6 text-deep-maroon">
+                        <!-- <div class="flex items-center space-x-6 text-deep-maroon">
                             <button class="flex items-center space-x-2 hover:text-royal-gold transition-colors">
                                 <img src="{{ asset('images/heart.svg') }}" alt="Wishlist" class="w-5 h-5">
                                 <span class="text-sm">Add to Wish List</span>
@@ -160,7 +160,7 @@
                                 </svg>
                                 <span class="text-sm">FAQ</span>
                             </button>
-                        </div>
+                        </div> -->
                     </div>
 
                     <!-- Product Description -->

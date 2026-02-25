@@ -209,11 +209,11 @@
                                 @endif
                                 <span class="font-serif text-xl text-royal-gold">₹{{ number_format($displayPrice) }}</span>
                             </div>
-                            <button class="text-deep-maroon hover:text-royal-gold transition-colors">
+                            <!-- <button class="text-deep-maroon hover:text-royal-gold transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                                 </svg>
-                            </button>
+                            </button> -->
                         </div>
                         <a href="{{ route('product.show', $product->slug) }}" class="block w-full bg-deep-maroon text-heritage-white py-2 font-medium hover:bg-royal-gold transition-colors text-center">
                             View Details
