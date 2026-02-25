@@ -9,8 +9,7 @@
                 <a href="{{ route('latest-collections') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">Latest Collections</a>
                 <a href="{{ route('products') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">Collections</a>
                 {{-- <a href="{{ route('products') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">Best Sellers</a> --}}
-                <a href="{{ route('about') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">About Us</a>
-                <a href="{{ route('contact') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">Contact</a>
+                
             </nav>
             
             <!-- Brand Logo Center -->
@@ -23,15 +22,18 @@
             <!-- Ecommerce Icons Right -->
             <div class="flex items-center space-x-6 justify-end">
                 <!-- Search Icon -->
-                <button class="text-deep-maroon hover:text-royal-gold transition-colors">
+                <!-- <button class="text-deep-maroon hover:text-royal-gold transition-colors">
                     <img src="{{ asset('images/search-interface-symbol.svg') }}" alt="Search" class="w-6 h-6">
-                </button>
+                </button> -->
                 
                 <!-- Wishlist Icon -->
-                <button class="text-deep-maroon hover:text-royal-gold transition-colors relative">
+                <!-- <button class="text-deep-maroon hover:text-royal-gold transition-colors relative">
                     <img src="{{ asset('images/heart.svg') }}" alt="Wishlist" class="w-6 h-6">
-                </button>
-                
+                </button> -->
+
+
+                <a href="{{ route('about') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">About Us</a>
+                <a href="{{ route('contact') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">Contact</a>
                 <!-- Cart Icon -->
                 <a href="{{ route('cart.index') }}" class="text-deep-maroon hover:text-royal-gold transition-colors relative">
                     <img src="{{ asset('images/shopping-cart.svg') }}" alt="Cart" class="w-6 h-6">
@@ -54,14 +56,14 @@
                 <!-- Ecommerce Icons -->
                 <div class="flex items-center space-x-4">
                     <!-- Search Icon -->
-                    <button class="text-deep-maroon hover:text-royal-gold transition-colors">
+                    <!-- <button class="text-deep-maroon hover:text-royal-gold transition-colors">
                         <img src="{{ asset('images/search-interface-symbol.svg') }}" alt="Search" class="w-5 h-5">
-                    </button>
+                    </button> -->
                     
                     <!-- Wishlist Icon -->
-                    <button class="text-deep-maroon hover:text-royal-gold transition-colors relative">
+                    <!-- <button class="text-deep-maroon hover:text-royal-gold transition-colors relative">
                         <img src="{{ asset('images/heart.svg') }}" alt="Wishlist" class="w-5 h-5">
-                    </button>
+                    </button> -->
                     
                     <!-- Cart Icon -->
                     <a href="{{ route('cart.index') }}" class="text-deep-maroon hover:text-royal-gold transition-colors relative">

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Banner;
 use App\Models\Category;
+use App\Models\ContactSubmission;
 use App\Models\Product;
 use App\Models\SeoSetting;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -28,9 +31,14 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
+        $banners = Banner::with(['image', 'mobileImage'])
+            ->active()
+            ->ordered()
+            ->get();
+
         $seo = SeoSetting::getForPage('home');
 
-        return view('pages.home', compact('featuredProducts', 'latestProducts', 'categories', 'seo'));
+        return view('pages.home', compact('featuredProducts', 'latestProducts', 'categories', 'banners', 'seo'));
     }
 
     public function about()
@@ -43,6 +51,21 @@ class HomeController extends Controller
     {
         $seo = SeoSetting::getForPage('contact');
         return view('pages.contact', compact('seo'));
+    }
+
+    public function submitContact(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'subject' => 'nullable|string|max:255',
+            'message' => 'required|string|max:5000',
+        ]);
+
+        ContactSubmission::create($validated);
+
+        return redirect()->route('contact')->with('success', 'Thank you for your message! We will get back to you soon.');
     }
 
     public function latestCollections()

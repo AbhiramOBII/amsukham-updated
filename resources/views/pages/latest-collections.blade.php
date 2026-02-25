@@ -4,8 +4,8 @@
 
 @section('content')
     <!-- Hero Section -->
-    <section class="py-20 bg-heritage-white relative overflow-hidden">
-        <div class="brand-pattern-header opacity-5"></div>
+    <section class="py-20 bg-gradient-to-br from-soft-cream to-heritage-white relative overflow-hidden">
+        <div class="brand-pattern-header absolute inset-0 bg-repeat opacity-10 pointer-events-none"></div>
         <div class="container mx-auto px-6 relative z-10">
             <div class="text-center max-w-4xl mx-auto">
                 <h1 class="font-serif text-5xl md:text-6xl text-deep-maroon mb-6 decorative-title">Latest Collections</h1>
@@ -39,7 +39,7 @@
                     @foreach($categories as $index => $category)
                         @if($index === 0)
                             <div class="md:col-span-2 lg:row-span-2">
-                                <a href="{{ route('category.show', $category->slug) }}" class="group block relative overflow-hidden shadow-lg bg-heritage-white h-full min-h-[400px] lg:min-h-[500px]">
+                                <a href="{{ route('products', ['categories' => $category->id]) }}" class="group block relative overflow-hidden shadow-lg bg-heritage-white h-full min-h-[400px] lg:min-h-[500px]">
                                     <div class="absolute inset-0">
                                         @if($category->image)
                                             <img src="{{ $category->image->url }}" alt="{{ $category->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
@@ -67,7 +67,7 @@
                             </div>
                         @else
                             <div>
-                                <a href="{{ route('category.show', $category->slug) }}" class="group block relative overflow-hidden shadow-lg bg-heritage-white h-80">
+                                <a href="{{ route('products', ['categories' => $category->id]) }}" class="group block relative overflow-hidden shadow-lg bg-heritage-white h-80">
                                     <div class="absolute inset-0">
                                         @if($category->image)
                                             <img src="{{ $category->image->url }}" alt="{{ $category->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">

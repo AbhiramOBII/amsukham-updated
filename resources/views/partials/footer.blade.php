@@ -28,37 +28,47 @@
                     Preserving the timeless art of traditional Indian textiles through three generations of dedicated craftsmanship and heritage.
                 </p>
                 <div class="flex space-x-4">
-                    <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-heritage-white/10 flex items-center justify-center hover:bg-royal-gold hover:text-deep-maroon transition-colors">
+                    @if($siteSettings['contact_whatsapp'] ?? '')
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $siteSettings['contact_whatsapp']) }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-heritage-white/10 flex items-center justify-center hover:bg-royal-gold hover:text-deep-maroon transition-colors">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 18a7.9 7.9 0 01-4-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1112 20zm4.4-5.8c-.2-.1-1.3-.6-1.5-.7-.2-.1-.4-.1-.6.1-.2.2-.7.7-.8.8-.2.2-.3.2-.6.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5.1-.1.2-.3.3-.4.1-.1.2-.3.3-.4.1-.2.1-.4 0-.6-.1-.1-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.4-.2.2-.9.8-.9 2s.9 2.3 1 2.4c.1.2 1.8 2.8 4.4 3.9.6.3 1.1.5 1.5.6.6.2 1.1.2 1.5.1.5-.1 1.3-.5 1.4-1 .2-.5.2-.9.1-1-.1-.1-.2-.1-.4-.2z"/>
                         </svg>
                     </a>
-                    <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-heritage-white/10 flex items-center justify-center hover:bg-royal-gold hover:text-deep-maroon transition-colors">
+                    @endif
+                    @if($siteSettings['social_facebook'] ?? '')
+                    <a href="{{ $siteSettings['social_facebook'] }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-heritage-white/10 flex items-center justify-center hover:bg-royal-gold hover:text-deep-maroon transition-colors">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M22 12a10 10 0 10-11.5 9.9v-7H8v-2.9h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.5v1.9H18l-.4 2.9h-2.7v7A10 10 0 0022 12z"/>
                         </svg>
                     </a>
-                    <a href="#" class="w-10 h-10 bg-heritage-white/10 flex items-center justify-center hover:bg-royal-gold hover:text-deep-maroon transition-colors">
+                    @endif
+                    @if($siteSettings['social_twitter'] ?? '')
+                    <a href="{{ $siteSettings['social_twitter'] }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-heritage-white/10 flex items-center justify-center hover:bg-royal-gold hover:text-deep-maroon transition-colors">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M22.46 6c-.77.35-1.6.58-2.46.69a4.3 4.3 0 001.88-2.38 8.59 8.59 0 01-2.72 1.04 4.28 4.28 0 00-7.29 3.9A12.14 12.14 0 013 4.79a4.28 4.28 0 001.32 5.71 4.25 4.25 0 01-1.94-.54v.05a4.28 4.28 0 003.44 4.19 4.3 4.3 0 01-1.93.07 4.28 4.28 0 004 2.97A8.6 8.6 0 012 19.54a12.13 12.13 0 006.56 1.92c7.88 0 12.2-6.53 12.2-12.2 0-.19 0-.37-.01-.56A8.7 8.7 0 0022.46 6z"/>
                         </svg>
                     </a>
-                    <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-heritage-white/10 flex items-center justify-center hover:bg-royal-gold hover:text-deep-maroon transition-colors">
+                    @endif
+                    @if($siteSettings['social_instagram'] ?? '')
+                    <a href="{{ $siteSettings['social_instagram'] }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-heritage-white/10 flex items-center justify-center hover:bg-royal-gold hover:text-deep-maroon transition-colors">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0 2.163c-3.259 0-3.667.014-4.947.072-2.948.134-4.305 1.493-4.439 4.439-.058 1.279-.072 1.688-.072 4.947 0 3.259.014 3.668.072 4.947.134 2.947 1.491 4.305 4.439 4.439 1.28.058 1.688.072 4.947.072 3.259 0 3.668-.014 4.947-.072 2.947-.134 4.305-1.491 4.439-4.439.058-1.279.072-1.688.072-4.947 0-3.259-.014-3.668-.072-4.947-.134-2.946-1.492-4.305-4.439-4.439-1.279-.058-1.688-.072-4.947-.072zm0 3.675c-2.989 0-5.413 2.424-5.413 5.413s2.424 5.413 5.413 5.413 5.413-2.424 5.413-5.413S14.989 7.838 12 7.838zm0 8.927a3.514 3.514 0 110-7.028 3.514 3.514 0 010 7.028zm5.627-9.949a1.262 1.262 0 11-2.524 0 1.262 1.262 0 012.524 0z"/>
                         </svg>
                     </a>
-                    <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-heritage-white/10 flex items-center justify-center hover:bg-royal-gold hover:text-deep-maroon transition-colors">
+                    @endif
+                    @if($siteSettings['social_youtube'] ?? '')
+                    <a href="{{ $siteSettings['social_youtube'] }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-heritage-white/10 flex items-center justify-center hover:bg-royal-gold hover:text-deep-maroon transition-colors">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                         </svg>
                     </a>
-                    <a href="mailto:info@amsukham.com" class="w-10 h-10 bg-heritage-white/10 flex items-center justify-center hover:bg-royal-gold hover:text-deep-maroon transition-colors">
+                    @endif
+                    <a href="mailto:{{ $siteSettings['contact_email'] ?? 'info@amsukham.com' }}" class="w-10 h-10 bg-heritage-white/10 flex items-center justify-center hover:bg-royal-gold hover:text-deep-maroon transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg>
                     </a>
-                    <a href="tel:+919876543210" class="w-10 h-10 bg-heritage-white/10 flex items-center justify-center hover:bg-royal-gold hover:text-deep-maroon transition-colors">
+                    <a href="tel:{{ preg_replace('/[^0-9+]/', '', $siteSettings['contact_phone'] ?? '+919876543210') }}" class="w-10 h-10 bg-heritage-white/10 flex items-center justify-center hover:bg-royal-gold hover:text-deep-maroon transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                         </svg>
@@ -70,18 +80,15 @@
             <div>
                 <h5 class="font-serif text-lg text-heritage-white mb-6">Collections</h5>
                 <ul class="space-y-3">
-                    <li><a href="{{ route('latest-collections') }}" class="text-heritage-white/80 hover:text-royal-gold transition-colors flex items-center">
-                        <span class="w-1 h-1 bg-royal-gold rounded-full mr-3"></span>Mysuru Silk Elegance
-                    </a></li>
-                    <li><a href="{{ route('products') }}" class="text-heritage-white/80 hover:text-royal-gold transition-colors flex items-center">
-                        <span class="w-1 h-1 bg-royal-gold rounded-full mr-3"></span>Kanchipuram Grandeur
-                    </a></li>
-                    <li><a href="{{ route('products') }}" class="text-heritage-white/80 hover:text-royal-gold transition-colors flex items-center">
-                        <span class="w-1 h-1 bg-royal-gold rounded-full mr-3"></span>Benaras Artisan Craft
-                    </a></li>
-                    <li><a href="{{ route('products') }}" class="text-heritage-white/80 hover:text-royal-gold transition-colors flex items-center">
-                        <span class="w-1 h-1 bg-royal-gold rounded-full mr-3"></span>Bridal Collection
-                    </a></li>
+                    @forelse($footerCategories ?? [] as $category)
+                        <li><a href="{{ route('products', ['categories' => $category->id]) }}" class="text-heritage-white/80 hover:text-royal-gold transition-colors flex items-center">
+                            <span class="w-1 h-1 bg-royal-gold rounded-full mr-3"></span>{{ $category->name }}
+                        </a></li>
+                    @empty
+                        <li><a href="{{ route('products') }}" class="text-heritage-white/80 hover:text-royal-gold transition-colors flex items-center">
+                            <span class="w-1 h-1 bg-royal-gold rounded-full mr-3"></span>View All Products
+                        </a></li>
+                    @endforelse
                 </ul>
             </div>
             
@@ -95,22 +102,22 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
                         <div>
-                            <p>Heritage Showroom</p>
-                            <p>Traditional Textile District</p>
-                            <p>Bangalore, India</p>
+                            <p>{{ $siteSettings['contact_address_line1'] ?? 'Heritage Showroom' }}</p>
+                            <p>{{ $siteSettings['contact_address_line2'] ?? 'Traditional Textile District' }}</p>
+                            <p>{{ $siteSettings['contact_city'] ?? 'Bangalore, India' }}</p>
                         </div>
                     </div>
                     <div class="flex items-center">
                         <svg class="w-5 h-5 text-royal-gold mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                         </svg>
-                        <p class="text-royal-gold">+91 98765 43210</p>
+                        <p class="text-royal-gold">{{ $siteSettings['contact_phone'] ?? '+91 98765 43210' }}</p>
                     </div>
                     <div class="flex items-center">
                         <svg class="w-5 h-5 text-royal-gold mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg>
-                        <p class="text-royal-gold">info@amsukham.com</p>
+                        <p class="text-royal-gold">{{ $siteSettings['contact_email'] ?? 'info@amsukham.com' }}</p>
                     </div>
                 </div>
             </div>

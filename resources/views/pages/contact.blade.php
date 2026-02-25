@@ -28,29 +28,49 @@
                         Share your questions and we'll get back to you as soon as possible.
                     </p>
 
-                    <form action="#" method="post" class="space-y-5">
+                    @if(session('success'))
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if($errors->any())
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                            <ul class="list-disc list-inside">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form action="{{ route('contact.submit') }}" method="POST" class="space-y-5">
+                        @csrf
                         <div>
-                            <label class="block text-sm font-medium text-deep-maroon mb-2">Full Name</label>
-                            <input type="text" class="w-full px-4 py-3 border border-deep-maroon/20 focus:border-royal-gold focus:outline-none bg-heritage-white text-deep-maroon" placeholder="Enter your name">
+                            <label class="block text-sm font-medium text-deep-maroon mb-2">Full Name *</label>
+                            <input type="text" name="name" value="{{ old('name') }}" required class="w-full px-4 py-3 border border-deep-maroon/20 focus:border-royal-gold focus:outline-none bg-heritage-white text-deep-maroon" placeholder="Enter your name">
                         </div>
                         <div class="grid md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-deep-maroon mb-2">Email</label>
-                                <input type="email" class="w-full px-4 py-3 border border-deep-maroon/20 focus:border-royal-gold focus:outline-none bg-heritage-white text-deep-maroon" placeholder="you@example.com">
+                                <label class="block text-sm font-medium text-deep-maroon mb-2">Email *</label>
+                                <input type="email" name="email" value="{{ old('email') }}" required class="w-full px-4 py-3 border border-deep-maroon/20 focus:border-royal-gold focus:outline-none bg-heritage-white text-deep-maroon" placeholder="you@example.com">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-deep-maroon mb-2">Phone</label>
-                                <input type="tel" class="w-full px-4 py-3 border border-deep-maroon/20 focus:border-royal-gold focus:outline-none bg-heritage-white text-deep-maroon" placeholder="+91 98765 43210">
+                                <input type="tel" name="phone" value="{{ old('phone') }}" class="w-full px-4 py-3 border border-deep-maroon/20 focus:border-royal-gold focus:outline-none bg-heritage-white text-deep-maroon" placeholder="+91 98765 43210">
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-deep-maroon mb-2">Message</label>
-                            <textarea rows="4" class="w-full px-4 py-3 border border-deep-maroon/20 focus:border-royal-gold focus:outline-none bg-heritage-white text-deep-maroon" placeholder="Tell us how we can help"></textarea>
+                            <label class="block text-sm font-medium text-deep-maroon mb-2">Subject</label>
+                            <input type="text" name="subject" value="{{ old('subject') }}" class="w-full px-4 py-3 border border-deep-maroon/20 focus:border-royal-gold focus:outline-none bg-heritage-white text-deep-maroon" placeholder="What is this about?">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-deep-maroon mb-2">Message *</label>
+                            <textarea name="message" rows="4" required class="w-full px-4 py-3 border border-deep-maroon/20 focus:border-royal-gold focus:outline-none bg-heritage-white text-deep-maroon" placeholder="Tell us how we can help">{{ old('message') }}</textarea>
                         </div>
                         <button type="submit" class="w-full md:w-auto bg-deep-maroon text-heritage-white px-8 py-3 font-medium hover:bg-royal-gold transition-colors shadow-lg">
                             Submit Enquiry
                         </button>
-                        
                     </form>
                 </div>
 
@@ -63,9 +83,9 @@
                             Experience our sarees in person, feel the textures, and explore curated collections with guidance from our heritage stylists.
                         </p>
                         <div class="space-y-3 text-deep-maroon/80 text-sm">
-                            <p class="font-medium text-deep-maroon">Heritage Showroom</p>
-                            <p>Traditional Textile District</p>
-                            <p>Bangalore, India</p>
+                            <p class="font-medium text-deep-maroon">{{ $siteSettings['contact_address_line1'] ?? 'Heritage Showroom' }}</p>
+                            <p>{{ $siteSettings['contact_address_line2'] ?? 'Traditional Textile District' }}</p>
+                            <p>{{ $siteSettings['contact_city'] ?? 'Bangalore, India' }}</p>
                         </div>
                     </div>
 
@@ -74,7 +94,8 @@
                         <p class="text-deep-maroon/80 text-sm mb-5">Tap an icon to reach us instantly.</p>
 
                         <div class="flex flex-wrap items-center gap-6">
-                            <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" class="group inline-flex flex-col items-center">
+                            @if(!empty($siteSettings['social_instagram']))
+                            <a href="{{ $siteSettings['social_instagram'] }}" target="_blank" rel="noopener noreferrer" class="group inline-flex flex-col items-center">
                                 <span class="w-12 h-12 rounded-full bg-gradient-to-tr from-pink-500 via-red-500 to-yellow-400 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
                                     <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M7 2C4.239 2 2 4.239 2 7v10c0 2.761 2.239 5 5 5h10c2.761 0 5-2.239 5-5V7c0-2.761-2.239-5-5-5H7zm10 2a3 3 0 013 3v10a3 3 0 01-3 3H7a3 3 0 01-3-3V7a3 3 0 013-3h10zm-5 3.5A4.5 4.5 0 007.5 12 4.5 4.5 0 0012 16.5 4.5 4.5 0 0016.5 12 4.5 4.5 0 0012 7.5zm0 7.3A2.8 2.8 0 019.2 12 2.8 2.8 0 0112 9.2 2.8 2.8 0 0114.8 12 2.8 2.8 0 0112 14.8zM17.7 6.1a1.1 1.1 0 10-.001 2.201A1.1 1.1 0 0017.7 6.1z"/>
@@ -82,8 +103,10 @@
                                 </span>
                                 <span class="mt-2 text-xs font-medium text-deep-maroon">Instagram</span>
                             </a>
+                            @endif
 
-                            <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" class="group inline-flex flex-col items-center">
+                            @if(!empty($siteSettings['social_facebook']))
+                            <a href="{{ $siteSettings['social_facebook'] }}" target="_blank" rel="noopener noreferrer" class="group inline-flex flex-col items-center">
                                 <span class="w-12 h-12 rounded-full bg-[#1877F2] flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
                                     <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M22 12a10 10 0 10-11.5 9.9v-7H8v-2.9h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.5v1.9H18l-.4 2.9h-2.7v7A10 10 0 0022 12z"/>
@@ -91,8 +114,9 @@
                                 </span>
                                 <span class="mt-2 text-xs font-medium text-deep-maroon">Facebook</span>
                             </a>
+                            @endif
 
-                            <a href="mailto:info@amsukham.com" class="group inline-flex flex-col items-center">
+                            <a href="mailto:{{ $siteSettings['contact_email'] ?? 'info@amsukham.com' }}" class="group inline-flex flex-col items-center">
                                 <span class="w-12 h-12 rounded-full bg-royal-gold flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
                                     <svg class="w-6 h-6 text-deep-maroon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
@@ -101,7 +125,8 @@
                                 <span class="mt-2 text-xs font-medium text-deep-maroon">Email</span>
                             </a>
 
-                            <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" class="group inline-flex flex-col items-center">
+                            @if(!empty($siteSettings['contact_whatsapp']))
+                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $siteSettings['contact_whatsapp']) }}" target="_blank" rel="noopener noreferrer" class="group inline-flex flex-col items-center">
                                 <span class="w-12 h-12 rounded-full bg-[#25D366] flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
                                     <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 18a7.9 7.9 0 01-4-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1112 20zm4.4-5.8c-.2-.1-1.3-.6-1.5-.7-.2-.1-.4-.1-.6.1-.2.2-.7.7-.8.8-.2.2-.3.2-.6.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5.1-.1.2-.3.3-.4.1-.1.2-.3.3-.4.1-.2.1-.4 0-.6-.1-.1-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.4-.2.2-.9.8-.9 2s.9 2.3 1 2.4c.1.2 1.8 2.8 4.4 3.9.6.3 1.1.5 1.5.6.6.2 1.1.2 1.5.1.5-.1 1.3-.5 1.4-1 .2-.5.2-.9.1-1-.1-.1-.2-.1-.4-.2z"/>
@@ -109,8 +134,9 @@
                                 </span>
                                 <span class="mt-2 text-xs font-medium text-deep-maroon">WhatsApp</span>
                             </a>
+                            @endif
 
-                            <a href="tel:+919876543210" class="group inline-flex flex-col items-center">
+                            <a href="tel:{{ preg_replace('/[^0-9+]/', '', $siteSettings['contact_phone'] ?? '+919876543210') }}" class="group inline-flex flex-col items-center">
                                 <span class="w-12 h-12 rounded-full bg-deep-maroon flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
                                     <svg class="w-6 h-6 text-heritage-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
