@@ -138,35 +138,68 @@
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json',
             },
             body: JSON.stringify({ quantity: parseInt(quantity) })
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update quantity');
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 document.getElementById(`item-total-${cartId}`).textContent = '₹' + data.itemTotal;
                 document.getElementById('cart-subtotal').textContent = '₹' + data.subtotal;
-                location.reload();
+                // Also update cart total
+                const subtotal = parseFloat(data.subtotal.replace(/,/g, ''));
+                const shipping = subtotal >= 5000 ? 0 : 99;
+                document.getElementById('cart-total').textContent = '₹' + (subtotal + shipping).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             }
+        })
+        .catch(error => {
+            console.error('Error updating quantity:', error);
+            alert('Failed to update quantity. Please refresh the page.');
         });
     }
 
     function removeItem(cartId) {
         if (!confirm('Remove this item from cart?')) return;
         
+        console.log('Attempting to delete cart item:', cartId);
+        
         fetch(`/cart/${cartId}`, {
             method: 'DELETE',
             headers: {
+                'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json',
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+                return response.text().then(text => {
+                    console.error('Error response:', text);
+                    throw new Error(`HTTP ${response.status}: ${text}`);
+                });
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log('Response data:', data);
             if (data.success) {
                 location.reload();
+            } else {
+                alert('Failed to remove item: ' + (data.message || 'Unknown error'));
             }
+        })
+        .catch(error => {
+            console.error('Full error:', error);
+            alert('Failed to remove item: ' + error.message);
         });
     }
 </script>

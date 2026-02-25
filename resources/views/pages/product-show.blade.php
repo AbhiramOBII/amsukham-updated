@@ -121,30 +121,32 @@
 
                         <input type="hidden" id="product_id" value="{{ $product->id }}">
                         <input type="hidden" id="product_color_id" value="{{ $firstColor ? $firstColor->id : '' }}">
-                        <div class="flex items-center space-x-4">
+                        <div class="flex flex-wrap sm:flex-nowrap items-center gap-4">
                             <!-- Quantity Selector -->
-                            <div class="flex items-center border border-deep-maroon/20 rounded-full">
+                            <div class="flex items-center border border-deep-maroon/20 rounded-full shrink-0">
                                 <button type="button" id="decreaseQty" class="w-10 h-10 flex items-center justify-center text-deep-maroon hover:bg-soft-cream transition-colors rounded-l-full">
                                     <span class="text-lg font-medium">−</span>
                                 </button>
-                                <input type="number" id="quantity" value="1" min="1" max="10" class="px-4 py-2 text-deep-maroon font-medium w-16 text-center border-0 focus:ring-0">
+                                <input type="number" id="quantity" value="1" min="1" max="10" class="px-2 py-2 text-deep-maroon font-medium w-12 text-center border-0 focus:ring-0">
                                 <button type="button" id="increaseQty" class="w-10 h-10 flex items-center justify-center text-deep-maroon hover:bg-soft-cream transition-colors rounded-r-full">
                                     <span class="text-lg font-medium">+</span>
                                 </button>
                             </div>
 
-                            <!-- Add to Cart Button -->
-                            <button type="button" id="addToCartBtn" onclick="addToCart()" class="flex-1 bg-deep-maroon text-heritage-white py-3 px-8 font-medium hover:bg-royal-gold transition-colors rounded-full shadow-lg {{ $product->stock <= 0 ? 'opacity-50 cursor-not-allowed' : '' }}" {{ $product->stock <= 0 ? 'disabled' : '' }}>
-                                {{ $product->stock > 0 ? 'ADD TO CART' : 'OUT OF STOCK' }}
-                            </button>
-                        </div>
+                            <div class="flex-1 flex items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
+                                <!-- Add to Cart Button -->
+                                <button type="button" id="addToCartBtn" onclick="addToCart()" class="flex-1 bg-deep-maroon text-heritage-white py-2.5 px-4 text-sm font-medium hover:bg-royal-gold transition-colors rounded-full shadow-lg whitespace-nowrap {{ $product->stock <= 0 ? 'opacity-50 cursor-not-allowed' : '' }}" {{ $product->stock <= 0 ? 'disabled' : '' }}>
+                                    {{ $product->stock > 0 ? 'ADD TO CART' : 'OUT OF STOCK' }}
+                                </button>
 
-                        <!-- Buy Now Button -->
-                        @if($product->stock > 0)
-                        <button type="button" id="buyNowBtn" onclick="buyNow()" class="w-full bg-royal-gold text-deep-maroon py-3 px-8 font-medium hover:bg-deep-maroon hover:text-heritage-white transition-colors rounded-full shadow-lg">
-                            BUY NOW
-                        </button>
-                        @endif
+                                <!-- Buy Now Button -->
+                                @if($product->stock > 0)
+                                <button type="button" id="buyNowBtn" onclick="buyNow()" class="flex-1 bg-royal-gold text-deep-maroon py-2.5 px-4 text-sm font-medium hover:bg-deep-maroon hover:text-heritage-white transition-colors rounded-full shadow-lg whitespace-nowrap">
+                                    BUY NOW
+                                </button>
+                                @endif
+                            </div>
+                        </div>
 
                         <!-- Secondary Actions -->
                         <div class="flex items-center space-x-6 text-deep-maroon">
