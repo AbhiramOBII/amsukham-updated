@@ -164,10 +164,13 @@ class CartController extends Controller
 
     private function ownsCartItem(Cart $cart): bool
     {
+        // If user is logged in, check user_id OR session_id match
         if (Auth::check()) {
-            return $cart->user_id === Auth::id();
+            // Cart item belongs to user if user_id matches OR if session_id matches (guest cart migrated)
+            return $cart->user_id === Auth::id() || $cart->session_id === session()->getId();
         }
 
+        // Guest user - check session_id
         return $cart->session_id === session()->getId();
     }
 }
