@@ -50,6 +50,7 @@
     @include('partials.topbar')
     @include('partials.header')
     @include('partials.mobile-menu')
+    @include('partials.track-order-modal')
 
     <main>
         @yield('content')

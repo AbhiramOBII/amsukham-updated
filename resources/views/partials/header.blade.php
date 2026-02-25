@@ -34,6 +34,7 @@
 
                 <a href="{{ route('about') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">About Us</a>
                 <a href="{{ route('contact') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">Contact</a>
+                <button onclick="openTrackOrderModal()" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">Track Order</button>
                 <!-- Cart Icon -->
                 <a href="{{ route('cart.index') }}" class="text-deep-maroon hover:text-royal-gold transition-colors relative">
                     <img src="{{ asset('images/shopping-cart.svg') }}" alt="Cart" class="w-6 h-6">

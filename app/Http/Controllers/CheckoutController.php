@@ -193,6 +193,66 @@ class CheckoutController extends Controller
         return view('pages.order-success', compact('order'));
     }
 
+    public function trackOrder(Request $request)
+    {
+        $validated = $request->validate([
+            'order_number' => 'required|string',
+            'email' => 'nullable|email',
+        ]);
+
+        $query = Order::where('order_number', $validated['order_number']);
+
+        if (!empty($validated['email'])) {
+            $query->where('email', $validated['email']);
+        }
+
+        $order = $query->first();
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found. Please check your order number and try again.'
+            ], 404);
+        }
+
+        $statusLabels = [
+            'pending' => 'Order Received',
+            'processing' => 'Processing',
+            'shipped' => 'Shipped',
+            'delivered' => 'Delivered',
+            'cancelled' => 'Cancelled'
+        ];
+
+        return response()->json([
+            'success' => true,
+            'order' => [
+                'id' => $order->id,
+                'order_number' => $order->order_number,
+                'status' => $order->status,
+                'status_label' => $statusLabels[$order->status] ?? ucfirst($order->status),
+                'order_date' => $order->created_at->format('d M Y'),
+                'total' => number_format($order->total, 2),
+                'tracking_number' => $order->tracking_number ?? null,
+            ]
+        ]);
+    }
+
+    public function viewOrder($id)
+    {
+        $order = Order::with(['items.product.primaryImage.media'])
+            ->findOrFail($id);
+
+        $statusLabels = [
+            'pending' => 'Order Received',
+            'processing' => 'Processing',
+            'shipped' => 'Shipped',
+            'delivered' => 'Delivered',
+            'cancelled' => 'Cancelled'
+        ];
+
+        return view('pages.order-details', compact('order', 'statusLabels'));
+    }
+
     private function getCartItems()
     {
         if (Auth::check()) {

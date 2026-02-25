@@ -81,6 +81,14 @@
                     </svg>
                 </div>
             </a>
+            <button onclick="openTrackOrderModal()" class="w-full text-left block py-4 px-4 text-deep-maroon hover:text-royal-gold hover:bg-soft-cream transition-colors font-medium border-b border-deep-maroon/10 relative overflow-hidden">
+                <div class="flex items-center justify-between">
+                    <span>Track Order</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </div>
+            </button>
         </nav>
 
         <!-- Quick Actions -->

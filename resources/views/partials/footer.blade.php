@@ -78,7 +78,7 @@
             
             <!-- Quick Links -->
             <div>
-                <h5 class="font-serif text-lg text-heritage-white mb-6">Collections</h5>
+                <h5 class="font-serif text-lg text-heritage-white mb-6">Quick Links</h5>
                 <ul class="space-y-3">
                     @forelse($footerCategories ?? [] as $category)
                         <li><a href="{{ route('products', ['categories' => $category->id]) }}" class="text-heritage-white/80 hover:text-royal-gold transition-colors flex items-center">
@@ -89,6 +89,9 @@
                             <span class="w-1 h-1 bg-royal-gold rounded-full mr-3"></span>View All Products
                         </a></li>
                     @endforelse
+                    <li><button onclick="openTrackOrderModal()" class="text-heritage-white/80 hover:text-royal-gold transition-colors flex items-center">
+                        <span class="w-1 h-1 bg-royal-gold rounded-full mr-3"></span>Track Your Order
+                    </button></li>
                 </ul>
             </div>
             
