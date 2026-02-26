@@ -20,9 +20,9 @@
             <!-- Brand -->
             <div class="md:col-span-2">
                 <div class="mb-6">
-                    <div class="inline-block bg-heritage-white p-4 rounded-lg shadow-lg">
+                    <a href="{{ route('home') }}" class="inline-block bg-heritage-white p-4 rounded-lg shadow-lg">
                         <img src="{{ asset('images/amsukham-logo.svg') }}" alt="Amsukham by Ram" class="h-16">
-                    </div>
+                    </a>
                 </div>
                 <p class="text-heritage-white/80 mb-6 leading-relaxed">
                     Preserving the timeless art of traditional Indian textiles through three generations of dedicated craftsmanship and heritage.
@@ -165,12 +165,13 @@
         <div class="border-t border-heritage-white/20 pt-8">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <p class="text-heritage-white/60 mb-4 md:mb-0">
-                    © {{ date('Y') }} Amsukham by Ram. All rights reserved. | Preserving heritage since 1950
+                    © {{ date('Y') }} Amsukham by Ram. All rights reserved. | Preserving heritage since 1950 <br>
+                    Designed & Developed by <a href="https://www.obiikriationz.com/" class="text-heritage-white/60 hover:text-royal-gold transition-colors">Obii Kriationz Web LLP</a>
                 </p>
                 <div class="flex space-x-6 text-sm">
-                    <a href="#" class="text-heritage-white/60 hover:text-royal-gold transition-colors">Privacy Policy</a>
-                    <a href="#" class="text-heritage-white/60 hover:text-royal-gold transition-colors">Terms of Service</a>
-                    <a href="#" class="text-heritage-white/60 hover:text-royal-gold transition-colors">Return Policy</a>
+                    <a href="{{ route('privacy') }}" class="text-heritage-white/60 hover:text-royal-gold transition-colors">Privacy Policy</a>
+                    <a href="{{ route('terms') }}" class="text-heritage-white/60 hover:text-royal-gold transition-colors">Terms of Service</a>
+                    <a href="{{ route('return-policy') }}" class="text-heritage-white/60 hover:text-royal-gold transition-colors">Return Policy</a>
                 </div>
             </div>
         </div>

@@ -79,4 +79,22 @@ class HomeController extends Controller
 
         return view('pages.latest-collections', compact('categories', 'seo'));
     }
+
+    public function terms()
+    {
+        $seo = SeoSetting::getForPage('terms');
+        return view('pages.terms', compact('seo'));
+    }
+
+    public function privacy()
+    {
+        $seo = SeoSetting::getForPage('privacy');
+        return view('pages.privacy', compact('seo'));
+    }
+
+    public function returnPolicy()
+    {
+        $seo = SeoSetting::getForPage('return-policy');
+        return view('pages.return-policy', compact('seo'));
+    }
 }
