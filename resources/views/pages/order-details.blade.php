@@ -61,14 +61,11 @@
                         <div class="bg-soft-cream p-6 shadow-lg rounded-lg">
                             <h2 class="font-serif text-2xl text-deep-maroon mb-4">Shipping Address</h2>
                             <div class="text-deep-maroon/80 space-y-1">
-                                <p class="font-medium text-deep-maroon">{{ $order->name }}</p>
-                                <p>{{ $order->address_line_1 }}</p>
-                                @if($order->address_line_2)
-                                <p>{{ $order->address_line_2 }}</p>
-                                @endif
-                                <p>{{ $order->city }}, {{ $order->state }} - {{ $order->pincode }}</p>
-                                <p class="mt-3">Phone: <span class="text-deep-maroon">{{ $order->phone }}</span></p>
-                                <p>Email: <span class="text-deep-maroon">{{ $order->email }}</span></p>
+                                <p class="font-medium text-deep-maroon">{{ $order->billing_name }}</p>
+                                <p>{{ $order->billing_address }}</p>
+                                <p>{{ $order->billing_city }}, {{ $order->billing_state }} - {{ $order->billing_pincode }}</p>
+                                <p class="mt-3">Phone: <span class="text-deep-maroon">{{ $order->billing_phone }}</span></p>
+                                <p>Email: <span class="text-deep-maroon">{{ $order->billing_email }}</span></p>
                             </div>
                         </div>
                     </div>

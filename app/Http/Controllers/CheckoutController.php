@@ -33,16 +33,24 @@ class CheckoutController extends Controller
     public function process(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/',
             'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
+            'phone' => 'required|string|size:10|regex:/^[6-9][0-9]{9}$/',
             'address_line_1' => 'required|string|max:500',
             'address_line_2' => 'nullable|string|max:500',
-            'city' => 'required|string|max:100',
-            'state' => 'required|string|max:100',
-            'pincode' => 'required|string|max:10',
+            'city' => 'required|string|max:100|regex:/^[a-zA-Z\s]+$/',
+            'state' => 'required|string|max:100|regex:/^[a-zA-Z\s]+$/',
+            'pincode' => 'required|string|size:6|regex:/^[0-9]{6}$/',
             'save_address' => 'boolean',
             'notes' => 'nullable|string|max:1000',
+        ], [
+            'name.regex' => 'Name should contain only letters and spaces.',
+            // 'phone.regex' => 'Phone number must start with 6,7, 8, or 9 and be 10 digits.',
+            'phone.size' => 'Phone number must be exactly 10 digits.',
+            'city.regex' => 'City should contain only letters and spaces.',
+            'state.regex' => 'State should contain only letters and spaces.',
+            'pincode.regex' => 'Pincode must be exactly 6 digits.',
+            'pincode.size' => 'Pincode must be exactly 6 digits.',
         ]);
 
         $cartItems = $this->getCartItems();
@@ -179,7 +187,6 @@ class CheckoutController extends Controller
             session()->forget('checkout_data');
 
             return redirect()->route('order.success', $order->order_number);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('checkout.index')->with('error', 'Failed to create order. Please contact support.');

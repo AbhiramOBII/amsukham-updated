@@ -56,16 +56,31 @@ class HomeController extends Controller
     public function submitContact(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/',
             'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'nullable|string|size:10|regex:/^[6-9][0-9]{9}$/',
             'subject' => 'nullable|string|max:255',
             'message' => 'required|string|max:5000',
+        ], [
+            'name.regex' => 'Name should contain only letters and spaces.',
+            // 'phone.regex' => 'Phone number must start with 6,7, 8, or 9 and be 10 digits..',
+            'phone.size' => 'Phone number must be exactly 10 digits.',
         ]);
 
         ContactSubmission::create($validated);
 
         return redirect()->route('contact')->with('success', 'Thank you for your message! We will get back to you soon.');
+    }
+
+    public function subscribeNewsletter(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|max:255',
+        ]);
+
+        // For now, just return back with success message
+        // In production, you'd save to database or send to email service
+        return back()->with('success', 'Thank you for subscribing! You will receive updates on our latest collections.');
     }
 
     public function latestCollections()
