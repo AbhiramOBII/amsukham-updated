@@ -43,13 +43,13 @@
                             <h4 class="font-semibold text-deep-maroon mb-4">Price Range</h4>
                             <div class="space-y-4">
                                 <div class="relative h-12">
-                                    <div class="absolute w-full h-2 bg-soft-cream rounded-lg top-5"></div>
-                                    <div id="rangeTrack" class="absolute h-2 bg-royal-gold rounded-lg top-5" style="left: 0%; right: 50%;"></div>
+                                    <div class="absolute w-full h-2 bg-soft-cream rounded-lg top-1/2 transform -translate-y-1/2"></div>
+                                    <div id="rangeTrack" class="absolute h-2 bg-royal-gold rounded-lg top-1/2 transform -translate-y-1/2" style="left: 0%; right: 50%;"></div>
                                     <input type="range" id="priceRangeMin" min="0" max="100000" value="0" step="1000"
-                                           class="range-slider-thumb absolute w-full h-2 bg-transparent appearance-none cursor-pointer pointer-events-none top-5"
+                                           class="range-slider-thumb absolute w-full h-2 bg-transparent appearance-none cursor-pointer pointer-events-none top-1/2 transform -translate-y-1/2"
                                            style="z-index: 3;">
                                     <input type="range" id="priceRangeMax" min="0" max="100000" value="50000" step="1000"
-                                           class="range-slider-thumb absolute w-full h-2 bg-transparent appearance-none cursor-pointer pointer-events-none top-5"
+                                           class="range-slider-thumb absolute w-full h-2 bg-transparent appearance-none cursor-pointer pointer-events-none top-1/2 transform -translate-y-1/2"
                                            style="z-index: 4;">
                                 </div>
                                 
@@ -72,27 +72,23 @@
                             }
                             .range-slider-thumb::-webkit-slider-thumb {
                                 pointer-events: all;
-                                width: 0;
-                                height: 0;
-                                border-left: 8px solid transparent;
-                                border-right: 8px solid transparent;
-                                border-top: 14px solid #8B4513;
+                                width: 18px;
+                                height: 18px;
+                                border-radius: 50%;
+                                background: #8B4513;
                                 cursor: pointer;
+                                border: 2px solid #D4AF37;
                                 appearance: none;
                                 -webkit-appearance: none;
-                                background: transparent;
-                                transform: translateY(-6px);
                             }
                             .range-slider-thumb::-moz-range-thumb {
                                 pointer-events: all;
-                                width: 0;
-                                height: 0;
-                                border-left: 8px solid transparent;
-                                border-right: 8px solid transparent;
-                                border-top: 14px solid #8B4513;
+                                width: 18px;
+                                height: 18px;
+                                border-radius: 50%;
+                                background: #8B4513;
                                 cursor: pointer;
-                                background: transparent;
-                                border-radius: 0;
+                                border: 2px solid #D4AF37;
                             }
                             .range-slider-thumb::-webkit-slider-runnable-track {
                                 height: 2px;
@@ -267,15 +263,26 @@
         let priceDebounce = null;
 
         function updatePriceRange() {
-            const minVal = parseInt(priceRangeMin.value);
-            const maxVal = parseInt(priceRangeMax.value);
-            if (minVal > maxVal) priceRangeMin.value = maxVal;
+            let minVal = parseInt(priceRangeMin.value);
+            let maxVal = parseInt(priceRangeMax.value);
             
-            minPriceDisplay.textContent = '₹' + parseInt(priceRangeMin.value).toLocaleString('en-IN');
-            maxPriceDisplay.textContent = '₹' + parseInt(priceRangeMax.value).toLocaleString('en-IN');
+            // Prevent min from exceeding max
+            if (minVal > maxVal) {
+                priceRangeMin.value = maxVal;
+                minVal = maxVal;
+            }
             
-            const minPercent = (priceRangeMin.value / 100000) * 100;
-            const maxPercent = (priceRangeMax.value / 100000) * 100;
+            // Prevent max from going below min
+            if (maxVal < minVal) {
+                priceRangeMax.value = minVal;
+                maxVal = minVal;
+            }
+            
+            minPriceDisplay.textContent = '₹' + minVal.toLocaleString('en-IN');
+            maxPriceDisplay.textContent = '₹' + maxVal.toLocaleString('en-IN');
+            
+            const minPercent = (minVal / 100000) * 100;
+            const maxPercent = (maxVal / 100000) * 100;
             rangeTrack.style.left = minPercent + '%';
             rangeTrack.style.right = (100 - maxPercent) + '%';
         }

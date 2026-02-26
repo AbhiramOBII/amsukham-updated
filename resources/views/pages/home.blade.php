@@ -19,7 +19,7 @@
                 @endif
             </div>
             
-            <div class="relative z-10 h-full flex items-center">
+            <div class="relative z-10 h-full flex items-end md:items-center pb-12 md:pb-0">
                 <div class="container mx-auto px-6">
                     <div class="max-w-2xl ml-0 md:ml-20">
                         <h2 class="font-serif text-4xl md:text-5xl lg:text-6xl text-deep-maroon mb-4 leading-tight">
@@ -50,7 +50,7 @@
             <div class="absolute inset-0 w-full h-full">
                 <img src="{{ asset('images/slider-02-01.jpg') }}" alt="Heritage Saree Collection" class="w-full h-full object-cover">
             </div>
-            <div class="relative z-10 h-full flex items-center">
+            <div class="relative z-10 h-full flex items-end md:items-center pb-8 md:pb-0">
                 <div class="container mx-auto px-6">
                     <div class="max-w-2xl ml-0 md:ml-20">
                         <h2 class="font-serif text-4xl md:text-5xl lg:text-6xl text-deep-maroon mb-4 leading-tight">
@@ -73,12 +73,12 @@
         
         @if($banners->count() > 1)
         <!-- Arrow Navigation -->
-        <button class="absolute left-6 top-1/2 transform -translate-y-1/2 z-20 bg-heritage-white/20 hover:bg-heritage-white/30 text-heritage-white hover:text-royal-gold transition-all p-3 rounded-full backdrop-blur-sm" id="hero-prev">
+        <button class="absolute left-6 top-1/2 transform -translate-y-1/2 z-20 bg-heritage-white/20 hover:bg-heritage-white/30 text-heritage-white hover:text-royal-gold transition-all p-3 rounded-full backdrop-blur-sm hidden md:flex" id="hero-prev">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
         </button>
-        <button class="absolute right-6 top-1/2 transform -translate-y-1/2 z-20 bg-heritage-white/20 hover:bg-heritage-white/30 text-heritage-white hover:text-royal-gold transition-all p-3 rounded-full backdrop-blur-sm" id="hero-next">
+        <button class="absolute right-6 top-1/2 transform -translate-y-1/2 z-20 bg-heritage-white/20 hover:bg-heritage-white/30 text-heritage-white hover:text-royal-gold transition-all p-3 rounded-full backdrop-blur-sm hidden md:flex" id="hero-next">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
@@ -97,7 +97,7 @@
     <section id="collections" class="pt-8 pb-12 bg-heritage-white">
         <div class="container mx-auto px-4">
             <div class="text-center mb-6">
-                <h3 class="decorative-title font-serif text-5xl md:text-5xl text-deep-maroon mb-2">
+                <h3 class="decorative-title font-serif text-3xl md:text-5xl text-deep-maroon mb-2">
                     Latest Collections
                 </h3>
                 <div class="w-24 h-1 bg-gradient-to-r from-royal-gold to-yellow-400 mx-auto mb-4"></div>
@@ -172,7 +172,7 @@
     <section id="best-sellers" class="pt-10 pb-12 bg-soft-cream">
         <div class="container mx-auto px-6">
             <div class="text-center mb-12">
-                <h3 class="decorative-title font-serif text-5xl text-deep-maroon mb-4">Best Sellers</h3>
+                <h3 class="decorative-title font-serif text-3xl md:text-5xl text-deep-maroon mb-4">Best Sellers</h3>
                 <div class="w-24 h-1 bg-gradient-to-r from-royal-gold to-yellow-400 mx-auto mb-6"></div>
                 <p class="text-deep-maroon/70 max-w-2xl mx-auto">
                     Our most beloved pieces, chosen by discerning connoisseurs who appreciate the art of traditional weaving.
@@ -240,7 +240,7 @@
                 </div>
                 
                 <div class="order-1 lg:order-2 lg:pt-8">
-                    <h3 class="font-serif text-5xl text-deep-maroon mb-6">Our Heritage Story</h3>
+                    <h3 class="font-serif text-3xl md:text-5xl text-deep-maroon mb-6">Our Heritage Story</h3>
                     <div class="w-24 h-1 gold-accent mb-8"></div>
                     <p class="text-deep-maroon/80 text-lg leading-relaxed mb-6">
                         For three generations, our family has been dedicated to preserving the timeless art of traditional Indian textiles. Each saree we create is a testament to the rich cultural heritage passed down through our artisan community.
