@@ -9,6 +9,18 @@
 
         <form action="{{ route('checkout.process') }}" method="POST">
             @csrf
+            
+            @if($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                    <p class="font-medium mb-2">Please fix the following errors:</p>
+                    <ul class="list-disc list-inside">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            
             <div class="grid lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-2 space-y-6">
                     <div class="bg-heritage-white rounded-lg shadow-lg p-6">
@@ -39,11 +51,17 @@
                         <div class="grid md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-deep-maroon mb-2">Full Name *</label>
-                                <input type="text" name="name" id="name" value="{{ old('name', auth()->user()->name ?? '') }}" required class="w-full px-4 py-3 border border-deep-maroon/20 rounded-lg focus:outline-none focus:border-royal-gold">
+                                <input type="text" name="name" id="name" value="{{ old('name', auth()->user()->name ?? '') }}" required class="w-full px-4 py-3 border {{ $errors->has('name') ? 'border-red-500' : 'border-deep-maroon/20' }} rounded-lg focus:outline-none focus:border-royal-gold">
+                                @error('name')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-deep-maroon mb-2">Phone Number *</label>
-                                <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" required class="w-full px-4 py-3 border border-deep-maroon/20 rounded-lg focus:outline-none focus:border-royal-gold">
+                                <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" required class="w-full px-4 py-3 border {{ $errors->has('phone') ? 'border-red-500' : 'border-deep-maroon/20' }} rounded-lg focus:outline-none focus:border-royal-gold">
+                                @error('phone')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 
@@ -65,15 +83,24 @@
                         <div class="grid md:grid-cols-3 gap-4 mt-4">
                             <div>
                                 <label class="block text-sm font-medium text-deep-maroon mb-2">City *</label>
-                                <input type="text" name="city" id="city" value="{{ old('city') }}" required class="w-full px-4 py-3 border border-deep-maroon/20 rounded-lg focus:outline-none focus:border-royal-gold">
+                                <input type="text" name="city" id="city" value="{{ old('city') }}" required class="w-full px-4 py-3 border {{ $errors->has('city') ? 'border-red-500' : 'border-deep-maroon/20' }} rounded-lg focus:outline-none focus:border-royal-gold">
+                                @error('city')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-deep-maroon mb-2">State *</label>
-                                <input type="text" name="state" id="state" value="{{ old('state') }}" required class="w-full px-4 py-3 border border-deep-maroon/20 rounded-lg focus:outline-none focus:border-royal-gold">
+                                <input type="text" name="state" id="state" value="{{ old('state') }}" required class="w-full px-4 py-3 border {{ $errors->has('state') ? 'border-red-500' : 'border-deep-maroon/20' }} rounded-lg focus:outline-none focus:border-royal-gold">
+                                @error('state')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-deep-maroon mb-2">Pincode *</label>
-                                <input type="text" name="pincode" id="pincode" value="{{ old('pincode') }}" required class="w-full px-4 py-3 border border-deep-maroon/20 rounded-lg focus:outline-none focus:border-royal-gold">
+                                <input type="text" name="pincode" id="pincode" value="{{ old('pincode') }}" required class="w-full px-4 py-3 border {{ $errors->has('pincode') ? 'border-red-500' : 'border-deep-maroon/20' }} rounded-lg focus:outline-none focus:border-royal-gold">
+                                @error('pincode')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 
