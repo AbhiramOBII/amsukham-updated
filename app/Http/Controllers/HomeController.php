@@ -72,6 +72,17 @@ class HomeController extends Controller
         return redirect()->route('contact')->with('success', 'Thank you for your message! We will get back to you soon.');
     }
 
+    public function subscribeNewsletter(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|max:255',
+        ]);
+
+        // For now, just return back with success message
+        // In production, you'd save to database or send to email service
+        return back()->with('success', 'Thank you for subscribing! You will receive updates on our latest collections.');
+    }
+
     public function latestCollections()
     {
         $categories = Category::with('image')

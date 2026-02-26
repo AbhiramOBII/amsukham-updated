@@ -8,11 +8,24 @@
         <div class="text-center mb-16">
             <h3 class="font-serif text-3xl text-heritage-white mb-4">Stay Connected with Heritage</h3>
             <p class="text-heritage-white/80 mb-6 max-w-2xl mx-auto">Subscribe to receive updates on our latest collections, exclusive offers, and stories from our artisan community.</p>
+            @if(session('success'))
+                <div class="bg-green-500/20 border border-green-500 text-green-200 px-4 py-2 rounded mb-4 max-w-md mx-auto">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="bg-red-500/20 border border-red-500 text-red-200 px-4 py-2 rounded mb-4 max-w-md mx-auto">
+                    {{ session('error') }}
+                </div>
+            @endif
             <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-3 bg-heritage-white/10 border border-heritage-white/20 text-heritage-white placeholder-heritage-white/60 focus:outline-none focus:border-royal-gold">
-                <button class="bg-royal-gold text-deep-maroon px-6 py-3 font-medium hover:bg-heritage-white transition-colors">
-                    Subscribe
-                </button>
+                <form action="{{ route('newsletter.subscribe') }}" method="POST" class="flex flex-col sm:flex-row gap-4 w-full">
+                    @csrf
+                    <input type="email" name="email" placeholder="Enter your email" required class="flex-1 px-4 py-3 bg-heritage-white/10 border border-heritage-white/20 text-heritage-white placeholder-heritage-white/60 focus:outline-none focus:border-royal-gold">
+                    <button type="submit" class="bg-royal-gold text-deep-maroon px-6 py-3 font-medium hover:bg-heritage-white transition-colors">
+                        Subscribe
+                    </button>
+                </form>
             </div>
         </div>
         
