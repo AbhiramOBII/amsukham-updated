@@ -125,7 +125,7 @@
     </section>
 
     <!-- Newsletter Section -->
-    <section class="py-20 bg-heritage-white">
+    {{-- <section class="py-20 bg-heritage-white">
         <div class="container mx-auto px-6">
             <div class="max-w-4xl mx-auto text-center">
                 <h2 class="font-serif text-4xl text-deep-maroon mb-6">Stay Updated with Latest Collections</h2>
@@ -138,5 +138,5 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
 @endsection

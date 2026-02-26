@@ -94,13 +94,13 @@
     </section>
 
     <!-- Latest Collections Carousel -->
-    <section id="collections" class="py-32 bg-heritage-white">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-16">
-                <h3 class="decorative-title font-serif text-5xl md:text-5xl text-deep-maroon mb-4">
+    <section id="collections" class="pt-8 pb-12 bg-heritage-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-6">
+                <h3 class="decorative-title font-serif text-5xl md:text-5xl text-deep-maroon mb-2">
                     Latest Collections
                 </h3>
-                <div class="w-24 h-1 bg-gradient-to-r from-royal-gold to-yellow-400 mx-auto mb-6"></div>
+                <div class="w-24 h-1 bg-gradient-to-r from-royal-gold to-yellow-400 mx-auto mb-4"></div>
                 <p class="text-deep-maroon/70 max-w-2xl mx-auto">
                     Discover our newest arrivals, featuring contemporary designs that honor traditional craftsmanship and celebrate timeless elegance.
                 </p>
@@ -114,7 +114,7 @@
                 <!-- Carousel Container -->
                 <div class="relative">
                     <div class="overflow-hidden">
-                        <div id="collections-carousel" class="py-8 flex transition-transform duration-500 ease-in-out">
+                        <div id="collections-carousel" class="py-4 flex transition-transform duration-500 ease-in-out">
                             @foreach($categories as $category)
                                 <div class="w-full md:w-1/3 flex-shrink-0 px-4">
                                     <a href="{{ route('products', ['categories' => $category->id]) }}" class="group block bg-heritage-white overflow-hidden shadow-lg hover:-translate-y-1 transition-all duration-300">
@@ -160,8 +160,7 @@
                     </button>
                 </div>
             @endif
-            
-            <div class="text-center mt-12">
+            <div class="text-center mt-6">
                 <a href="{{ route('latest-collections') }}" class="inline-block bg-deep-maroon text-heritage-white px-8 py-4 font-medium hover:bg-royal-gold transition-colors shadow-lg">
                     View All Collections
                 </a>
@@ -170,9 +169,9 @@
     </section>
 
     <!-- Best Sellers Section -->
-    <section id="best-sellers" class="py-32 bg-soft-cream">
+    <section id="best-sellers" class="pt-10 pb-12 bg-soft-cream">
         <div class="container mx-auto px-6">
-            <div class="text-center mb-16">
+            <div class="text-center mb-12">
                 <h3 class="decorative-title font-serif text-5xl text-deep-maroon mb-4">Best Sellers</h3>
                 <div class="w-24 h-1 bg-gradient-to-r from-royal-gold to-yellow-400 mx-auto mb-6"></div>
                 <p class="text-deep-maroon/70 max-w-2xl mx-auto">
@@ -209,11 +208,6 @@
                                 @endif
                                 <span class="font-serif text-xl text-royal-gold">₹{{ number_format($displayPrice) }}</span>
                             </div>
-                            <!-- <button class="text-deep-maroon hover:text-royal-gold transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                                </svg>
-                            </button> -->
                         </div>
                         <a href="{{ route('product.show', $product->slug) }}" class="block w-full bg-deep-maroon text-heritage-white py-2 font-medium hover:bg-royal-gold transition-colors text-center">
                             View Details
@@ -223,7 +217,7 @@
                 @endforeach
             </div>
             
-            <div class="text-center mt-12">
+            <div class="text-center mt-10">
                 <a href="{{ route('products') }}" class="inline-block bg-deep-maroon text-heritage-white px-8 py-4 font-medium hover:bg-royal-gold transition-colors shadow-lg">
                     Shop All Products
                 </a>
@@ -232,20 +226,20 @@
     </section>
 
     <!-- Heritage Story Section -->
-    <section id="about" class="py-32 bg-heritage-white">
+    <section id="about" class="py-16 bg-heritage-white">
         <div class="container mx-auto px-6">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <div class="relative">
+            <div class="grid lg:grid-cols-2 gap-12 lg:items-start items-center">
+                <div class="relative order-2 lg:order-1">
                     <div class="aspect-square bg-soft-cream overflow-hidden shadow-lg">
                         <img src="{{ asset('images/slider-02.jpg') }}" alt="Heritage Craftsmanship" class="w-full h-full object-cover">
                     </div>
-                    <div class="absolute -bottom-8 -right-8 bg-royal-gold p-8 shadow-lg">
+                    <div class="absolute -bottom-8 -right-8 bg-royal-gold p-8 shadow-lg hidden md:block">
                         <p class="font-serif text-4xl text-deep-maroon">70+</p>
                         <p class="text-deep-maroon font-medium">Years of Heritage</p>
                     </div>
                 </div>
                 
-                <div>
+                <div class="order-1 lg:order-2 lg:pt-8">
                     <h3 class="font-serif text-5xl text-deep-maroon mb-6">Our Heritage Story</h3>
                     <div class="w-24 h-1 gold-accent mb-8"></div>
                     <p class="text-deep-maroon/80 text-lg leading-relaxed mb-6">
@@ -254,9 +248,9 @@
                     <p class="text-deep-maroon/80 text-lg leading-relaxed mb-8">
                         From the finest Mysuru silk to the intricate zari work of Kanchipuram, we bring you authentic handcrafted pieces that celebrate India's textile legacy while embracing contemporary elegance.
                     </p>
-                    <button class="bg-deep-maroon text-heritage-white px-8 py-4 font-medium hover:bg-royal-gold transition-colors shadow-lg">
+                    <a href="{{ route('about') }}" class="inline-block bg-deep-maroon text-heritage-white px-8 py-4 font-medium hover:bg-royal-gold transition-colors shadow-lg">
                         Discover Our Journey
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
