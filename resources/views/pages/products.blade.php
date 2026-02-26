@@ -5,7 +5,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <section class="relative py-32 bg-gradient-to-br from-soft-cream to-heritage-white">
+    <section class="relative py-8 md:py-16 bg-gradient-to-br from-soft-cream to-heritage-white">
         <div class="brand-pattern-header absolute inset-0 bg-repeat opacity-10 pointer-events-none"></div>
         
         <div class="container mx-auto px-6 relative z-10">
@@ -17,20 +17,20 @@
                 <p class="text-xl md:text-2xl text-deep-maroon/80 mb-8 leading-relaxed max-w-3xl mx-auto">
                     Discover our exquisite range of handcrafted sarees, where tradition meets contemporary elegance. Each piece is a testament to generations of artisanal mastery and timeless beauty.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <!-- <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     <button class="bg-deep-maroon text-heritage-white px-10 py-4 font-medium hover:bg-royal-gold transition-colors heritage-shadow text-lg">
                         Shop All Collections
                     </button>
                     <button class="border-2 border-deep-maroon text-deep-maroon px-10 py-4 font-medium hover:bg-deep-maroon hover:text-heritage-white transition-colors text-lg">
                         Filter Products
                     </button>
-                </div>
+                </div> -->
             </div>
         </div>
     </section>
 
     <!-- Products Display Section -->
-    <section class="py-20 bg-heritage-white">
+    <section class="py-12 md:py-20 bg-heritage-white">
         <div class="container mx-auto px-6">
             <div class="grid lg:grid-cols-4 gap-8">
                 <!-- Left Sidebar - Filters -->
@@ -42,14 +42,15 @@
                         <div class="mb-8">
                             <h4 class="font-semibold text-deep-maroon mb-4">Price Range</h4>
                             <div class="space-y-4">
-                                <div class="relative">
-                                    <div class="relative h-6 bg-soft-cream rounded-lg">
-                                        <div id="rangeTrack" class="absolute h-2 bg-royal-gold rounded-lg top-2" style="left: 0%; right: 50%;"></div>
-                                        <input type="range" id="priceRangeMin" min="0" max="100000" value="0" step="1000"
-                                               class="absolute w-full h-6 bg-transparent appearance-none cursor-pointer z-10">
-                                        <input type="range" id="priceRangeMax" min="0" max="100000" value="50000" step="1000"
-                                               class="absolute w-full h-6 bg-transparent appearance-none cursor-pointer z-20">
-                                    </div>
+                                <div class="relative h-12">
+                                    <div class="absolute w-full h-2 bg-soft-cream rounded-lg top-5"></div>
+                                    <div id="rangeTrack" class="absolute h-2 bg-royal-gold rounded-lg top-5" style="left: 0%; right: 50%;"></div>
+                                    <input type="range" id="priceRangeMin" min="0" max="100000" value="0" step="1000"
+                                           class="range-slider-thumb absolute w-full h-2 bg-transparent appearance-none cursor-pointer pointer-events-none top-5"
+                                           style="z-index: 3;">
+                                    <input type="range" id="priceRangeMax" min="0" max="100000" value="50000" step="1000"
+                                           class="range-slider-thumb absolute w-full h-2 bg-transparent appearance-none cursor-pointer pointer-events-none top-5"
+                                           style="z-index: 4;">
                                 </div>
                                 
                                 <div class="flex justify-between items-center">
@@ -64,11 +65,50 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <style>
+                            .range-slider-thumb {
+                                pointer-events: all;
+                            }
+                            .range-slider-thumb::-webkit-slider-thumb {
+                                pointer-events: all;
+                                width: 0;
+                                height: 0;
+                                border-left: 8px solid transparent;
+                                border-right: 8px solid transparent;
+                                border-top: 14px solid #8B4513;
+                                cursor: pointer;
+                                appearance: none;
+                                -webkit-appearance: none;
+                                background: transparent;
+                                transform: translateY(-6px);
+                            }
+                            .range-slider-thumb::-moz-range-thumb {
+                                pointer-events: all;
+                                width: 0;
+                                height: 0;
+                                border-left: 8px solid transparent;
+                                border-right: 8px solid transparent;
+                                border-top: 14px solid #8B4513;
+                                cursor: pointer;
+                                background: transparent;
+                                border-radius: 0;
+                            }
+                            .range-slider-thumb::-webkit-slider-runnable-track {
+                                height: 2px;
+                                background: transparent;
+                            }
+                            .range-slider-thumb::-moz-range-track {
+                                height: 2px;
+                                background: transparent;
+                            }
+                        </style>
 
                         <!-- Category Filter -->
                         <div class="mb-8">
                             <h4 class="font-semibold text-deep-maroon mb-4">Categories</h4>
                             <div class="space-y-3">
+                                
                                 @foreach($categories as $category)
                                 <label class="flex items-center cursor-pointer">
                                     <input type="checkbox" class="filter-checkbox category-filter w-4 h-4 text-royal-gold bg-heritage-white border-deep-maroon/30 rounded focus:ring-royal-gold" value="{{ $category->id }}">

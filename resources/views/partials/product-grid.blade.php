@@ -29,7 +29,7 @@
                 @endif
                 <span class="font-serif text-xl text-royal-gold">₹{{ number_format($displayPrice) }}</span>
             </div>
-            <form action="{{ route('cart.add') }}" method="POST" class="inline">
+            <!-- <form action="{{ route('cart.add') }}" method="POST" class="inline">
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                 <button type="submit" class="text-deep-maroon hover:text-royal-gold transition-colors" title="Add to Cart">
@@ -37,7 +37,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                     </svg>
                 </button>
-            </form>
+            </form> -->
         </div>
         <a href="{{ route('product.show', $product->slug) }}" class="block w-full bg-deep-maroon text-heritage-white py-2 font-medium hover:bg-royal-gold transition-colors text-center">
             View Details
