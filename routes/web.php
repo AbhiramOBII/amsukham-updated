@@ -13,6 +13,10 @@ Route::post('/contact', [HomeController::class, 'submitContact'])->name('contact
 Route::post('/newsletter/subscribe', [HomeController::class, 'subscribeNewsletter'])->name('newsletter.subscribe');
 Route::get('/latest-collections', [HomeController::class, 'latestCollections'])->name('latest-collections');
 
+Route::get('/terms-of-service', [HomeController::class, 'terms'])->name('terms');
+Route::get('/privacy-policy', [HomeController::class, 'privacy'])->name('privacy');
+Route::get('/return-policy', [HomeController::class, 'returnPolicy'])->name('return-policy');
+
 Route::get('/products', [ProductController::class, 'index'])->name('products');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 Route::get('/category/{slug}', [ProductController::class, 'category'])->name('category.show');
