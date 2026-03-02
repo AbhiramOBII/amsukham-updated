@@ -66,10 +66,22 @@
                         <p class="text-deep-maroon/70 text-lg mb-6">{{ $product->short_description }}</p>
                         @endif
                         <div class="flex items-center space-x-4 mb-6">
-                            <span id="displayPrice" class="font-serif text-3xl text-royal-gold">₹{{ number_format($product->discounted_price) }}</span>
+                            @php
+                                $firstColor = $product->productColors->first();
+                                $initialPriceAdj = $firstColor ? $firstColor->price_adjustment : 0;
+                                $initialTotalOrig = $product->price + $initialPriceAdj;
+                                // Apply discount to total price, not base price
+                                $initialTotalDisc = $product->discount > 0 
+                                    ? $initialTotalOrig - ($initialTotalOrig * $product->discount / 100)
+                                    : $initialTotalOrig;
+                            @endphp
+                            <span id="displayPrice" class="font-serif text-3xl text-royal-gold">₹{{ number_format($initialTotalDisc) }}</span>
                             @if($product->discount > 0)
-                            <span id="displayOriginalPrice" class="text-deep-maroon/50 line-through text-xl">₹{{ number_format($product->price) }}</span>
-                            <span class="bg-royal-gold text-deep-maroon px-3 py-1 text-sm font-medium">{{ number_format($product->discount) }}% OFF</span>
+                            <span id="displayOriginalPrice" class="text-deep-maroon/50 line-through text-xl">₹{{ number_format($initialTotalOrig) }}</span>
+                            <span id="displayDiscountBadge" class="bg-royal-gold text-deep-maroon px-3 py-1 text-sm font-medium">{{ number_format($product->discount) }}% OFF</span>
+                            @else
+                            <span id="displayOriginalPrice" class="text-deep-maroon/50 line-through text-xl hidden"></span>
+                            <span id="displayDiscountBadge" class="bg-royal-gold text-deep-maroon px-3 py-1 text-sm font-medium hidden"></span>
                             @endif
                         </div>
                     </div>
@@ -304,10 +316,19 @@
                         <p class="text-deep-maroon/70 text-sm mb-3 line-clamp-1">{{ $relatedProduct->short_description ?? '' }}</p>
                         <div class="flex justify-between items-center mb-4">
                             <div>
+                                @php
+                                    $relFirstColorPrice = $relatedProduct->productColors->first();
+                                    $relPriceAdjPrice = $relFirstColorPrice ? $relFirstColorPrice->price_adjustment : 0;
+                                    $relTotalOrigPrice = $relatedProduct->price + $relPriceAdjPrice;
+                                    // Apply discount to total price, not base price
+                                    $relTotalDiscPrice = $relatedProduct->discount > 0 
+                                        ? $relTotalOrigPrice - ($relTotalOrigPrice * $relatedProduct->discount / 100)
+                                        : $relTotalOrigPrice;
+                                @endphp
                                 @if($relatedProduct->discount > 0)
-                                    <span class="text-deep-maroon/50 line-through text-sm">₹{{ number_format($relatedProduct->price) }}</span>
+                                    <span class="text-deep-maroon/50 line-through text-sm">₹{{ number_format($relTotalOrigPrice) }}</span>
                                 @endif
-                                <span class="font-serif text-xl text-royal-gold">₹{{ number_format($relatedProduct->discounted_price) }}</span>
+                                <span class="font-serif text-xl text-royal-gold">₹{{ number_format($relTotalDiscPrice) }}</span>
                             </div>
                         </div>
                         <a href="{{ route('product.show', $relatedProduct->slug) }}" class="block w-full bg-deep-maroon text-heritage-white py-2 font-medium hover:bg-royal-gold transition-colors text-center">
@@ -334,9 +355,29 @@
     }
 
     function updatePriceDisplay(adjustment) {
-        const currentPrice = basePrice + adjustment;
+        const currentOriginalPrice = originalPrice + adjustment;
+        // Apply discount to total price, not base price
+        const currentDiscountedPrice = discount > 0 
+            ? currentOriginalPrice - (currentOriginalPrice * discount / 100)
+            : currentOriginalPrice;
+        
         const priceEl = document.getElementById('displayPrice');
-        if (priceEl) priceEl.textContent = formatPrice(currentPrice);
+        const originalPriceEl = document.getElementById('displayOriginalPrice');
+        const discountBadgeEl = document.getElementById('displayDiscountBadge');
+        
+        if (priceEl) priceEl.textContent = formatPrice(currentDiscountedPrice);
+        
+        if (originalPriceEl && discountBadgeEl) {
+            if (discount > 0) {
+                originalPriceEl.textContent = formatPrice(currentOriginalPrice);
+                originalPriceEl.classList.remove('hidden');
+                discountBadgeEl.textContent = Math.round(discount) + '% OFF';
+                discountBadgeEl.classList.remove('hidden');
+            } else {
+                originalPriceEl.classList.add('hidden');
+                discountBadgeEl.classList.add('hidden');
+            }
+        }
     }
 
     function changeMainImage(src, element) {

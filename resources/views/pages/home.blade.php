@@ -201,12 +201,17 @@
                             <div>
                                 @php
                                     $firstColor = $product->productColors->first();
-                                    $displayPrice = $product->discounted_price + ($firstColor ? $firstColor->price_adjustment : 0);
+                                    $priceAdjustment = $firstColor ? $firstColor->price_adjustment : 0;
+                                    $totalOriginalPrice = $product->price + $priceAdjustment;
+                                    // Apply discount to total price, not base price
+                                    $totalDiscountedPrice = $product->discount > 0 
+                                        ? $totalOriginalPrice - ($totalOriginalPrice * $product->discount / 100)
+                                        : $totalOriginalPrice;
                                 @endphp
                                 @if($product->discount > 0)
-                                    <span class="text-deep-maroon/50 line-through text-sm">₹{{ number_format($product->price + ($firstColor ? $firstColor->price_adjustment : 0)) }}</span>
+                                    <span class="text-deep-maroon/50 line-through text-sm">₹{{ number_format($totalOriginalPrice) }}</span>
                                 @endif
-                                <span class="font-serif text-xl text-royal-gold">₹{{ number_format($displayPrice) }}</span>
+                                <span class="font-serif text-xl text-royal-gold">₹{{ number_format($totalDiscountedPrice) }}</span>
                             </div>
                         </div>
                         <a href="{{ route('product.show', $product->slug) }}" class="block w-full bg-deep-maroon text-heritage-white py-2 font-medium hover:bg-royal-gold transition-colors text-center">
