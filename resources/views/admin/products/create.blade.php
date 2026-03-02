@@ -69,15 +69,9 @@
 
             <div class="bg-white rounded-lg shadow p-6">
                 <h3 class="text-lg font-medium text-gray-800 mb-4">Product Details</h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Length</label>
-                        <input type="text" name="length" value="{{ old('length') }}" placeholder="e.g., 5.5 meters" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Stock</label>
-                        <input type="number" name="stock" value="{{ old('stock', 0) }}" min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                    </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Length</label>
+                    <input type="text" name="length" value="{{ old('length') }}" placeholder="e.g., 5.5 meters" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
                 </div>
                 <div class="mt-4">
                     <label class="flex items-center gap-2">

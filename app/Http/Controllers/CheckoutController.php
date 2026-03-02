@@ -165,6 +165,7 @@ class CheckoutController extends Controller
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item->product_id,
+                    'product_color_id' => $item->product_color_id,
                     'product_name' => $item->product->name . ($colorName ? ' - ' . $colorName : ''),
                     'product_sku' => $item->product->sku,
                     'price' => $item->product->price,
@@ -174,6 +175,11 @@ class CheckoutController extends Controller
                     'with_blouse' => $item->with_blouse,
                     'total' => $unitPrice * $item->quantity,
                 ]);
+
+                // Reduce stock from the selected color
+                if ($item->productColor) {
+                    $item->productColor->decrement('stock', $item->quantity);
+                }
             }
 
             if (Auth::check()) {
