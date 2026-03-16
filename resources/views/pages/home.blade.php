@@ -636,7 +636,7 @@
     </section>
 
     <!-- Newsletter Section -->
-    <section class="py-20 bg-gradient-to-r from-deep-maroon via-deep-maroon to-deep-maroon/95 relative overflow-hidden">
+    {{-- <section class="py-20 bg-gradient-to-r from-deep-maroon via-deep-maroon to-deep-maroon/95 relative overflow-hidden">
         <div class="absolute inset-0 opacity-10">
             <div class="absolute top-10 left-10 w-40 h-40 border border-royal-gold rounded-full"></div>
             <div class="absolute bottom-10 right-10 w-60 h-60 border border-royal-gold rounded-full"></div>
@@ -659,7 +659,7 @@
                 <p class="text-heritage-white/50 text-sm mt-6">By subscribing, you agree to our Privacy Policy. Unsubscribe anytime.</p>
             </div>
         </div>
-    </section>
+    </section> --}}
 @endsection
 
 @push('scripts')
