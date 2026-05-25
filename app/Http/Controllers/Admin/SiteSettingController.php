@@ -56,6 +56,11 @@ class SiteSettingController extends Controller
             ['key' => 'social_twitter', 'value' => '', 'type' => 'text', 'group' => 'social', 'label' => 'Twitter/X URL'],
             ['key' => 'social_youtube', 'value' => 'https://www.youtube.com/', 'type' => 'text', 'group' => 'social', 'label' => 'YouTube URL'],
             ['key' => 'social_pinterest', 'value' => '', 'type' => 'text', 'group' => 'social', 'label' => 'Pinterest URL'],
+
+            // Payment
+            ['key' => 'razorpay_key', 'value' => '', 'type' => 'text', 'group' => 'payment', 'label' => 'Razorpay Key ID'],
+            ['key' => 'razorpay_secret', 'value' => '', 'type' => 'password', 'group' => 'payment', 'label' => 'Razorpay Secret'],
+            ['key' => 'razorpay_mode', 'value' => 'test', 'type' => 'select', 'group' => 'payment', 'label' => 'Razorpay Mode'],
         ];
 
         foreach ($defaults as $setting) {

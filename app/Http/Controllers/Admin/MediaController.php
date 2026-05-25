@@ -70,7 +70,9 @@ class MediaController extends Controller
 
     public function destroy(Media $media)
     {
-        Storage::disk($media->disk)->delete($media->path);
+        if ($media->path) {
+            Storage::disk($media->disk)->delete($media->path);
+        }
         $media->delete();
 
         if (request()->ajax()) {

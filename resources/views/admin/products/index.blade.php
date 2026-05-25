@@ -6,7 +6,10 @@
 <div class="bg-white rounded-lg shadow">
     <div class="p-6 border-b border-gray-200 flex items-center justify-between">
         <h2 class="text-lg font-semibold text-gray-800">Products</h2>
-        <a href="{{ route('admin.products.create') }}" class="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700">Add Product</a>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('admin.products.bulk.index') }}" class="border border-amber-600 text-amber-600 px-4 py-2 rounded-lg hover:bg-amber-50 transition">Bulk Upload</a>
+            <a href="{{ route('admin.products.create') }}" class="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700">Add Product</a>
+        </div>
     </div>
     
     <div class="overflow-x-auto">
@@ -26,7 +29,9 @@
                 @forelse($products as $product)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            @if($product->primaryImage && $product->primaryImage->media)
+                            @if($product->thumbnail)
+                                <img src="{{ $product->thumbnail->url }}" alt="{{ $product->name }}" class="w-12 h-12 object-cover rounded">
+                            @elseif($product->primaryImage && $product->primaryImage->media)
                                 <img src="{{ $product->primaryImage->media->url }}" alt="{{ $product->name }}" class="w-12 h-12 object-cover rounded">
                             @else
                                 <div class="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">

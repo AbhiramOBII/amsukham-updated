@@ -264,17 +264,18 @@
     </section>
 
     <!-- Latest Collections Carousel -->
-    <section id="collections" class="pt-20 pb-24 bg-heritage-white relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-96 h-96 bg-royal-gold/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-        <div class="absolute bottom-0 left-0 w-96 h-96 bg-deep-maroon/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+    <section id="collections" class="py-24 bg-gradient-to-b from-heritage-white via-white to-heritage-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-royal-gold/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-deep-maroon/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3"></div>
         
         <div class="container mx-auto px-4 relative z-10">
-            <div class="text-center mb-12 reveal-up">
+            <div class="text-center mb-16 reveal-up">
+                <span class="inline-block text-royal-gold text-sm font-semibold tracking-[0.3em] uppercase mb-4">Curated For You</span>
                 <h3 class="decorative-title font-serif text-3xl md:text-5xl lg:text-6xl text-deep-maroon mb-4">
                     Latest Collections
                 </h3>
                 <div class="animated-line h-1 bg-gradient-to-r from-royal-gold to-yellow-400 mx-auto mb-6"></div>
-                <p class="text-deep-maroon/70 max-w-2xl mx-auto text-lg">
+                <p class="text-deep-maroon/70 max-w-2xl mx-auto text-lg leading-relaxed">
                     Discover our newest arrivals, featuring contemporary designs that honor traditional craftsmanship and celebrate timeless elegance.
                 </p>
             </div>
@@ -290,8 +291,8 @@
                         <div id="collections-carousel" class="py-4 flex transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
                             @foreach($categories as $category)
                                 <div class="w-full md:w-1/3 flex-shrink-0 px-4">
-                                    <a href="{{ route('products', ['categories' => $category->id]) }}" class="premium-card group block bg-heritage-white overflow-hidden shadow-xl rounded-sm">
-                                        <div class="h-72 relative overflow-hidden">
+                                    <a href="{{ route('products', ['categories' => $category->id]) }}" class="premium-card group block bg-heritage-white overflow-hidden shadow-xl rounded-lg border border-gray-100">
+                                        <div class="aspect-square relative overflow-hidden">
                                             @if($category->image)
                                                 <img src="{{ $category->image->url }}" alt="{{ $category->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
                                             @else
@@ -299,19 +300,21 @@
                                                     <svg class="w-16 h-16 text-deep-maroon/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                                 </div>
                                             @endif
-                                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500"></div>
-                                            <div class="absolute bottom-4 left-4 text-white">
-                                                <span class="text-sm font-medium bg-royal-gold px-4 py-1.5 rounded-full text-deep-maroon shadow-lg">NEW</span>
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500"></div>
+                                            <div class="absolute top-4 left-4">
+                                                <span class="text-xs font-semibold bg-royal-gold/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-deep-maroon shadow-lg uppercase tracking-wider">New</span>
+                                            </div>
+                                            <div class="absolute bottom-4 left-4 right-4 text-white">
+                                                <h4 class="font-serif text-2xl mb-1 drop-shadow-lg">{{ $category->name }}</h4>
+                                                <span class="text-white/80 text-sm">{{ $category->products_count }} {{ Str::plural('Product', $category->products_count) }}</span>
                                             </div>
                                         </div>
-                                        <div class="p-6">
-                                            <h4 class="font-serif text-xl text-deep-maroon mb-2 group-hover:text-royal-gold transition-colors duration-300">{{ $category->name }}</h4>
-                                            <p class="text-deep-maroon/70 mb-4 line-clamp-2">{{ $category->description ? strip_tags($category->description) : 'Explore our exquisite collection of handwoven sarees.' }}</p>
-                                            <div class="flex justify-between items-center">
-                                                <span class="text-royal-gold font-medium">{{ $category->products_count }} {{ Str::plural('Product', $category->products_count) }}</span>
-                                                <span class="text-deep-maroon font-medium group-hover:text-royal-gold group-hover:translate-x-2 transition-all duration-300 flex items-center gap-1">
-                                                    View Collection 
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                        <div class="p-5">
+                                            <p class="text-deep-maroon/70 text-sm mb-4 line-clamp-2">{{ $category->description ? strip_tags($category->description) : 'Explore our exquisite collection of handwoven sarees.' }}</p>
+                                            <div class="flex items-center justify-between border-t border-gray-100 pt-4">
+                                                <span class="text-deep-maroon font-medium group-hover:text-royal-gold transition-colors duration-300 flex items-center gap-2">
+                                                    Shop Collection
+                                                    <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                                                 </span>
                                             </div>
                                         </div>
@@ -322,20 +325,20 @@
                     </div>
                     
                     <!-- Carousel Navigation -->
-                    <button id="collections-prev" class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 bg-heritage-white shadow-xl p-4 rounded-full hover:bg-royal-gold hover:text-heritage-white transition-all duration-300 z-10 hover:scale-110">
+                    <button id="collections-prev" class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 bg-heritage-white/90 backdrop-blur-sm shadow-xl p-4 rounded-full hover:bg-royal-gold hover:text-heritage-white transition-all duration-300 z-10 hover:scale-110 border border-gray-100">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                         </svg>
                     </button>
-                    <button id="collections-next" class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 bg-heritage-white shadow-xl p-4 rounded-full hover:bg-royal-gold hover:text-heritage-white transition-all duration-300 z-10 hover:scale-110">
+                    <button id="collections-next" class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 bg-heritage-white/90 backdrop-blur-sm shadow-xl p-4 rounded-full hover:bg-royal-gold hover:text-heritage-white transition-all duration-300 z-10 hover:scale-110 border border-gray-100">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
                     </button>
                 </div>
             @endif
-            <div class="text-center mt-12 reveal-up" style="transition-delay: 0.4s;">
-                <a href="{{ route('latest-collections') }}" class="cta-premium inline-block bg-deep-maroon text-heritage-white px-10 py-4 font-semibold rounded-sm shadow-xl">
+            <div class="text-center mt-14 reveal-up" style="transition-delay: 0.4s;">
+                <a href="{{ route('latest-collections') }}" class="cta-premium inline-block bg-deep-maroon text-heritage-white px-12 py-4 font-semibold rounded-sm shadow-xl hover:shadow-2xl">
                     View All Collections
                 </a>
             </div>
@@ -359,7 +362,9 @@
                 @foreach($featuredProducts->take(4) as $product)
                 <div class="premium-card bg-heritage-white overflow-hidden shadow-xl rounded-sm">
                     <div class="h-72 relative overflow-hidden group">
-                        @if($product->primaryImage && $product->primaryImage->media)
+                        @if($product->thumbnail)
+                            <img src="{{ $product->thumbnail->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
+                        @elseif($product->primaryImage && $product->primaryImage->media)
                             <img src="{{ $product->primaryImage->media->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
                         @else
                             <div class="w-full h-full bg-gradient-to-br from-deep-maroon/10 to-royal-gold/10 flex items-center justify-center">
@@ -372,8 +377,7 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     </div>
                     <div class="p-6">
-                        <h4 class="font-serif text-lg text-deep-maroon mb-2 hover:text-royal-gold transition-colors duration-300">{{ $product->name }}</h4>
-                        <p class="text-deep-maroon/70 text-sm mb-3">{{ $product->short_description ?? $product->category->name ?? '' }}</p>
+                        <h4 class="font-serif text-lg text-deep-maroon mb-3 hover:text-royal-gold transition-colors duration-300">{{ $product->name }}</h4>
                         <div class="flex justify-between items-center mb-4">
                             <div>
                                 @php
@@ -410,7 +414,7 @@
     <!-- Premium CTA Section with Parallax -->
     <section class="parallax-section relative py-32 overflow-hidden">
         <div class="parallax-layer" style="background-image: url('{{ asset('images/slider-02.jpg') }}');"></div>
-        <div class="absolute inset-0 gradient-overlay"></div>
+        <div class="absolute inset-0 gradient-overlay opacity-60"></div>
         
         <div class="container mx-auto px-6 relative z-10">
             <div class="max-w-3xl mx-auto text-center reveal-scale">
@@ -448,7 +452,7 @@
             <div class="grid lg:grid-cols-2 gap-16 lg:items-center items-center">
                 <div class="relative order-2 lg:order-1 reveal-left">
                     <div class="aspect-square bg-soft-cream overflow-hidden shadow-2xl rounded-sm">
-                        <img src="{{ asset('images/slider-02.jpg') }}" alt="Heritage Craftsmanship" class="w-full h-full object-cover hover:scale-105 transition-transform duration-1000">
+                        <img src="{{ asset('images/heritage-01.jpg') }}" alt="Heritage Craftsmanship" class="w-full h-full object-cover hover:scale-105 transition-transform duration-1000">
                     </div>
                     <div class="absolute -bottom-8 -right-8 bg-royal-gold p-8 shadow-2xl hidden md:block float-animation" style="animation-duration: 4s;">
                         <p class="font-serif text-5xl text-deep-maroon">70+</p>
@@ -610,7 +614,9 @@
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4 reveal-scale">
                 @foreach($featuredProducts->take(6) as $index => $product)
                 <a href="{{ route('product.show', $product->slug) }}" class="gallery-item relative aspect-square overflow-hidden rounded-sm group {{ $index < 2 ? 'md:col-span-2 md:row-span-2' : '' }}">
-                    @if($product->primaryImage && $product->primaryImage->media)
+                    @if($product->thumbnail)
+                        <img src="{{ $product->thumbnail->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+                    @elseif($product->primaryImage && $product->primaryImage->media)
                         <img src="{{ $product->primaryImage->media->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full bg-gradient-to-br from-deep-maroon/10 to-royal-gold/10"></div>

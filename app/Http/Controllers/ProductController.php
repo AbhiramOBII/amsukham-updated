@@ -14,7 +14,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with(['category', 'fabric', 'work', 'primaryImage.media', 'productColors'])
+        $query = Product::with(['category', 'fabric', 'work', 'thumbnail', 'primaryImage.media', 'productColors'])
             ->active();
 
         if ($request->filled('categories')) {
@@ -92,12 +92,12 @@ class ProductController extends Controller
 
     public function show($slug)
     {
-        $product = Product::with(['category', 'fabric', 'work', 'images.media', 'faqs', 'productColors.color', 'productColors.images.media'])
+        $product = Product::with(['category', 'fabric', 'work', 'thumbnail', 'images.media', 'faqs', 'productColors.color', 'productColors.images.media'])
             ->where('slug', $slug)
             ->active()
             ->firstOrFail();
 
-        $relatedProducts = Product::with(['primaryImage.media'])
+        $relatedProducts = Product::with(['thumbnail', 'primaryImage.media'])
             ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->active()
@@ -124,7 +124,7 @@ class ProductController extends Controller
     {
         $category = Category::where('slug', $slug)->active()->firstOrFail();
 
-        $products = Product::with(['primaryImage.media'])
+        $products = Product::with(['thumbnail', 'primaryImage.media'])
             ->where('category_id', $category->id)
             ->active()
             ->paginate(12);

@@ -8,15 +8,33 @@
         <div class="container mx-auto px-6">
             <div class="grid lg:grid-cols-2 gap-12">
                 <!-- Product Images -->
-                <div class="space-y-4">
+                <div>
+                    @php
+                        $firstColor = $product->productColors->first();
+                        
+                        // Build all images: thumbnail first, then gallery
+                        $allImages = collect();
+                        if ($product->thumbnail) {
+                            $allImages->push(['url' => $product->thumbnail->url, 'alt' => $product->name]);
+                        }
+                        foreach ($product->images->sortBy('sort_order') as $img) {
+                            if ($img->media) {
+                                $allImages->push(['url' => $img->media->url, 'alt' => $product->name]);
+                            }
+                        }
+                        
+                        // Use color images if first color has them, else gallery
+                        if ($firstColor && $firstColor->images->count() > 0) {
+                            $displayImages = $firstColor->images->map(fn($ci) => ['url' => $ci->media->url, 'alt' => $product->name]);
+                        } else {
+                            $displayImages = $allImages;
+                        }
+                        
+                        $defaultMainUrl = $displayImages->first()['url'] ?? null;
+                    @endphp
+
                     <!-- Main Image -->
-                    <div class="aspect-square bg-soft-cream overflow-hidden shadow-lg">
-                        @php
-                            $firstColor = $product->productColors->first();
-                            $firstColorImage = $firstColor ? $firstColor->images->first() : null;
-                            $primaryImage = $product->images->where('is_primary', true)->first() ?? $product->images->first();
-                            $defaultMainUrl = $firstColorImage && $firstColorImage->media ? $firstColorImage->media->url : ($primaryImage && $primaryImage->media ? $primaryImage->media->url : null);
-                        @endphp
+                    <div class="aspect-[4/5] bg-soft-cream overflow-hidden rounded-sm shadow-lg mb-4">
                         @if($defaultMainUrl)
                             <img id="mainProductImage" src="{{ $defaultMainUrl }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
                         @else
@@ -27,24 +45,20 @@
                         @endif
                     </div>
                     
-                    <!-- Thumbnail Images -->
-                    <div id="thumbnailContainer" class="grid grid-cols-4 gap-4">
-                        @if($firstColor && $firstColor->images->count() > 0)
-                            @foreach($firstColor->images as $index => $cImg)
-                            <div class="thumb-item aspect-square bg-soft-cream overflow-hidden shadow-lg cursor-pointer border-2 {{ $index === 0 ? 'border-royal-gold hidden' : 'border-transparent' }} hover:border-deep-maroon transition-colors" onclick="changeMainImage('{{ $cImg->media->url }}', this)">
-                                <img src="{{ $cImg->media->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
-                            </div>
-                            @endforeach
-                        @elseif($primaryImage && $primaryImage->media)
-                            <div class="thumb-item aspect-square bg-soft-cream overflow-hidden shadow-lg cursor-pointer border-2 border-royal-gold hidden hover:border-deep-maroon transition-colors" onclick="changeMainImage('{{ $primaryImage->media->url }}', this)">
-                                <img src="{{ $primaryImage->media->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
-                            </div>
-                        @endif
+                    <!-- Thumbnails -->
+                    @if($displayImages->count() > 1)
+                    <div id="thumbnailContainer" class="flex gap-2 overflow-x-auto pb-2">
+                        @foreach($displayImages as $index => $imgData)
+                        <div class="thumb-item w-16 h-16 flex-shrink-0 bg-soft-cream overflow-hidden rounded cursor-pointer border-2 {{ $index === 0 ? 'border-royal-gold opacity-100' : 'border-transparent opacity-70' }} hover:opacity-100 hover:border-deep-maroon/50 transition-all" onclick="changeMainImage('{{ $imgData['url'] }}', this)">
+                            <img src="{{ $imgData['url'] }}" alt="{{ $imgData['alt'] }}" class="w-full h-full object-cover">
+                        </div>
+                        @endforeach
                     </div>
+                    @endif
 
                     <!-- Color Variants -->
                     @if($product->productColors->count() > 0)
-                    <div class="mt-2">
+                    <div class="mt-4">
                         <h4 class="font-medium text-deep-maroon mb-3">Available Colors</h4>
                         <div class="flex flex-wrap gap-3" id="colorSwatches">
                             @foreach($product->productColors as $pcIndex => $productColor)
@@ -300,7 +314,9 @@
                 @foreach($relatedProducts as $relatedProduct)
                 <div class="bg-heritage-white overflow-hidden shadow-lg hover:-translate-y-1 transition-all duration-300">
                     <div class="h-64 relative">
-                        @if($relatedProduct->primaryImage && $relatedProduct->primaryImage->media)
+                        @if($relatedProduct->thumbnail)
+                            <img src="{{ $relatedProduct->thumbnail->url }}" alt="{{ $relatedProduct->name }}" class="w-full h-full object-cover">
+                        @elseif($relatedProduct->primaryImage && $relatedProduct->primaryImage->media)
                             <img src="{{ $relatedProduct->primaryImage->media->url }}" alt="{{ $relatedProduct->name }}" class="w-full h-full object-cover">
                         @else
                             <div class="w-full h-full bg-gradient-to-br from-deep-maroon/10 to-royal-gold/10 flex items-center justify-center">
@@ -349,6 +365,7 @@
     const originalPrice = {{ $product->price }};
     const discount = {{ $product->discount ?? 0 }};
     const colorData = @json($colorData);
+    const galleryImages = @json($allImages->values());
 
     function formatPrice(num) {
         return '₹' + Math.round(num).toLocaleString('en-IN');
@@ -384,23 +401,17 @@
         const mainImg = document.getElementById('mainProductImage');
         const placeholder = document.getElementById('mainProductImagePlaceholder');
         
-        // Get the previous main image src before changing it
-        const previousMainSrc = mainImg.src;
-        
-        // Update main image
         mainImg.src = src;
         mainImg.classList.remove('hidden');
         if (placeholder) placeholder.classList.add('hidden');
 
-        // Show all thumbnails first
+        // Highlight active thumbnail
         document.querySelectorAll('.thumb-item').forEach(thumb => {
-            thumb.classList.remove('hidden');
-            thumb.classList.remove('border-royal-gold');
-            thumb.classList.add('border-transparent');
+            thumb.classList.remove('border-royal-gold', 'opacity-100');
+            thumb.classList.add('border-transparent', 'opacity-70');
         });
-        
-        // Hide the clicked thumbnail (it's now the main image)
-        element.classList.add('hidden');
+        element.classList.remove('border-transparent', 'opacity-70');
+        element.classList.add('border-royal-gold', 'opacity-100');
     }
 
     function switchColor(colorId) {
@@ -426,20 +437,34 @@
             circle.classList.add('border-royal-gold', 'ring-2', 'ring-royal-gold/50');
         }
 
-        // Update thumbnails and main image
-        const thumbContainer = document.getElementById('thumbnailContainer');
-        if (color.images.length > 0) {
+        // Choose images: color-specific if available, else gallery
+        const images = color.images.length > 0 ? color.images : galleryImages;
+        
+        if (images.length > 0) {
             const mainImg = document.getElementById('mainProductImage');
             const placeholder = document.getElementById('mainProductImagePlaceholder');
-            mainImg.src = color.images[0].url;
+            mainImg.src = images[0].url;
             mainImg.classList.remove('hidden');
             if (placeholder) placeholder.classList.add('hidden');
 
-            thumbContainer.innerHTML = color.images.map((img, i) => `
-                <div class="thumb-item aspect-square bg-soft-cream overflow-hidden shadow-lg cursor-pointer border-2 ${i === 0 ? 'border-royal-gold hidden' : 'border-transparent'} hover:border-deep-maroon transition-colors" onclick="changeMainImage('${img.url}', this)">
-                    <img src="${img.url}" alt="" class="w-full h-full object-cover">
-                </div>
-            `).join('');
+            let thumbContainer = document.getElementById('thumbnailContainer');
+            if (!thumbContainer) {
+                thumbContainer = document.createElement('div');
+                thumbContainer.id = 'thumbnailContainer';
+                thumbContainer.className = 'flex gap-2 overflow-x-auto pb-2';
+                mainImg.closest('.aspect-\\[4\\/5\\]').after(thumbContainer);
+            }
+
+            if (images.length > 1) {
+                thumbContainer.className = 'flex gap-2 overflow-x-auto pb-2';
+                thumbContainer.innerHTML = images.map((img, i) => `
+                    <div class="thumb-item w-16 h-16 flex-shrink-0 bg-soft-cream overflow-hidden rounded cursor-pointer border-2 ${i === 0 ? 'border-royal-gold opacity-100' : 'border-transparent opacity-70'} hover:opacity-100 hover:border-deep-maroon/50 transition-all" onclick="changeMainImage('${img.url}', this)">
+                        <img src="${img.url}" alt="" class="w-full h-full object-cover">
+                    </div>
+                `).join('');
+            } else {
+                thumbContainer.innerHTML = '';
+            }
         }
     }
 

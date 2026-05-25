@@ -19,7 +19,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with(['category', 'fabric', 'work', 'primaryImage.media'])
+        $products = Product::with(['category', 'fabric', 'work', 'thumbnail', 'primaryImage.media'])
             ->latest()
             ->paginate(15);
 
@@ -58,6 +58,7 @@ class ProductController extends Controller
             'meta_keywords' => 'nullable|string|max:255',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
+            'thumbnail_id' => 'nullable|exists:media,id',
             'images' => 'nullable|array',
             'images.*' => 'exists:media,id',
             'primary_image' => 'nullable|exists:media,id',
@@ -75,6 +76,7 @@ class ProductController extends Controller
         $validated['is_active'] = $request->has('is_active');
         $validated['discount'] = $validated['discount'] ?? 0;
         $validated['stock'] = $validated['stock'] ?? 0;
+        $validated['thumbnail_id'] = $request->input('thumbnail_id') ?: null;
 
         $product = Product::create($validated);
 
@@ -147,7 +149,7 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        $product->load(['images.media', 'faqs', 'productColors.color', 'productColors.images.media']);
+        $product->load(['images.media', 'faqs', 'productColors.color', 'productColors.images.media', 'thumbnail']);
         $categories = Category::active()->get();
         $fabrics = Fabric::active()->get();
         $works = Work::active()->get();
@@ -201,6 +203,7 @@ class ProductController extends Controller
             'meta_keywords' => 'nullable|string|max:255',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
+            'thumbnail_id' => 'nullable|exists:media,id',
             'product_images' => 'nullable|array',
             'product_images.*' => 'exists:media,id',
             'faqs' => 'nullable|array',
@@ -217,6 +220,7 @@ class ProductController extends Controller
         $validated['is_active'] = $request->has('is_active');
         $validated['discount'] = $validated['discount'] ?? 0;
         $validated['stock'] = $validated['stock'] ?? 0;
+        $validated['thumbnail_id'] = $request->input('thumbnail_id') ?: null;
 
         $product->update($validated);
 

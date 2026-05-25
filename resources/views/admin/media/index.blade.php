@@ -18,11 +18,11 @@
                 <p>No media files uploaded yet</p>
             </div>
         @else
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach($media as $item)
                     <div class="relative group">
-                        <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                            <img src="{{ $item->url }}" alt="{{ $item->alt_text ?? $item->name }}" class="w-full h-full object-cover">
+                        <div class="bg-gray-100 rounded-lg overflow-hidden">
+                            <img src="{{ $item->url }}" alt="{{ $item->alt_text ?? $item->name }}" class="w-full h-auto">
                         </div>
                         <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
                             <button onclick="copyUrl('{{ $item->url }}')" class="p-2 bg-white rounded-full hover:bg-gray-100" title="Copy URL">

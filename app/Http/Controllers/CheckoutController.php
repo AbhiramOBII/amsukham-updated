@@ -9,10 +9,23 @@ use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\SiteSetting;
 use Razorpay\Api\Api;
 
 class CheckoutController extends Controller
 {
+    private function getRazorpayApi(): Api
+    {
+        $key = SiteSetting::get('razorpay_key') ?: config('services.razorpay.key');
+        $secret = SiteSetting::get('razorpay_secret') ?: config('services.razorpay.secret');
+
+        if (empty($key) || empty($secret)) {
+            throw new \RuntimeException('payment_not_configured');
+        }
+
+        return new Api($key, $secret);
+    }
+
     public function index()
     {
         $cartItems = $this->getCartItems();
@@ -21,9 +34,9 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
         }
 
-        $subtotal = $cartItems->sum(fn($item) => ($item->price ?? $item->product->display_price) * $item->quantity);
+        $subtotal = round($cartItems->sum(fn($item) => ($item->price ?? $item->product->display_price) * $item->quantity));
         $shipping = $subtotal >= 5000 ? 0 : 99;
-        $total = $subtotal + $shipping;
+        $total = round($subtotal + $shipping);
 
         $addresses = Auth::check() ? Address::where('user_id', Auth::id())->get() : collect();
 
@@ -59,9 +72,9 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
         }
 
-        $subtotal = $cartItems->sum(fn($item) => ($item->price ?? $item->product->display_price) * $item->quantity);
+        $subtotal = round($cartItems->sum(fn($item) => ($item->price ?? $item->product->display_price) * $item->quantity));
         $shipping = $subtotal >= 5000 ? 0 : 99;
-        $total = $subtotal + $shipping;
+        $total = round($subtotal + $shipping);
 
         if (Auth::check() && $request->save_address) {
             Address::create([
@@ -77,13 +90,23 @@ class CheckoutController extends Controller
             ]);
         }
 
-        $api = new Api(config('services.razorpay.key'), config('services.razorpay.secret'));
+        try {
+            $api = $this->getRazorpayApi();
 
-        $razorpayOrder = $api->order->create([
-            'amount' => $total * 100,
-            'currency' => 'INR',
-            'receipt' => 'order_' . time(),
-        ]);
+            $razorpayOrder = $api->order->create([
+                'amount' => $total * 100,
+                'currency' => 'INR',
+                'receipt' => 'order_' . time(),
+            ]);
+        } catch (\RuntimeException $e) {
+            if ($e->getMessage() === 'payment_not_configured') {
+                return back()->withInput()->with('error', 'Payment gateway is not configured. Please contact the store administrator.');
+            }
+            throw $e;
+        } catch (\Exception $e) {
+            \Log::error('Razorpay Error: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Payment error: ' . $e->getMessage());
+        }
 
         session([
             'checkout_data' => [
@@ -95,8 +118,11 @@ class CheckoutController extends Controller
             ],
         ]);
 
+        $razorpayKey = SiteSetting::get('razorpay_key') ?: config('services.razorpay.key');
+
         return view('pages.payment', [
             'razorpayOrderId' => $razorpayOrder->id,
+            'razorpayKey' => $razorpayKey,
             'total' => $total,
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -118,7 +144,11 @@ class CheckoutController extends Controller
             return redirect()->route('checkout.index')->with('error', 'Invalid payment session.');
         }
 
-        $api = new Api(config('services.razorpay.key'), config('services.razorpay.secret'));
+        try {
+            $api = $this->getRazorpayApi();
+        } catch (\Exception $e) {
+            return redirect()->route('checkout.index')->with('error', 'Payment gateway is not configured. Please contact the store administrator.');
+        }
 
         $attributes = [
             'razorpay_order_id' => $request->razorpay_order_id,
@@ -129,7 +159,7 @@ class CheckoutController extends Controller
         try {
             $api->utility->verifyPaymentSignature($attributes);
         } catch (\Exception $e) {
-            return redirect()->route('checkout.index')->with('error', 'Payment verification failed.');
+            return redirect()->route('checkout.index')->with('error', 'Payment verification failed. If money was deducted, it will be refunded within 5-7 business days.');
         }
 
         $cartItems = $this->getCartItems();

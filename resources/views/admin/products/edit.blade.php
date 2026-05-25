@@ -96,7 +96,16 @@
             </div>
 
             <div class="bg-white rounded-lg shadow p-6">
-                <h3 class="text-lg font-medium text-gray-800 mb-4">Product Images</h3>
+                <h3 class="text-lg font-medium text-gray-800 mb-4">Product Thumbnail</h3>
+                <p class="text-sm text-gray-500 mb-3">This image will be shown as the product card thumbnail in listings.</p>
+                <div id="thumbnailPreview" class="mb-4"></div>
+                <input type="hidden" name="thumbnail_id" id="thumbnail_id" value="{{ $product->thumbnail_id }}">
+                <button type="button" onclick="openThumbnailBrowser()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Select Thumbnail from Media</button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-medium text-gray-800 mb-4">Product Gallery</h3>
+                <p class="text-sm text-gray-500 mb-3">Additional images shown on the product detail page.</p>
                 <div id="selectedImages" class="flex flex-wrap gap-4 mb-4"></div>
                 <button type="button" onclick="openImageBrowser()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Select Images from Media</button>
             </div>
@@ -132,7 +141,7 @@
 
         <div class="space-y-6">
             <div class="bg-white rounded-lg shadow p-6">
-                <h3 class="text-lg font-medium text-gray-800 mb-4">Pricing</h3>
+                <h3 class="text-lg font-medium text-gray-800 mb-4">Pricing & Stock</h3>
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Price (₹) *</label>
@@ -141,6 +150,10 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Discount (%)</label>
                         <input type="number" name="discount" value="{{ old('discount', $product->discount) }}" min="0" max="100" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Stock</label>
+                        <input type="number" name="stock" value="{{ old('stock', $product->stock) }}" min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
                     </div>
                 </div>
             </div>
@@ -172,6 +185,8 @@
     ClassicEditor.create(document.querySelector('#description')).catch(console.error);
 
     let productImages = @json($productImagesData ?? []);
+    let thumbnailData = @json($product->thumbnail ? ['id' => $product->thumbnail_id, 'url' => $product->thumbnail->url] : null);
+    let selectingThumbnail = false;
     let faqCount = 0;
     let colorCount = 0;
     let currentColorIndex = null;
@@ -181,6 +196,7 @@
     const MAX_COLOR_IMAGES = 5;
     const MAX_PRODUCT_IMAGES = 5;
 
+    renderThumbnail();
     renderProductImages();
     @foreach($product->faqs as $faq)
         addFaq('{{ addslashes($faq->question) }}', '{{ addslashes($faq->answer) }}');
@@ -196,7 +212,14 @@
         field.style.display = checkbox.checked ? 'block' : 'none';
     }
 
+    function openThumbnailBrowser() {
+        selectingThumbnail = true;
+        currentColorIndex = null;
+        window.open('{{ route("admin.media.browse") }}?mode=single', 'mediaBrowser', 'width=900,height=600');
+    }
+
     function openImageBrowser() {
+        selectingThumbnail = false;
         currentColorIndex = null;
         window.open('{{ route("admin.media.browse") }}?mode=multi&max=5', 'mediaBrowser', 'width=900,height=600');
     }
@@ -212,6 +235,13 @@
     }
 
     function selectMedia(id, url) {
+        if (selectingThumbnail) {
+            thumbnailData = { id, url };
+            document.getElementById('thumbnail_id').value = id;
+            renderThumbnail();
+            selectingThumbnail = false;
+            return;
+        }
         if (currentColorIndex !== null) {
             if (!colorImages[currentColorIndex]) colorImages[currentColorIndex] = [];
             if (colorImages[currentColorIndex].length >= MAX_COLOR_IMAGES) {
@@ -235,7 +265,30 @@
     }
     
     function closeMediaBrowser() {
+        selectingThumbnail = false;
         currentColorIndex = null;
+    }
+
+    function renderThumbnail() {
+        const container = document.getElementById('thumbnailPreview');
+        if (!thumbnailData) {
+            container.innerHTML = '';
+            return;
+        }
+        container.innerHTML = `
+            <div class="relative w-40">
+                <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-amber-500">
+                    <img src="${thumbnailData.url}" class="w-full h-full object-cover">
+                </div>
+                <button type="button" onclick="removeThumbnail()" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">×</button>
+            </div>
+        `;
+    }
+
+    function removeThumbnail() {
+        thumbnailData = null;
+        document.getElementById('thumbnail_id').value = '';
+        renderThumbnail();
     }
 
     function renderProductImages() {
@@ -243,10 +296,9 @@
         container.innerHTML = productImages.map((img, index) => `
             <div class="relative w-32">
                 <input type="hidden" name="product_images[]" value="${img.id}">
-                <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden ${index === 0 ? 'border-2 border-amber-500' : 'border border-gray-300'}">
+                <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden border border-gray-300">
                     <img src="${img.url}" class="w-full h-full object-cover">
                 </div>
-                ${index === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-amber-500 text-white text-[10px] text-center py-1">Thumbnail</span>' : ''}
                 <button type="button" onclick="removeProductImage(${index})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">×</button>
             </div>
         `).join('');

@@ -14,6 +14,7 @@ class Product extends Model
         'category_id',
         'fabric_id',
         'work_id',
+        'thumbnail_id',
         'length',
         'blouse_length',
         'with_blouse',
@@ -58,7 +59,7 @@ class Product extends Model
     public function calculateDiscountedPrice(): float
     {
         if ($this->discount > 0) {
-            return round($this->price - ($this->price * $this->discount / 100), 2);
+            return round($this->price - ($this->price * $this->discount / 100));
         }
         return $this->price;
     }
@@ -76,6 +77,11 @@ class Product extends Model
     public function work()
     {
         return $this->belongsTo(Work::class);
+    }
+
+    public function thumbnail()
+    {
+        return $this->belongsTo(Media::class, 'thumbnail_id');
     }
 
     public function images()

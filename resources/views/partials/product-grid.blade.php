@@ -1,7 +1,9 @@
 @forelse($products as $product)
 <div class="bg-heritage-white overflow-hidden shadow-lg hover:-translate-y-1 transition-all duration-300">
     <div class="h-64 relative">
-        @if($product->primaryImage && $product->primaryImage->media)
+        @if($product->thumbnail)
+            <img src="{{ $product->thumbnail->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+        @elseif($product->primaryImage && $product->primaryImage->media)
             <img src="{{ $product->primaryImage->media->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
         @else
             <div class="w-full h-full bg-gradient-to-br from-deep-maroon/10 to-royal-gold/10 flex items-center justify-center">

@@ -33,6 +33,28 @@
                                         rows="3"
                                         class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                                     >{{ $setting->value }}</textarea>
+                                @elseif($setting->type === 'password')
+                                    <div class="relative">
+                                        <input 
+                                            type="password" 
+                                            name="{{ $setting->key }}" 
+                                            id="{{ $setting->key }}" 
+                                            value="{{ $setting->value }}"
+                                            class="w-full border border-gray-300 rounded px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                                        >
+                                        <button type="button" onclick="togglePassword('{{ $setting->key }}')" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        </button>
+                                    </div>
+                                @elseif($setting->type === 'select' && $setting->key === 'razorpay_mode')
+                                    <select 
+                                        name="{{ $setting->key }}" 
+                                        id="{{ $setting->key }}"
+                                        class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                                    >
+                                        <option value="test" {{ $setting->value === 'test' ? 'selected' : '' }}>Test Mode</option>
+                                        <option value="live" {{ $setting->value === 'live' ? 'selected' : '' }}>Live Mode</option>
+                                    </select>
                                 @else
                                     <input 
                                         type="text" 
@@ -59,4 +81,13 @@
         </form>
     @endif
 </div>
+
+@push('scripts')
+<script>
+    function togglePassword(id) {
+        const input = document.getElementById(id);
+        input.type = input.type === 'password' ? 'text' : 'password';
+    }
+</script>
+@endpush
 @endsection

@@ -143,7 +143,7 @@
                                         <p class="text-sm text-deep-maroon/60">Qty: {{ $item->quantity }}</p>
                                     </div>
                                     @php $unitPrice = $item->price ?? $item->product->display_price; @endphp
-                                    <p class="text-sm font-medium text-deep-maroon">₹{{ number_format($unitPrice * $item->quantity, 2) }}</p>
+                                    <p class="text-sm font-medium text-deep-maroon">₹{{ number_format($unitPrice * $item->quantity) }}</p>
                                 </div>
                             @endforeach
                         </div>
@@ -151,15 +151,15 @@
                         <div class="border-t border-deep-maroon/10 pt-4 space-y-3">
                             <div class="flex justify-between text-deep-maroon/70">
                                 <span>Subtotal</span>
-                                <span>₹{{ number_format($subtotal, 2) }}</span>
+                                <span>₹{{ number_format($subtotal) }}</span>
                             </div>
                             <div class="flex justify-between text-deep-maroon/70">
                                 <span>Shipping</span>
-                                <span>{{ $shipping == 0 ? 'Free' : '₹' . number_format($shipping, 2) }}</span>
+                                <span>{{ $shipping == 0 ? 'Free' : '₹' . number_format($shipping) }}</span>
                             </div>
                             <div class="border-t border-deep-maroon/10 pt-3 flex justify-between font-medium text-deep-maroon text-lg">
                                 <span>Total</span>
-                                <span>₹{{ number_format($total, 2) }}</span>
+                                <span>₹{{ number_format($total) }}</span>
                             </div>
                         </div>
 

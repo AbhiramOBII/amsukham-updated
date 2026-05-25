@@ -13,13 +13,13 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $featuredProducts = Product::with(['primaryImage.media', 'category', 'productColors'])
+        $featuredProducts = Product::with(['thumbnail', 'primaryImage.media', 'category', 'productColors'])
             ->active()
             ->featured()
             ->take(8)
             ->get();
 
-        $latestProducts = Product::with(['primaryImage.media', 'category', 'productColors'])
+        $latestProducts = Product::with(['thumbnail', 'primaryImage.media', 'category', 'productColors'])
             ->active()
             ->latest()
             ->take(8)

@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FabricController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\BulkProductController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\Admin\SiteSettingController;
@@ -25,13 +26,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::resource('media', MediaController::class)->only(['index', 'store', 'update', 'destroy']);
+        Route::resource('media', MediaController::class)->only(['index', 'store', 'update', 'destroy'])->parameters(['media' => 'media']);
         Route::get('media/browse', [MediaController::class, 'browse'])->name('media.browse');
 
         Route::resource('categories', CategoryController::class)->except(['show']);
         Route::resource('fabrics', FabricController::class)->except(['show']);
         Route::resource('works', WorkController::class)->except(['show']);
         Route::resource('colors', ColorController::class)->except(['show']);
+        // Bulk Product Upload (must be before resource route)
+        Route::get('products/bulk-upload', [BulkProductController::class, 'index'])->name('products.bulk.index');
+        Route::get('products/bulk-upload/template', [BulkProductController::class, 'downloadTemplate'])->name('products.bulk.template');
+        Route::post('products/bulk-upload', [BulkProductController::class, 'upload'])->name('products.bulk.upload');
+
         Route::resource('products', ProductController::class)->except(['show']);
 
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');

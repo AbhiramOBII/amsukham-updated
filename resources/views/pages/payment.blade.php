@@ -30,7 +30,7 @@
 
     <script>
         var options = {
-            "key": "{{ config('services.razorpay.key') }}",
+            "key": "{{ $razorpayKey }}",
             "amount": "{{ $total * 100 }}",
             "currency": "INR",
             "name": "Amsukham",
