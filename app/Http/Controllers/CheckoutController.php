@@ -34,6 +34,12 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
         }
 
+        // Stock verification before showing checkout
+        $stockIssues = $this->checkStockAvailability($cartItems);
+        if ($stockIssues->isNotEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Some items in your cart have stock issues: ' . $stockIssues->implode(', '));
+        }
+
         $subtotal = round($cartItems->sum(fn($item) => ($item->price ?? $item->product->display_price) * $item->quantity));
         $shipping = $subtotal >= 5000 ? 0 : 99;
         $total = round($subtotal + $shipping);
@@ -165,6 +171,12 @@ class CheckoutController extends Controller
         $cartItems = $this->getCartItems();
         $billing = $checkoutData['billing'];
 
+        // Final stock verification before creating order
+        $stockIssues = $this->checkStockAvailability($cartItems);
+        if ($stockIssues->isNotEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Some items are no longer available: ' . $stockIssues->implode(', '));
+        }
+
         DB::beginTransaction();
 
         try {
@@ -206,7 +218,8 @@ class CheckoutController extends Controller
                     'total' => $unitPrice * $item->quantity,
                 ]);
 
-                // Reduce stock from the selected color
+                // Reduce stock
+                $item->product->decrement('stock', $item->quantity);
                 if ($item->productColor) {
                     $item->productColor->decrement('stock', $item->quantity);
                 }
@@ -294,6 +307,33 @@ class CheckoutController extends Controller
         ];
 
         return view('pages.order-details', compact('order', 'statusLabels'));
+    }
+
+    private function checkStockAvailability($cartItems): \Illuminate\Support\Collection
+    {
+        $issues = collect();
+
+        foreach ($cartItems as $item) {
+            $product = $item->product;
+            if (!$product || !$product->is_active) {
+                $issues->push("{$product->name} is no longer available");
+                continue;
+            }
+
+            $availableStock = $item->product_color_id
+                ? (\App\Models\ProductColor::find($item->product_color_id)->stock ?? 0)
+                : $product->stock;
+
+            if ($availableStock <= 0) {
+                $colorName = $item->productColor && $item->productColor->color ? " ({$item->productColor->color->name})" : '';
+                $issues->push("{$product->name}{$colorName} is out of stock");
+            } elseif ($item->quantity > $availableStock) {
+                $colorName = $item->productColor && $item->productColor->color ? " ({$item->productColor->color->name})" : '';
+                $issues->push("{$product->name}{$colorName} only has {$availableStock} in stock");
+            }
+        }
+
+        return $issues;
     }
 
     private function getCartItems()

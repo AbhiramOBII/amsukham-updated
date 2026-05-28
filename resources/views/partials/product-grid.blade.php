@@ -13,7 +13,9 @@
         @if($product->discount > 0)
             <span class="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 text-xs font-medium">{{ number_format($product->discount) }}% OFF</span>
         @endif
-        @if($product->is_featured)
+        @if($product->stock <= 0)
+            <span class="absolute top-3 right-3 bg-red-600 text-white px-2 py-1 text-xs font-medium">Out of Stock</span>
+        @elseif($product->is_featured)
             <span class="absolute top-3 right-3 bg-royal-gold text-deep-maroon px-2 py-1 text-xs font-medium">Featured</span>
         @endif
     </div>

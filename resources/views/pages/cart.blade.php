@@ -19,6 +19,27 @@
                 </a>
             </div>
         @else
+            @php
+                $hasStockIssues = false;
+            @endphp
+            @foreach($cartItems as $item)
+                @php
+                    $availStock = $item->product_color_id
+                        ? (\App\Models\ProductColor::find($item->product_color_id)->stock ?? 0)
+                        : ($item->product->stock ?? 0);
+                    if ($availStock <= 0 || $item->quantity > $availStock) $hasStockIssues = true;
+                @endphp
+            @endforeach
+
+            @if($hasStockIssues)
+            <div class="bg-red-50 border border-red-300 text-red-800 px-6 py-4 rounded-lg mb-6">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                    <span class="font-medium">Some items in your cart have stock issues. Please update quantities or remove them before checkout.</span>
+                </div>
+            </div>
+            @endif
+
             <div class="grid lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-2">
                     <div class="bg-heritage-white rounded-lg shadow-lg overflow-hidden">
@@ -54,6 +75,18 @@
                                                 @if($item->with_blouse)
                                                     <p class="text-sm text-green-600">With Blouse</p>
                                                 @endif
+                                                @php
+                                                    $itemStock = $item->product_color_id
+                                                        ? (\App\Models\ProductColor::find($item->product_color_id)->stock ?? 0)
+                                                        : ($item->product->stock ?? 0);
+                                                @endphp
+                                                @if($itemStock <= 0)
+                                                    <p class="text-sm text-red-600 font-medium">Out of Stock</p>
+                                                @elseif($item->quantity > $itemStock)
+                                                    <p class="text-sm text-orange-500 font-medium">Only {{ $itemStock }} available</p>
+                                                @elseif($itemStock <= 5)
+                                                    <p class="text-sm text-orange-500">Only {{ $itemStock }} left</p>
+                                                @endif
                                             </div>
                                             <div class="text-right">
                                                 @php $unitPrice = $item->price ?? $item->product->display_price; @endphp
@@ -67,9 +100,10 @@
                                         <div class="mt-4 flex items-center justify-between">
                                             <div class="flex items-center gap-2">
                                                 <label class="text-sm text-deep-maroon/70">Qty:</label>
-                                                <select onchange="updateQuantity({{ $item->id }}, this.value)" class="border border-deep-maroon/20 rounded px-3 py-1 text-sm">
-                                                    @for($i = 1; $i <= 10; $i++)
-                                                        <option value="{{ $i }}" {{ $item->quantity == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                                @php $maxQty = min(10, $itemStock); @endphp
+                                                <select onchange="updateQuantity({{ $item->id }}, this.value)" class="border border-deep-maroon/20 rounded px-3 py-1 text-sm" {{ $itemStock <= 0 ? 'disabled' : '' }}>
+                                                    @for($i = 1; $i <= max($maxQty, $item->quantity); $i++)
+                                                        <option value="{{ $i }}" {{ $item->quantity == $i ? 'selected' : '' }} {{ $i > $itemStock ? 'class=text-red-500' : '' }}>{{ $i }}{{ $i > $itemStock ? ' (exceeds stock)' : '' }}</option>
                                                     @endfor
                                                 </select>
                                             </div>
@@ -115,7 +149,7 @@
                             @endif
                         </p>
 
-                        <a href="{{ route('checkout.index') }}" class="block w-full bg-royal-gold text-deep-maroon text-center py-3 font-medium hover:bg-deep-maroon hover:text-heritage-white transition-colors">
+                        <a href="{{ route('checkout.index') }}" class="block w-full bg-royal-gold text-deep-maroon text-center py-3 font-medium hover:bg-deep-maroon hover:text-heritage-white transition-colors {{ $hasStockIssues ? 'opacity-50 pointer-events-none' : '' }}">
                             Proceed to Checkout
                         </a>
                         
@@ -145,7 +179,9 @@
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Failed to update quantity');
+                return response.json().then(data => {
+                    throw new Error(data.message || 'Failed to update quantity');
+                });
             }
             return response.json();
         })
@@ -153,15 +189,14 @@
             if (data.success) {
                 document.getElementById(`item-total-${cartId}`).textContent = '₹' + data.itemTotal;
                 document.getElementById('cart-subtotal').textContent = '₹' + data.subtotal;
-                // Also update cart total
                 const subtotal = parseFloat(data.subtotal.replace(/,/g, ''));
                 const shipping = subtotal >= 5000 ? 0 : 99;
                 document.getElementById('cart-total').textContent = '₹' + (subtotal + shipping).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             }
         })
         .catch(error => {
-            console.error('Error updating quantity:', error);
-            alert('Failed to update quantity. Please refresh the page.');
+            alert(error.message);
+            location.reload();
         });
     }
 

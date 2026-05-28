@@ -36,13 +36,47 @@ class CartController extends Controller
             return back()->with('error', 'This product is not available.');
         }
 
-        // Calculate price based on color selection
-        $price = $product->discounted_price;
+        // Stock verification
+        $requestedQty = $request->quantity ?? 1;
+        $productColor = null;
+
         if ($request->filled('product_color_id')) {
             $productColor = ProductColor::find($request->product_color_id);
-            if ($productColor && $productColor->price_adjustment) {
-                $price = $product->discounted_price + $productColor->price_adjustment;
+        }
+
+        // Determine available stock (color-level takes priority)
+        $availableStock = $productColor ? $productColor->stock : $product->stock;
+
+        // Check existing cart quantity for this product+color
+        $existingQuery = Auth::check()
+            ? Cart::where('user_id', Auth::id())
+            : Cart::where('session_id', session()->getId());
+        $existingItem = $existingQuery->where('product_id', $product->id)
+            ->where('product_color_id', $request->product_color_id)
+            ->first();
+        $currentCartQty = $existingItem ? $existingItem->quantity : 0;
+        $totalQty = $currentCartQty + $requestedQty;
+
+        if ($availableStock <= 0) {
+            $msg = 'This product is currently out of stock.';
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => $msg], 422);
             }
+            return back()->with('error', $msg);
+        }
+
+        if ($totalQty > $availableStock) {
+            $msg = "Only {$availableStock} item(s) available in stock." . ($currentCartQty > 0 ? " You already have {$currentCartQty} in your cart." : '');
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => $msg], 422);
+            }
+            return back()->with('error', $msg);
+        }
+
+        // Calculate price based on color selection
+        $price = $product->discounted_price;
+        if ($productColor && $productColor->price_adjustment) {
+            $price = $product->discounted_price + $productColor->price_adjustment;
         }
 
         $cartData = [
@@ -52,14 +86,6 @@ class CartController extends Controller
             'price' => $price,
             'with_blouse' => $request->has('with_blouse') ? true : $product->with_blouse,
         ];
-
-        $query = Auth::check()
-            ? Cart::where('user_id', Auth::id())
-            : Cart::where('session_id', session()->getId());
-
-        $existingItem = $query->where('product_id', $product->id)
-            ->where('product_color_id', $request->product_color_id)
-            ->first();
 
         if (Auth::check()) {
             $cartData['user_id'] = Auth::id();
@@ -94,6 +120,22 @@ class CartController extends Controller
 
         if (!$this->ownsCartItem($cart)) {
             abort(403);
+        }
+
+        // Stock verification on update
+        $availableStock = $cart->product_color_id
+            ? (ProductColor::find($cart->product_color_id)->stock ?? 0)
+            : ($cart->product->stock ?? 0);
+
+        if ($request->quantity > $availableStock) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Only {$availableStock} item(s) available in stock.",
+                    'availableStock' => $availableStock,
+                ], 422);
+            }
+            return back()->with('error', "Only {$availableStock} item(s) available in stock.");
         }
 
         $cart->update(['quantity' => $request->quantity]);

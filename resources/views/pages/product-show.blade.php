@@ -133,9 +133,18 @@
                                 <span class="text-deep-maroon ml-2">{{ $product->category->name }}</span>
                             </div>
                             @endif
-                            <div>
-                                <span class="text-deep-maroon/70 font-medium">Stock:</span>
-                                <span class="text-deep-maroon ml-2">{{ $product->stock > 0 ? 'In Stock' : 'Out of Stock' }}</span>
+                            <div id="stockDisplay">
+                                <span class="text-deep-maroon/70 font-medium">Availability:</span>
+                                @php
+                                    $initialStock = $firstColor ? $firstColor->stock : $product->stock;
+                                @endphp
+                                @if($initialStock > 10)
+                                    <span class="text-green-600 ml-2 font-medium">In Stock</span>
+                                @elseif($initialStock > 0)
+                                    <span class="text-orange-500 ml-2 font-medium">Only {{ $initialStock }} left</span>
+                                @else
+                                    <span class="text-red-600 ml-2 font-medium">Out of Stock</span>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -147,6 +156,7 @@
 
                         <input type="hidden" id="product_id" value="{{ $product->id }}">
                         <input type="hidden" id="product_color_id" value="{{ $firstColor ? $firstColor->id : '' }}">
+                        <input type="hidden" id="available_stock" value="{{ $initialStock }}">
                         <div class="flex flex-wrap sm:flex-nowrap items-center gap-4">
                             <!-- Quantity Selector -->
                             <div class="flex items-center border border-deep-maroon/20 rounded-full shrink-0">
@@ -161,16 +171,14 @@
 
                             <div class="flex-1 flex items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
                                 <!-- Add to Cart Button -->
-                                <button type="button" id="addToCartBtn" onclick="addToCart()" class="flex-1 bg-deep-maroon text-heritage-white py-2.5 px-4 text-sm font-medium hover:bg-royal-gold transition-colors rounded-full shadow-lg whitespace-nowrap {{ $product->stock <= 0 ? 'opacity-50 cursor-not-allowed' : '' }}" {{ $product->stock <= 0 ? 'disabled' : '' }}>
-                                    {{ $product->stock > 0 ? 'ADD TO CART' : 'OUT OF STOCK' }}
+                                <button type="button" id="addToCartBtn" onclick="addToCart()" class="flex-1 bg-deep-maroon text-heritage-white py-2.5 px-4 text-sm font-medium hover:bg-royal-gold transition-colors rounded-full shadow-lg whitespace-nowrap {{ $initialStock <= 0 ? 'opacity-50 cursor-not-allowed' : '' }}" {{ $initialStock <= 0 ? 'disabled' : '' }}>
+                                    {{ $initialStock > 0 ? 'ADD TO CART' : 'OUT OF STOCK' }}
                                 </button>
 
                                 <!-- Buy Now Button -->
-                                @if($product->stock > 0)
-                                <button type="button" id="buyNowBtn" onclick="buyNow()" class="flex-1 bg-royal-gold text-deep-maroon py-2.5 px-4 text-sm font-medium hover:bg-deep-maroon hover:text-heritage-white transition-colors rounded-full shadow-lg whitespace-nowrap">
+                                <button type="button" id="buyNowBtn" onclick="buyNow()" class="flex-1 bg-royal-gold text-deep-maroon py-2.5 px-4 text-sm font-medium hover:bg-deep-maroon hover:text-heritage-white transition-colors rounded-full shadow-lg whitespace-nowrap {{ $initialStock <= 0 ? 'hidden' : '' }}">
                                     BUY NOW
                                 </button>
-                                @endif
                             </div>
                         </div>
 
@@ -364,8 +372,46 @@
     const basePrice = {{ $product->discounted_price }};
     const originalPrice = {{ $product->price }};
     const discount = {{ $product->discount ?? 0 }};
+    const productStock = {{ $product->stock ?? 0 }};
     const colorData = @json($colorData);
     const galleryImages = @json($allImages->values());
+
+    function updateStockDisplay(stock) {
+        const stockEl = document.getElementById('stockDisplay');
+        const addBtn = document.getElementById('addToCartBtn');
+        const buyBtn = document.getElementById('buyNowBtn');
+        const stockInput = document.getElementById('available_stock');
+        const qtyInput = document.getElementById('quantity');
+
+        stockInput.value = stock;
+
+        let html = '<span class="text-deep-maroon/70 font-medium">Availability:</span> ';
+        if (stock > 10) {
+            html += '<span class="text-green-600 ml-2 font-medium">In Stock</span>';
+        } else if (stock > 0) {
+            html += '<span class="text-orange-500 ml-2 font-medium">Only ' + stock + ' left</span>';
+        } else {
+            html += '<span class="text-red-600 ml-2 font-medium">Out of Stock</span>';
+        }
+        stockEl.innerHTML = html;
+
+        if (stock <= 0) {
+            addBtn.disabled = true;
+            addBtn.textContent = 'OUT OF STOCK';
+            addBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            buyBtn.classList.add('hidden');
+        } else {
+            addBtn.disabled = false;
+            addBtn.textContent = 'ADD TO CART';
+            addBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            buyBtn.classList.remove('hidden');
+            // Cap quantity to available stock
+            if (parseInt(qtyInput.value) > stock) {
+                qtyInput.value = stock;
+            }
+            qtyInput.max = Math.min(10, stock);
+        }
+    }
 
     function formatPrice(num) {
         return '₹' + Math.round(num).toLocaleString('en-IN');
@@ -423,6 +469,9 @@
 
         // Update price
         updatePriceDisplay(color.price_adjustment);
+
+        // Update stock display
+        updateStockDisplay(color.stock !== undefined ? color.stock : productStock);
 
         // Update swatch borders
         document.querySelectorAll('.color-swatch').forEach(s => {
@@ -585,7 +634,9 @@
         if (increaseBtn) {
             increaseBtn.addEventListener('click', function() {
                 let val = parseInt(quantityInput.value) || 1;
-                if (val < 10) quantityInput.value = val + 1;
+                let maxStock = parseInt(document.getElementById('available_stock').value) || 10;
+                let maxQty = Math.min(10, maxStock);
+                if (val < maxQty) quantityInput.value = val + 1;
             });
         }
 
