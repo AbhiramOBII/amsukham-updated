@@ -46,7 +46,14 @@ class Product extends Model
 
         static::creating(function ($product) {
             if (empty($product->slug)) {
-                $product->slug = Str::slug($product->name);
+                $slug = Str::slug($product->name);
+                $original = $slug;
+                $counter = 2;
+                while (static::where('slug', $slug)->exists()) {
+                    $slug = $original . '-' . $counter;
+                    $counter++;
+                }
+                $product->slug = $slug;
             }
             $product->discounted_price = $product->calculateDiscountedPrice();
         });
