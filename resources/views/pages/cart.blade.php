@@ -126,18 +126,52 @@
                     <div class="bg-heritage-white rounded-lg shadow-lg p-6 sticky top-24">
                         <h2 class="font-serif text-xl text-deep-maroon mb-6">Order Summary</h2>
                         
+                        <!-- Coupon Code -->
+                        <div class="mb-6" id="coupon-section">
+                            @if(session('coupon'))
+                                <div class="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg px-4 py-3">
+                                    <div>
+                                        <span class="text-sm font-medium text-green-700">{{ session('coupon.code') }}</span>
+                                        <span class="text-xs text-green-600 ml-1">applied</span>
+                                    </div>
+                                    <button onclick="removeCoupon()" class="text-red-500 hover:text-red-700 text-sm font-medium">Remove</button>
+                                </div>
+                            @else
+                                <div class="flex gap-2">
+                                    <input type="text" id="coupon-input" placeholder="Enter coupon code"
+                                        class="flex-1 border border-deep-maroon/20 rounded-lg px-3 py-2 text-sm uppercase focus:outline-none focus:ring-2 focus:ring-royal-gold/50">
+                                    <button onclick="applyCoupon()" id="coupon-btn"
+                                        class="px-4 py-2 bg-deep-maroon text-heritage-white text-sm font-medium rounded-lg hover:bg-deep-maroon/90">
+                                        Apply
+                                    </button>
+                                </div>
+                                <p id="coupon-message" class="text-xs mt-1.5 hidden"></p>
+                            @endif
+                        </div>
+
                         <div class="space-y-3 mb-6">
                             <div class="flex justify-between text-deep-maroon/70">
                                 <span>Subtotal</span>
                                 <span id="cart-subtotal">₹{{ number_format($subtotal, 2) }}</span>
                             </div>
+                            @if(session('coupon'))
+                                <div class="flex justify-between text-green-600">
+                                    <span>Discount ({{ session('coupon.code') }})</span>
+                                    <span id="cart-discount">-₹{{ number_format(session('coupon.discount_amount'), 2) }}</span>
+                                </div>
+                            @endif
                             <div class="flex justify-between text-deep-maroon/70">
                                 <span>Shipping</span>
                                 <span>{{ $subtotal >= $freeShippingThreshold ? 'Free' : '₹' . number_format($shippingCharge, 2) }}</span>
                             </div>
+                            @php
+                                $couponDiscount = session('coupon.discount_amount', 0);
+                                $shipping = $subtotal >= $freeShippingThreshold ? 0 : $shippingCharge;
+                                $total = $subtotal - $couponDiscount + $shipping;
+                            @endphp
                             <div class="border-t border-deep-maroon/10 pt-3 flex justify-between font-medium text-deep-maroon text-lg">
                                 <span>Total</span>
-                                <span id="cart-total">₹{{ number_format($subtotal + ($subtotal >= $freeShippingThreshold ? 0 : $shippingCharge), 2) }}</span>
+                                <span id="cart-total">₹{{ number_format($total, 2) }}</span>
                             </div>
                         </div>
 
@@ -198,6 +232,56 @@
             alert(error.message);
             location.reload();
         });
+    }
+
+    function applyCoupon() {
+        const code = document.getElementById('coupon-input').value.trim();
+        if (!code) return;
+
+        const btn = document.getElementById('coupon-btn');
+        const msg = document.getElementById('coupon-message');
+        btn.disabled = true;
+        btn.textContent = '...';
+
+        fetch('{{ route("coupon.apply") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({ code: code })
+        })
+        .then(r => r.json().then(data => ({ ok: r.ok, data })))
+        .then(({ ok, data }) => {
+            if (ok && data.success) {
+                location.reload();
+            } else {
+                msg.textContent = data.message || 'Invalid coupon.';
+                msg.className = 'text-xs mt-1.5 text-red-500';
+                btn.disabled = false;
+                btn.textContent = 'Apply';
+            }
+        })
+        .catch(() => {
+            msg.textContent = 'Something went wrong. Try again.';
+            msg.className = 'text-xs mt-1.5 text-red-500';
+            btn.disabled = false;
+            btn.textContent = 'Apply';
+        });
+    }
+
+    function removeCoupon() {
+        fetch('{{ route("coupon.remove") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+            }
+        })
+        .then(() => location.reload())
+        .catch(() => location.reload());
     }
 
     function removeItem(cartId) {

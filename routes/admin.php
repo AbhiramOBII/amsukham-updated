@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\ContactSubmissionController;
+use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FabricController;
 use App\Http\Controllers\Admin\MediaController;
@@ -40,11 +41,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('products', ProductController::class)->except(['show']);
 
+        // Coupons
+        Route::resource('coupons', CouponController::class)->except(['show']);
+
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('orders/export-csv', [OrderController::class, 'exportCsv'])->name('orders.export-csv');
         Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
         Route::patch('orders/{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('orders.update-payment-status');
+        Route::patch('orders/{order}/address', [OrderController::class, 'updateAddress'])->name('orders.update-address');
 
         Route::get('seo', [SeoController::class, 'index'])->name('seo.index');
         Route::get('seo/{pageIdentifier}/edit', [SeoController::class, 'edit'])->name('seo.edit');

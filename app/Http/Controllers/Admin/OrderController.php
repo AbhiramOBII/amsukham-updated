@@ -122,6 +122,23 @@ class OrderController extends Controller
         return back()->with('success', 'Payment status updated successfully.');
     }
 
+    public function updateAddress(Request $request, Order $order)
+    {
+        $validated = $request->validate([
+            'billing_name' => 'required|string|max:255',
+            'billing_phone' => 'required|string|max:20',
+            'billing_email' => 'required|email|max:255',
+            'billing_address' => 'required|string|max:500',
+            'billing_city' => 'required|string|max:100',
+            'billing_state' => 'required|string|max:100',
+            'billing_pincode' => 'required|string|max:10',
+        ]);
+
+        $order->update($validated);
+
+        return back()->with('success', 'Shipping address updated successfully.');
+    }
+
     public function exportCsv(Request $request)
     {
         $query = Order::with(['items.product']);

@@ -32,6 +32,7 @@
 <body class="font-sans bg-soft-cream">
     @include('partials.topbar')
     @include('partials.header')
+    @include('partials.marquee')
     @include('partials.mobile-menu')
     @include('partials.track-order-modal')
     @include('partials.search-overlay')

@@ -81,10 +81,28 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $order->items->count() }} items</td>
                         <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">₹{{ number_format($order->total, 2) }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 text-xs rounded-full {{ $order->status_badge }}">{{ ucfirst($order->status) }}</span>
+                            <form action="{{ route('admin.orders.update-status', $order) }}" method="POST" class="inline">
+                                @csrf @method('PATCH')
+                                <select name="status" onchange="this.form.submit()" class="text-xs border border-gray-200 rounded-full px-2 py-1 cursor-pointer {{ $order->status_badge }}">
+                                    <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Processing</option>
+                                    <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>Shipped</option>
+                                    <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Delivered</option>
+                                    <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                    <option value="refunded" {{ $order->status == 'refunded' ? 'selected' : '' }}>Refunded</option>
+                                </select>
+                            </form>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 text-xs rounded-full {{ $order->payment_status_badge }}">{{ ucfirst($order->payment_status) }}</span>
+                            <form action="{{ route('admin.orders.update-payment-status', $order) }}" method="POST" class="inline">
+                                @csrf @method('PATCH')
+                                <select name="payment_status" onchange="this.form.submit()" class="text-xs border border-gray-200 rounded-full px-2 py-1 cursor-pointer {{ $order->payment_status_badge }}">
+                                    <option value="pending" {{ $order->payment_status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="paid" {{ $order->payment_status == 'paid' ? 'selected' : '' }}>Paid</option>
+                                    <option value="failed" {{ $order->payment_status == 'failed' ? 'selected' : '' }}>Failed</option>
+                                    <option value="refunded" {{ $order->payment_status == 'refunded' ? 'selected' : '' }}>Refunded</option>
+                                </select>
+                            </form>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $order->created_at->format('d M Y H:i') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">

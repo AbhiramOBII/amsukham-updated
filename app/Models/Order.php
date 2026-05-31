@@ -31,6 +31,8 @@ class Order extends Model
         'razorpay_payment_id',
         'razorpay_signature',
         'notes',
+        'coupon_code',
+        'coupon_id',
     ];
 
     protected $casts = [

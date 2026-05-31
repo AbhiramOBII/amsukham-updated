@@ -57,6 +57,10 @@ class SiteSettingController extends Controller
             ['key' => 'social_youtube', 'value' => 'https://www.youtube.com/', 'type' => 'text', 'group' => 'social', 'label' => 'YouTube URL'],
             ['key' => 'social_pinterest', 'value' => '', 'type' => 'text', 'group' => 'social', 'label' => 'Pinterest URL'],
 
+            // Announcements
+            ['key' => 'marquee_enabled', 'value' => '1', 'type' => 'toggle', 'group' => 'announcements', 'label' => 'Enable Announcement Bar'],
+            ['key' => 'marquee_text', 'value' => 'Free Shipping on orders above ₹5000 | New Arrivals Every Week | Authentic Handloom Sarees', 'type' => 'textarea', 'group' => 'announcements', 'label' => 'Announcement Text (use | to separate multiple messages)'],
+
             // Shipping
             ['key' => 'free_shipping_threshold', 'value' => '5000', 'type' => 'number', 'group' => 'shipping', 'label' => 'Free Shipping Threshold (₹)'],
             ['key' => 'shipping_charge', 'value' => '99', 'type' => 'number', 'group' => 'shipping', 'label' => 'Shipping Charge (₹)'],

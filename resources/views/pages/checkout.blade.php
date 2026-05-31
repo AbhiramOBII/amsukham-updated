@@ -153,6 +153,12 @@
                                 <span>Subtotal</span>
                                 <span>₹{{ number_format($subtotal) }}</span>
                             </div>
+                            @if($couponDiscount > 0)
+                                <div class="flex justify-between text-green-600">
+                                    <span>Discount ({{ $couponData['code'] }})</span>
+                                    <span>-₹{{ number_format($couponDiscount) }}</span>
+                                </div>
+                            @endif
                             <div class="flex justify-between text-deep-maroon/70">
                                 <span>Shipping</span>
                                 <span>{{ $shipping == 0 ? 'Free' : '₹' . number_format($shipping) }}</span>

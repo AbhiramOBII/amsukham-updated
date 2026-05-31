@@ -65,8 +65,13 @@
         </div>
 
         <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Shipping Address</h3>
-            <div class="text-gray-700">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">Shipping Address</h3>
+                <button onclick="document.getElementById('address-display').classList.add('hidden'); document.getElementById('address-form').classList.remove('hidden');"
+                    class="text-sm text-blue-600 hover:text-blue-800 font-medium">Edit</button>
+            </div>
+
+            <div id="address-display" class="text-gray-700">
                 <p class="font-medium">{{ $order->billing_name }}</p>
                 <p>{{ $order->billing_address }}</p>
                 <p>{{ $order->billing_city }}, {{ $order->billing_state }} - {{ $order->billing_pincode }}</p>
@@ -74,6 +79,45 @@
                 <p class="mt-2"><strong>Phone:</strong> {{ $order->billing_phone }}</p>
                 <p><strong>Email:</strong> {{ $order->billing_email }}</p>
             </div>
+
+            <form id="address-form" class="hidden space-y-3" action="{{ route('admin.orders.update-address', $order) }}" method="POST">
+                @csrf @method('PATCH')
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Name</label>
+                    <input type="text" name="billing_name" value="{{ $order->billing_name }}" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Phone</label>
+                    <input type="text" name="billing_phone" value="{{ $order->billing_phone }}" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Email</label>
+                    <input type="email" name="billing_email" value="{{ $order->billing_email }}" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Address</label>
+                    <textarea name="billing_address" rows="2" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">{{ $order->billing_address }}</textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">City</label>
+                        <input type="text" name="billing_city" value="{{ $order->billing_city }}" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">State</label>
+                        <input type="text" name="billing_state" value="{{ $order->billing_state }}" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Pincode</label>
+                    <input type="text" name="billing_pincode" value="{{ $order->billing_pincode }}" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" class="px-4 py-2 bg-amber-600 text-white text-sm rounded-lg hover:bg-amber-700">Save Address</button>
+                    <button type="button" onclick="document.getElementById('address-form').classList.add('hidden'); document.getElementById('address-display').classList.remove('hidden');"
+                        class="px-4 py-2 border border-gray-300 text-gray-600 text-sm rounded-lg hover:bg-gray-50">Cancel</button>
+                </div>
+            </form>
         </div>
 
         @if($order->notes)

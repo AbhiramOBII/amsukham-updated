@@ -44,11 +44,29 @@ class CheckoutController extends Controller
         $freeShippingThreshold = (float) SiteSetting::get('free_shipping_threshold', 5000);
         $shippingCharge = (float) SiteSetting::get('shipping_charge', 99);
         $shipping = $subtotal >= $freeShippingThreshold ? 0 : $shippingCharge;
-        $total = round($subtotal + $shipping);
+
+        // Apply coupon discount
+        $couponDiscount = 0;
+        $couponData = session('coupon');
+        if ($couponData) {
+            $coupon = \App\Models\Coupon::find($couponData['id']);
+            if ($coupon) {
+                $validation = $coupon->isValid($subtotal, Auth::id());
+                if ($validation['valid']) {
+                    $couponDiscount = $coupon->calculateDiscount($subtotal);
+                } else {
+                    session()->forget('coupon');
+                }
+            } else {
+                session()->forget('coupon');
+            }
+        }
+
+        $total = round($subtotal - $couponDiscount + $shipping);
 
         $addresses = Auth::check() ? Address::where('user_id', Auth::id())->get() : collect();
 
-        return view('pages.checkout', compact('cartItems', 'subtotal', 'shipping', 'total', 'addresses', 'freeShippingThreshold'));
+        return view('pages.checkout', compact('cartItems', 'subtotal', 'shipping', 'total', 'addresses', 'freeShippingThreshold', 'couponDiscount', 'couponData'));
     }
 
     public function process(Request $request)
@@ -84,7 +102,27 @@ class CheckoutController extends Controller
         $freeShippingThreshold = (float) SiteSetting::get('free_shipping_threshold', 5000);
         $shippingCharge = (float) SiteSetting::get('shipping_charge', 99);
         $shipping = $subtotal >= $freeShippingThreshold ? 0 : $shippingCharge;
-        $total = round($subtotal + $shipping);
+
+        // Apply coupon discount
+        $couponDiscount = 0;
+        $couponData = session('coupon');
+        if ($couponData) {
+            $coupon = \App\Models\Coupon::find($couponData['id']);
+            if ($coupon) {
+                $validation = $coupon->isValid($subtotal, Auth::id());
+                if ($validation['valid']) {
+                    $couponDiscount = $coupon->calculateDiscount($subtotal);
+                } else {
+                    session()->forget('coupon');
+                    $couponData = null;
+                }
+            } else {
+                session()->forget('coupon');
+                $couponData = null;
+            }
+        }
+
+        $total = round($subtotal - $couponDiscount + $shipping);
 
         if (Auth::check() && $request->save_address) {
             Address::create([
@@ -122,6 +160,9 @@ class CheckoutController extends Controller
             'checkout_data' => [
                 'billing' => $validated,
                 'subtotal' => $subtotal,
+                'discount' => $couponDiscount,
+                'coupon_code' => $couponData ? $couponData['code'] : null,
+                'coupon_id' => $couponData ? $couponData['id'] : null,
                 'shipping' => $shipping,
                 'total' => $total,
                 'razorpay_order_id' => $razorpayOrder->id,
@@ -194,6 +235,9 @@ class CheckoutController extends Controller
                 'billing_state' => $billing['state'],
                 'billing_pincode' => $billing['pincode'],
                 'subtotal' => $checkoutData['subtotal'],
+                'discount' => $checkoutData['discount'] ?? 0,
+                'coupon_code' => $checkoutData['coupon_code'] ?? null,
+                'coupon_id' => $checkoutData['coupon_id'] ?? null,
                 'shipping' => $checkoutData['shipping'],
                 'total' => $checkoutData['total'],
                 'status' => 'processing',
@@ -249,9 +293,24 @@ class CheckoutController extends Controller
                 Cart::where('session_id', session()->getId())->delete();
             }
 
+            // Record coupon usage
+            if (!empty($checkoutData['coupon_id'])) {
+                $coupon = \App\Models\Coupon::find($checkoutData['coupon_id']);
+                if ($coupon) {
+                    \App\Models\CouponUsage::create([
+                        'coupon_id' => $coupon->id,
+                        'user_id' => Auth::id(),
+                        'order_id' => $order->id,
+                        'discount_amount' => $checkoutData['discount'],
+                    ]);
+                    $coupon->increment('times_used');
+                }
+            }
+
             DB::commit();
 
             session()->forget('checkout_data');
+            session()->forget('coupon');
 
             return redirect()->route('order.success', $order->order_number);
         } catch (\Exception $e) {
