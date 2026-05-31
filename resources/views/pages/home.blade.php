@@ -677,7 +677,7 @@
         <div class="container mx-auto px-6">
             <div class="text-center mb-12 reveal-up">
                 <span class="inline-block text-royal-gold text-sm tracking-[0.3em] uppercase mb-4">Follow Our Journey</span>
-                <h3 class="decorative-title font-serif text-3xl md:text-5xl lg:text-6xl text-deep-maroon mb-4">@amsukhambyram</h3>
+                <h3 class="decorative-title font-serif text-3xl md:text-5xl lg:text-6xl text-deep-maroon mb-4">@amsukham</h3>
                 <div class="animated-line h-1 bg-gradient-to-r from-royal-gold to-yellow-400 mx-auto mb-6"></div>
                 <p class="text-deep-maroon/70 max-w-2xl mx-auto text-lg">Join our community of silk connoisseurs and stay inspired</p>
             </div>
