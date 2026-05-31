@@ -88,7 +88,7 @@
 @endpush
 
 @section('content')
-    <!-- Hero Slider Section with Parallax -->
+    <!-- 1. Hero Slider Section -->
     <section class="relative w-full overflow-hidden" style="height: 100vh; min-height: 600px; max-height: 900px;">
         @forelse($banners as $index => $banner)
         <div class="hero-slide absolute inset-0 w-full h-full {{ $index === 0 ? 'active' : 'hidden' }}" data-index="{{ $index }}">
@@ -186,166 +186,7 @@
         @endif
     </section>
 
-    <!-- Premium Marquee Banner -->
-    <section class="bg-deep-maroon py-4 overflow-hidden">
-        <div class="marquee-container">
-            <div class="marquee-content">
-                @for($i = 0; $i < 2; $i++)
-                <span class="inline-flex items-center px-8 text-heritage-white/90 text-sm tracking-widest uppercase">
-                    <svg class="w-4 h-4 text-royal-gold mr-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    Handcrafted Excellence
-                </span>
-                <span class="inline-flex items-center px-8 text-heritage-white/90 text-sm tracking-widest uppercase">
-                    <svg class="w-4 h-4 text-royal-gold mr-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    70+ Years Heritage
-                </span>
-                <span class="inline-flex items-center px-8 text-heritage-white/90 text-sm tracking-widest uppercase">
-                    <svg class="w-4 h-4 text-royal-gold mr-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    Authentic Silk Sarees
-                </span>
-                <span class="inline-flex items-center px-8 text-heritage-white/90 text-sm tracking-widest uppercase">
-                    <svg class="w-4 h-4 text-royal-gold mr-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    Pan India Delivery
-                </span>
-                <span class="inline-flex items-center px-8 text-heritage-white/90 text-sm tracking-widest uppercase">
-                    <svg class="w-4 h-4 text-royal-gold mr-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    Premium Quality
-                </span>
-                @endfor
-            </div>
-        </div>
-    </section>
-
-    <!-- Trust Badges Section -->
-    <section class="py-16 bg-gradient-to-b from-heritage-white to-soft-cream relative overflow-hidden">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-                <div class="trust-badge text-center p-6 bg-heritage-white rounded-lg shadow-lg border border-royal-gold/10">
-                    <div class="badge-icon w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-royal-gold/20 to-royal-gold/5 rounded-full flex items-center justify-center">
-                        <svg class="w-8 h-8 text-royal-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                        </svg>
-                    </div>
-                    <h4 class="font-serif text-lg text-deep-maroon mb-1">100% Authentic</h4>
-                    <p class="text-deep-maroon/60 text-sm">Certified genuine silk</p>
-                </div>
-                
-                <div class="trust-badge text-center p-6 bg-heritage-white rounded-lg shadow-lg border border-royal-gold/10">
-                    <div class="badge-icon w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-royal-gold/20 to-royal-gold/5 rounded-full flex items-center justify-center">
-                        <svg class="w-8 h-8 text-royal-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                        </svg>
-                    </div>
-                    <h4 class="font-serif text-lg text-deep-maroon mb-1">Free Shipping</h4>
-                    <p class="text-deep-maroon/60 text-sm">On orders above ₹5000</p>
-                </div>
-                
-                <div class="trust-badge text-center p-6 bg-heritage-white rounded-lg shadow-lg border border-royal-gold/10">
-                    <div class="badge-icon w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-royal-gold/20 to-royal-gold/5 rounded-full flex items-center justify-center">
-                        <svg class="w-8 h-8 text-royal-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                        </svg>
-                    </div>
-                    <h4 class="font-serif text-lg text-deep-maroon mb-1">Easy Returns</h4>
-                    <p class="text-deep-maroon/60 text-sm">7-day return policy</p>
-                </div>
-                
-                <div class="trust-badge text-center p-6 bg-heritage-white rounded-lg shadow-lg border border-royal-gold/10">
-                    <div class="badge-icon w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-royal-gold/20 to-royal-gold/5 rounded-full flex items-center justify-center">
-                        <svg class="w-8 h-8 text-royal-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-                        </svg>
-                    </div>
-                    <h4 class="font-serif text-lg text-deep-maroon mb-1">Expert Support</h4>
-                    <p class="text-deep-maroon/60 text-sm">Dedicated assistance</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Latest Collections Carousel -->
-    <section id="collections" class="py-24 bg-gradient-to-b from-heritage-white via-white to-heritage-white relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-royal-gold/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-deep-maroon/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3"></div>
-        
-        <div class="container mx-auto px-4 relative z-10">
-            <div class="text-center mb-16 reveal-up">
-                <span class="inline-block text-royal-gold text-sm font-semibold tracking-[0.3em] uppercase mb-4">Curated For You</span>
-                <h3 class="decorative-title font-serif text-3xl md:text-5xl lg:text-6xl text-deep-maroon mb-4">
-                    Latest Collections
-                </h3>
-                <div class="animated-line h-1 bg-gradient-to-r from-royal-gold to-yellow-400 mx-auto mb-6"></div>
-                <p class="text-deep-maroon/70 max-w-2xl mx-auto text-lg leading-relaxed">
-                    Discover our newest arrivals, featuring contemporary designs that honor traditional craftsmanship and celebrate timeless elegance.
-                </p>
-            </div>
-            
-            @if($categories->isEmpty())
-                <div class="text-center py-12 reveal-up">
-                    <p class="text-deep-maroon/70">No categories available yet.</p>
-                </div>
-            @else
-                <!-- Carousel Container -->
-                <div class="relative reveal-up" style="transition-delay: 0.2s;">
-                    <div class="overflow-hidden">
-                        <div id="collections-carousel" class="py-4 flex transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
-                            @foreach($categories as $category)
-                                <div class="w-full md:w-1/3 flex-shrink-0 px-4">
-                                    <a href="{{ route('products', ['categories' => $category->id]) }}" class="premium-card group block bg-heritage-white overflow-hidden shadow-xl rounded-lg border border-gray-100">
-                                        <div class="aspect-square relative overflow-hidden">
-                                            @if($category->image)
-                                                <img src="{{ $category->image->url }}" alt="{{ $category->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
-                                            @else
-                                                <div class="w-full h-full bg-gradient-to-br from-deep-maroon/10 to-royal-gold/10 flex items-center justify-center">
-                                                    <svg class="w-16 h-16 text-deep-maroon/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                                </div>
-                                            @endif
-                                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500"></div>
-                                            <div class="absolute top-4 left-4">
-                                                <span class="text-xs font-semibold bg-royal-gold/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-deep-maroon shadow-lg uppercase tracking-wider">New</span>
-                                            </div>
-                                            <div class="absolute bottom-4 left-4 right-4 text-white">
-                                                <h4 class="font-serif text-2xl mb-1 drop-shadow-lg">{{ $category->name }}</h4>
-                                                <span class="text-white/80 text-sm">{{ $category->products_count }} {{ Str::plural('Product', $category->products_count) }}</span>
-                                            </div>
-                                        </div>
-                                        <div class="p-5">
-                                            <p class="text-deep-maroon/70 text-sm mb-4 line-clamp-2">{{ $category->description ? strip_tags($category->description) : 'Explore our exquisite collection of handwoven sarees.' }}</p>
-                                            <div class="flex items-center justify-between border-t border-gray-100 pt-4">
-                                                <span class="text-deep-maroon font-medium group-hover:text-royal-gold transition-colors duration-300 flex items-center gap-2">
-                                                    Shop Collection
-                                                    <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                    
-                    <!-- Carousel Navigation -->
-                    <button id="collections-prev" class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 bg-heritage-white/90 backdrop-blur-sm shadow-xl p-4 rounded-full hover:bg-royal-gold hover:text-heritage-white transition-all duration-300 z-10 hover:scale-110 border border-gray-100">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                    </button>
-                    <button id="collections-next" class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 bg-heritage-white/90 backdrop-blur-sm shadow-xl p-4 rounded-full hover:bg-royal-gold hover:text-heritage-white transition-all duration-300 z-10 hover:scale-110 border border-gray-100">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </button>
-                </div>
-            @endif
-            <div class="text-center mt-14 reveal-up" style="transition-delay: 0.4s;">
-                <a href="{{ route('latest-collections') }}" class="cta-premium inline-block bg-deep-maroon text-heritage-white px-12 py-4 font-semibold rounded-sm shadow-xl hover:shadow-2xl">
-                    View All Collections
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Best Sellers Carousel Section -->
+    <!-- 2. Best Sellers Carousel Section -->
     <section id="best-sellers" class="pt-24 pb-28 bg-soft-cream relative overflow-hidden">
         <div class="absolute inset-0 opacity-5" style="background-image: url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\");"></div>
         
@@ -441,38 +282,165 @@
         </div>
     </section>
     
-    <!-- Premium CTA Section with Parallax -->
-    <section class="parallax-section relative py-32 overflow-hidden">
-        <div class="parallax-layer" style="background-image: url('{{ asset('images/slider-02.jpg') }}');"></div>
-        <div class="absolute inset-0 gradient-overlay opacity-60"></div>
+    <!-- 3. Latest Collections Carousel -->
+    <section id="collections" class="py-24 bg-gradient-to-b from-heritage-white via-white to-heritage-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-royal-gold/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-deep-maroon/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3"></div>
         
-        <div class="container mx-auto px-6 relative z-10">
-            <div class="max-w-3xl mx-auto text-center reveal-scale">
-                <span class="inline-block text-heritage-white/80 text-sm tracking-[0.3em] uppercase mb-4">Exclusive Collection</span>
-                <h2 class="font-serif text-4xl md:text-5xl lg:text-6xl text-heritage-white mb-6 leading-tight">
-                    Experience the Art of
-                    <span class="block text-royal-gold mt-2">Timeless Elegance</span>
-                </h2>
-                <p class="text-heritage-white/90 text-lg md:text-xl mb-10 leading-relaxed">
-                    Each piece is a masterwork of tradition, handcrafted by skilled artisans who have perfected their craft over generations.
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16 reveal-up">
+                <span class="inline-block text-royal-gold text-sm font-semibold tracking-[0.3em] uppercase mb-4">Curated For You</span>
+                <h3 class="decorative-title font-serif text-3xl md:text-5xl lg:text-6xl text-deep-maroon mb-4">
+                    Latest Collections
+                </h3>
+                <div class="animated-line h-1 bg-gradient-to-r from-royal-gold to-yellow-400 mx-auto mb-6"></div>
+                <p class="text-deep-maroon/70 max-w-2xl mx-auto text-lg leading-relaxed">
+                    Discover our newest arrivals, featuring contemporary designs that honor traditional craftsmanship and celebrate timeless elegance.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="{{ route('products') }}" class="cta-premium bg-royal-gold text-deep-maroon px-10 py-4 font-semibold rounded-sm shadow-2xl">
-                        Explore Collection
-                    </a>
-                    <a href="{{ route('about') }}" class="cta-premium bg-transparent border-2 border-heritage-white text-heritage-white px-10 py-4 font-semibold rounded-sm hover:bg-heritage-white hover:text-deep-maroon">
-                        Our Story
-                    </a>
+            </div>
+            
+            @if($categories->isEmpty())
+                <div class="text-center py-12 reveal-up">
+                    <p class="text-deep-maroon/70">No categories available yet.</p>
                 </div>
+            @else
+                <!-- Carousel Container -->
+                <div class="relative reveal-up" style="transition-delay: 0.2s;">
+                    <div class="overflow-hidden">
+                        <div id="collections-carousel" class="py-4 flex transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                            @foreach($categories as $category)
+                                <div class="w-full md:w-1/3 flex-shrink-0 px-4">
+                                    <a href="{{ route('products', ['categories' => $category->id]) }}" class="premium-card group block bg-heritage-white overflow-hidden shadow-xl rounded-lg border border-gray-100">
+                                        <div class="aspect-square relative overflow-hidden">
+                                            @if($category->image)
+                                                <img src="{{ $category->image->url }}" alt="{{ $category->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
+                                            @else
+                                                <div class="w-full h-full bg-gradient-to-br from-deep-maroon/10 to-royal-gold/10 flex items-center justify-center">
+                                                    <svg class="w-16 h-16 text-deep-maroon/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                                </div>
+                                            @endif
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500"></div>
+                                            <div class="absolute top-4 left-4">
+                                                <span class="text-xs font-semibold bg-royal-gold/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-deep-maroon shadow-lg uppercase tracking-wider">New</span>
+                                            </div>
+                                            <div class="absolute bottom-4 left-4 right-4 text-white">
+                                                <h4 class="font-serif text-2xl mb-1 drop-shadow-lg">{{ $category->name }}</h4>
+                                                <span class="text-white/80 text-sm">{{ $category->products_count }} {{ Str::plural('Product', $category->products_count) }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-5">
+                                            <p class="text-deep-maroon/70 text-sm mb-4 line-clamp-2">{{ $category->description ? strip_tags($category->description) : 'Explore our exquisite collection of handwoven sarees.' }}</p>
+                                            <div class="flex items-center justify-between border-t border-gray-100 pt-4">
+                                                <span class="text-deep-maroon font-medium group-hover:text-royal-gold transition-colors duration-300 flex items-center gap-2">
+                                                    Shop Collection
+                                                    <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    
+                    <!-- Carousel Navigation -->
+                    <button id="collections-prev" class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 bg-heritage-white/90 backdrop-blur-sm shadow-xl p-4 rounded-full hover:bg-royal-gold hover:text-heritage-white transition-all duration-300 z-10 hover:scale-110 border border-gray-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    <button id="collections-next" class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 bg-heritage-white/90 backdrop-blur-sm shadow-xl p-4 rounded-full hover:bg-royal-gold hover:text-heritage-white transition-all duration-300 z-10 hover:scale-110 border border-gray-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+            @endif
+            <div class="text-center mt-14 reveal-up" style="transition-delay: 0.4s;">
+                <a href="{{ route('latest-collections') }}" class="cta-premium inline-block bg-deep-maroon text-heritage-white px-12 py-4 font-semibold rounded-sm shadow-xl hover:shadow-2xl">
+                    View All Collections
+                </a>
             </div>
         </div>
-        
-        <div class="absolute top-20 left-10 w-20 h-20 border border-royal-gold/30 rounded-full float-animation hidden lg:block"></div>
-        <div class="absolute bottom-20 right-10 w-32 h-32 border border-heritage-white/20 rounded-full float-animation hidden lg:block" style="animation-delay: -3s;"></div>
     </section>
 
-    <!-- Heritage Story Section -->
-    <section id="about" class="py-24 bg-heritage-white relative overflow-hidden">
+    <!-- 4. Featured Collection Section -->
+    <section class="py-24 bg-heritage-white relative overflow-hidden">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16 reveal-up">
+                <span class="inline-block text-royal-gold text-sm font-semibold tracking-[0.3em] uppercase mb-4">Handpicked For You</span>
+                <h3 class="decorative-title font-serif text-3xl md:text-5xl lg:text-6xl text-deep-maroon mb-4">Featured Collection</h3>
+                <div class="animated-line h-1 bg-gradient-to-r from-royal-gold to-yellow-400 mx-auto mb-6"></div>
+                <p class="text-deep-maroon/70 max-w-2xl mx-auto text-lg">
+                    A curated selection of our finest pieces, each chosen for its exceptional artistry and timeless beauty.
+                </p>
+            </div>
+
+            @if($featuredProducts->isEmpty())
+                <div class="text-center py-12 reveal-up">
+                    <p class="text-deep-maroon/70">No featured products available yet.</p>
+                </div>
+            @else
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 stagger-children">
+                    @foreach($featuredProducts->take(8) as $product)
+                    <div class="premium-card bg-heritage-white overflow-hidden shadow-xl rounded-sm">
+                        <a href="{{ route('product.show', $product->slug) }}" class="block">
+                            <div class="h-72 relative overflow-hidden group">
+                                @if($product->thumbnail)
+                                    <img src="{{ $product->thumbnail->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
+                                @elseif($product->primaryImage && $product->primaryImage->media)
+                                    <img src="{{ $product->primaryImage->media->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
+                                @else
+                                    <div class="w-full h-full bg-gradient-to-br from-deep-maroon/10 to-royal-gold/10 flex items-center justify-center">
+                                        <svg class="w-16 h-16 text-deep-maroon/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    </div>
+                                @endif
+                                @if($product->discount > 0)
+                                    <span class="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1.5 text-xs font-semibold rounded-full shadow-lg">{{ number_format($product->discount) }}% OFF</span>
+                                @endif
+                                <span class="absolute top-3 right-3 bg-deep-maroon/90 text-heritage-white px-3 py-1.5 text-xs font-semibold rounded-full shadow-lg">Featured</span>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            </div>
+                        </a>
+                        <div class="p-6">
+                            <h4 class="font-serif text-lg text-deep-maroon mb-3 hover:text-royal-gold transition-colors duration-300">
+                                <a href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a>
+                            </h4>
+                            <div class="flex justify-between items-center mb-4">
+                                <div>
+                                    @php
+                                        $firstColor = $product->productColors->first();
+                                        $priceAdjustment = $firstColor ? $firstColor->price_adjustment : 0;
+                                        $totalOriginalPrice = $product->price + $priceAdjustment;
+                                        $totalDiscountedPrice = $product->discount > 0 
+                                            ? $totalOriginalPrice - ($totalOriginalPrice * $product->discount / 100)
+                                            : $totalOriginalPrice;
+                                    @endphp
+                                    @if($product->discount > 0)
+                                        <span class="text-deep-maroon/50 line-through text-sm">₹{{ number_format($totalOriginalPrice) }}</span>
+                                    @endif
+                                    <span class="font-serif text-2xl text-royal-gold">₹{{ number_format(round($totalDiscountedPrice)) }}</span>
+                                </div>
+                            </div>
+                            <a href="{{ route('product.show', $product->slug) }}" class="cta-premium block w-full bg-deep-maroon text-heritage-white py-3 font-semibold text-center rounded-sm">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                
+                <div class="text-center mt-14 reveal-up">
+                    <a href="{{ route('products') }}" class="cta-premium inline-block bg-deep-maroon text-heritage-white px-10 py-4 font-semibold rounded-sm shadow-xl">
+                        View All Products
+                    </a>
+                </div>
+            @endif
+        </div>
+    </section>
+
+    <!-- 5. Heritage Story Section -->
+    <section id="about" class="py-24 bg-soft-cream relative overflow-hidden">
         <div class="absolute top-0 left-0 w-full h-full opacity-5">
             <div class="absolute top-20 right-20 w-64 h-64 border border-royal-gold rounded-full"></div>
             <div class="absolute bottom-20 left-20 w-48 h-48 border border-deep-maroon rounded-full"></div>
@@ -509,7 +477,59 @@
         </div>
     </section>
 
-    <!-- Testimonials Section -->
+    <!-- 6. Key Features Section -->
+    <section class="py-16 bg-gradient-to-b from-heritage-white to-soft-cream relative overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12 reveal-up">
+                <span class="inline-block text-royal-gold text-sm font-semibold tracking-[0.3em] uppercase mb-4">Why Choose Us</span>
+                <h3 class="decorative-title font-serif text-3xl md:text-4xl text-deep-maroon mb-4">The Amsukham Promise</h3>
+                <div class="animated-line h-1 bg-gradient-to-r from-royal-gold to-yellow-400 mx-auto mb-6"></div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                <div class="trust-badge text-center p-6 bg-heritage-white rounded-lg shadow-lg border border-royal-gold/10">
+                    <div class="badge-icon w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-royal-gold/20 to-royal-gold/5 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-royal-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                    </div>
+                    <h4 class="font-serif text-lg text-deep-maroon mb-1">100% Authentic</h4>
+                    <p class="text-deep-maroon/60 text-sm">Certified genuine silk</p>
+                </div>
+                
+                <div class="trust-badge text-center p-6 bg-heritage-white rounded-lg shadow-lg border border-royal-gold/10">
+                    <div class="badge-icon w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-royal-gold/20 to-royal-gold/5 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-royal-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                        </svg>
+                    </div>
+                    <h4 class="font-serif text-lg text-deep-maroon mb-1">Free Shipping</h4>
+                    <p class="text-deep-maroon/60 text-sm">On orders above ₹5000</p>
+                </div>
+                
+                <div class="trust-badge text-center p-6 bg-heritage-white rounded-lg shadow-lg border border-royal-gold/10">
+                    <div class="badge-icon w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-royal-gold/20 to-royal-gold/5 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-royal-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                    </div>
+                    <h4 class="font-serif text-lg text-deep-maroon mb-1">Easy Returns</h4>
+                    <p class="text-deep-maroon/60 text-sm">7-day return policy</p>
+                </div>
+                
+                <div class="trust-badge text-center p-6 bg-heritage-white rounded-lg shadow-lg border border-royal-gold/10">
+                    <div class="badge-icon w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-royal-gold/20 to-royal-gold/5 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-royal-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                        </svg>
+                    </div>
+                    <h4 class="font-serif text-lg text-deep-maroon mb-1">Expert Support</h4>
+                    <p class="text-deep-maroon/60 text-sm">Dedicated assistance</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Testimonials Section -->
     <section class="py-24 bg-gradient-to-b from-soft-cream to-heritage-white relative overflow-hidden">
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-royal-gold/5 rounded-full blur-3xl"></div>
         
@@ -631,7 +651,7 @@
         </div>
     </section>
 
-    <!-- Instagram Gallery Section -->
+    <!-- 8. Follow Our Journey Section -->
     <section class="py-24 bg-heritage-white relative overflow-hidden">
         <div class="container mx-auto px-6">
             <div class="text-center mb-12 reveal-up">
@@ -642,7 +662,7 @@
             </div>
             
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4 reveal-scale">
-                @foreach($featuredProducts->take(6) as $index => $product)
+                @foreach($latestProducts->take(6) as $index => $product)
                 <a href="{{ route('product.show', $product->slug) }}" class="gallery-item relative aspect-square overflow-hidden rounded-sm group {{ $index < 2 ? 'md:col-span-2 md:row-span-2' : '' }}">
                     @if($product->thumbnail)
                         <img src="{{ $product->thumbnail->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
@@ -670,32 +690,6 @@
             </div>
         </div>
     </section>
-
-    <!-- Newsletter Section -->
-    {{-- <section class="py-20 bg-gradient-to-r from-deep-maroon via-deep-maroon to-deep-maroon/95 relative overflow-hidden">
-        <div class="absolute inset-0 opacity-10">
-            <div class="absolute top-10 left-10 w-40 h-40 border border-royal-gold rounded-full"></div>
-            <div class="absolute bottom-10 right-10 w-60 h-60 border border-royal-gold rounded-full"></div>
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-royal-gold/50 rounded-full"></div>
-        </div>
-        
-        <div class="container mx-auto px-6 relative z-10">
-            <div class="max-w-3xl mx-auto text-center reveal-up">
-                <span class="inline-block text-royal-gold text-sm tracking-[0.3em] uppercase mb-4">Stay Connected</span>
-                <h3 class="font-serif text-3xl md:text-5xl text-heritage-white mb-4">Join Our Heritage Circle</h3>
-                <p class="text-heritage-white/80 text-lg mb-10">Subscribe to receive exclusive previews, special offers, and stories from our artisan community.</p>
-                
-                <form class="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
-                    <input type="email" placeholder="Enter your email address" class="newsletter-input flex-1 px-6 py-4 rounded-sm bg-heritage-white/10 border border-heritage-white/30 text-heritage-white placeholder-heritage-white/50 focus:outline-none focus:border-royal-gold">
-                    <button type="submit" class="cta-premium bg-royal-gold text-deep-maroon px-8 py-4 font-semibold rounded-sm shadow-xl whitespace-nowrap">
-                        Subscribe
-                    </button>
-                </form>
-                
-                <p class="text-heritage-white/50 text-sm mt-6">By subscribing, you agree to our Privacy Policy. Unsubscribe anytime.</p>
-            </div>
-        </div>
-    </section> --}}
 @endsection
 
 @push('scripts')
