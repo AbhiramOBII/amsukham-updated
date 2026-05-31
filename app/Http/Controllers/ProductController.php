@@ -90,6 +90,57 @@ class ProductController extends Controller
         return view('pages.products', compact('products', 'categories', 'fabrics', 'works', 'colors', 'seo'));
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->get('q', '');
+
+        if (strlen($query) < 2) {
+            return response()->json(['products' => [], 'total' => 0]);
+        }
+
+        $products = Product::with(['thumbnail', 'primaryImage.media', 'category', 'productColors'])
+            ->active()
+            ->where(function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                    ->orWhere('short_description', 'like', "%{$query}%")
+                    ->orWhereHas('category', function ($cq) use ($query) {
+                        $cq->where('name', 'like', "%{$query}%");
+                    });
+            })
+            ->orderBy('is_featured', 'desc')
+            ->limit(8)
+            ->get()
+            ->map(function ($product) {
+                $firstColor = $product->productColors->first();
+                $priceAdjustment = $firstColor ? $firstColor->price_adjustment : 0;
+                $totalOriginalPrice = $product->price + $priceAdjustment;
+                $totalDiscountedPrice = $product->discount > 0
+                    ? $totalOriginalPrice - ($totalOriginalPrice * $product->discount / 100)
+                    : $totalOriginalPrice;
+
+                return [
+                    'name' => $product->name,
+                    'slug' => $product->slug,
+                    'url' => route('product.show', $product->slug),
+                    'price' => '₹' . number_format(round($totalDiscountedPrice)),
+                    'original_price' => $product->discount > 0 ? '₹' . number_format($totalOriginalPrice) : null,
+                    'discount' => $product->discount > 0 ? number_format($product->discount) . '% OFF' : null,
+                    'category' => $product->category ? $product->category->name : null,
+                    'image' => $product->thumbnail
+                        ? $product->thumbnail->url
+                        : ($product->primaryImage && $product->primaryImage->media
+                            ? $product->primaryImage->media->url
+                            : null),
+                ];
+            });
+
+        return response()->json([
+            'products' => $products,
+            'total' => $products->count(),
+            'view_all_url' => route('products', ['search' => $query]),
+        ]);
+    }
+
     public function show($slug)
     {
         $product = Product::with(['category', 'fabric', 'work', 'thumbnail', 'images.media', 'faqs', 'productColors.color', 'productColors.images.media'])

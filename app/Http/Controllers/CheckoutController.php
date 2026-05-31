@@ -41,12 +41,14 @@ class CheckoutController extends Controller
         }
 
         $subtotal = round($cartItems->sum(fn($item) => ($item->price ?? $item->product->display_price) * $item->quantity));
-        $shipping = $subtotal >= 5000 ? 0 : 99;
+        $freeShippingThreshold = (float) SiteSetting::get('free_shipping_threshold', 5000);
+        $shippingCharge = (float) SiteSetting::get('shipping_charge', 99);
+        $shipping = $subtotal >= $freeShippingThreshold ? 0 : $shippingCharge;
         $total = round($subtotal + $shipping);
 
         $addresses = Auth::check() ? Address::where('user_id', Auth::id())->get() : collect();
 
-        return view('pages.checkout', compact('cartItems', 'subtotal', 'shipping', 'total', 'addresses'));
+        return view('pages.checkout', compact('cartItems', 'subtotal', 'shipping', 'total', 'addresses', 'freeShippingThreshold'));
     }
 
     public function process(Request $request)
@@ -79,7 +81,9 @@ class CheckoutController extends Controller
         }
 
         $subtotal = round($cartItems->sum(fn($item) => ($item->price ?? $item->product->display_price) * $item->quantity));
-        $shipping = $subtotal >= 5000 ? 0 : 99;
+        $freeShippingThreshold = (float) SiteSetting::get('free_shipping_threshold', 5000);
+        $shippingCharge = (float) SiteSetting::get('shipping_charge', 99);
+        $shipping = $subtotal >= $freeShippingThreshold ? 0 : $shippingCharge;
         $total = round($subtotal + $shipping);
 
         if (Auth::check() && $request->save_address) {
@@ -202,26 +206,40 @@ class CheckoutController extends Controller
             ]);
 
             foreach ($cartItems as $item) {
-                $unitPrice = $item->price ?? $item->product->display_price;
-                $colorName = $item->productColor && $item->productColor->color ? $item->productColor->color->name : null;
+                // Lock product row for stock update
+                $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
+                $productColor = $item->product_color_id
+                    ? \App\Models\ProductColor::lockForUpdate()->find($item->product_color_id)
+                    : null;
+
+                // Final stock guard — prevent negative stock
+                $availableStock = $productColor ? $productColor->stock : $product->stock;
+                if ($availableStock < $item->quantity) {
+                    DB::rollBack();
+                    $colorLabel = $productColor && $productColor->color ? " ({$productColor->color->name})" : '';
+                    return redirect()->route('cart.index')->with('error', "{$product->name}{$colorLabel} only has {$availableStock} in stock. Please update your cart.");
+                }
+
+                $unitPrice = $item->price ?? $product->display_price;
+                $colorName = $productColor && $productColor->color ? $productColor->color->name : null;
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item->product_id,
                     'product_color_id' => $item->product_color_id,
-                    'product_name' => $item->product->name . ($colorName ? ' - ' . $colorName : ''),
-                    'product_sku' => $item->product->sku,
-                    'price' => $item->product->price,
-                    'discount' => $item->product->discount,
+                    'product_name' => $product->name . ($colorName ? ' - ' . $colorName : ''),
+                    'product_sku' => $product->sku,
+                    'price' => $product->price,
+                    'discount' => $product->discount,
                     'discounted_price' => $unitPrice,
                     'quantity' => $item->quantity,
                     'with_blouse' => $item->with_blouse,
                     'total' => $unitPrice * $item->quantity,
                 ]);
 
-                // Reduce stock
-                $item->product->decrement('stock', $item->quantity);
-                if ($item->productColor) {
-                    $item->productColor->decrement('stock', $item->quantity);
+                // Reduce stock (product-level always, color-level if applicable)
+                $product->decrement('stock', $item->quantity);
+                if ($productColor) {
+                    $productColor->decrement('stock', $item->quantity);
                 }
             }
 

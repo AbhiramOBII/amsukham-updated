@@ -57,6 +57,10 @@ class SiteSettingController extends Controller
             ['key' => 'social_youtube', 'value' => 'https://www.youtube.com/', 'type' => 'text', 'group' => 'social', 'label' => 'YouTube URL'],
             ['key' => 'social_pinterest', 'value' => '', 'type' => 'text', 'group' => 'social', 'label' => 'Pinterest URL'],
 
+            // Shipping
+            ['key' => 'free_shipping_threshold', 'value' => '5000', 'type' => 'number', 'group' => 'shipping', 'label' => 'Free Shipping Threshold (₹)'],
+            ['key' => 'shipping_charge', 'value' => '99', 'type' => 'number', 'group' => 'shipping', 'label' => 'Shipping Charge (₹)'],
+
             // Payment
             ['key' => 'razorpay_key', 'value' => '', 'type' => 'text', 'group' => 'payment', 'label' => 'Razorpay Key ID'],
             ['key' => 'razorpay_secret', 'value' => '', 'type' => 'password', 'group' => 'payment', 'label' => 'Razorpay Secret'],

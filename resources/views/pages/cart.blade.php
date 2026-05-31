@@ -133,19 +133,19 @@
                             </div>
                             <div class="flex justify-between text-deep-maroon/70">
                                 <span>Shipping</span>
-                                <span>{{ $subtotal >= 5000 ? 'Free' : '₹99.00' }}</span>
+                                <span>{{ $subtotal >= $freeShippingThreshold ? 'Free' : '₹' . number_format($shippingCharge, 2) }}</span>
                             </div>
                             <div class="border-t border-deep-maroon/10 pt-3 flex justify-between font-medium text-deep-maroon text-lg">
                                 <span>Total</span>
-                                <span id="cart-total">₹{{ number_format($subtotal + ($subtotal >= 5000 ? 0 : 99), 2) }}</span>
+                                <span id="cart-total">₹{{ number_format($subtotal + ($subtotal >= $freeShippingThreshold ? 0 : $shippingCharge), 2) }}</span>
                             </div>
                         </div>
 
                         <p class="text-sm text-green-600 mb-6">
-                            @if($subtotal >= 5000)
+                            @if($subtotal >= $freeShippingThreshold)
                                 ✓ You qualify for free shipping!
                             @else
-                                Add ₹{{ number_format(5000 - $subtotal, 2) }} more for free shipping
+                                Add ₹{{ number_format($freeShippingThreshold - $subtotal, 2) }} more for free shipping
                             @endif
                         </p>
 
@@ -190,7 +190,7 @@
                 document.getElementById(`item-total-${cartId}`).textContent = '₹' + data.itemTotal;
                 document.getElementById('cart-subtotal').textContent = '₹' + data.subtotal;
                 const subtotal = parseFloat(data.subtotal.replace(/,/g, ''));
-                const shipping = subtotal >= 5000 ? 0 : 99;
+                const shipping = subtotal >= {{ $freeShippingThreshold }} ? 0 : {{ $shippingCharge }};
                 document.getElementById('cart-total').textContent = '₹' + (subtotal + shipping).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             }
         })

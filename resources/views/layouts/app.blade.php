@@ -34,6 +34,7 @@
     @include('partials.header')
     @include('partials.mobile-menu')
     @include('partials.track-order-modal')
+    @include('partials.search-overlay')
 
     <main>
         @yield('content')

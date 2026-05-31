@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\ProductColor;
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,8 +15,10 @@ class CartController extends Controller
     {
         $cartItems = $this->getCartItems();
         $subtotal = $cartItems->sum(fn($item) => ($item->price ?? $item->product->display_price) * $item->quantity);
+        $freeShippingThreshold = (float) SiteSetting::get('free_shipping_threshold', 5000);
+        $shippingCharge = (float) SiteSetting::get('shipping_charge', 99);
 
-        return view('pages.cart', compact('cartItems', 'subtotal'));
+        return view('pages.cart', compact('cartItems', 'subtotal', 'freeShippingThreshold', 'shippingCharge'));
     }
 
     public function add(Request $request)

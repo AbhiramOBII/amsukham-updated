@@ -381,53 +381,72 @@
                     <p class="text-deep-maroon/70">No featured products available yet.</p>
                 </div>
             @else
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 stagger-children">
-                    @foreach($featuredProducts->take(8) as $product)
-                    <div class="premium-card bg-heritage-white overflow-hidden shadow-xl rounded-sm">
-                        <a href="{{ route('product.show', $product->slug) }}" class="block">
-                            <div class="h-72 relative overflow-hidden group">
-                                @if($product->thumbnail)
-                                    <img src="{{ $product->thumbnail->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
-                                @elseif($product->primaryImage && $product->primaryImage->media)
-                                    <img src="{{ $product->primaryImage->media->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
-                                @else
-                                    <div class="w-full h-full bg-gradient-to-br from-deep-maroon/10 to-royal-gold/10 flex items-center justify-center">
-                                        <svg class="w-16 h-16 text-deep-maroon/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <!-- Featured Carousel Container -->
+                <div class="relative reveal-up" style="transition-delay: 0.2s;">
+                    <div class="overflow-hidden">
+                        <div id="featured-carousel" class="py-4 flex transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                            @foreach($featuredProducts as $product)
+                                <div class="w-full sm:w-1/2 lg:w-1/4 flex-shrink-0 px-4">
+                                    <div class="premium-card bg-heritage-white overflow-hidden shadow-xl rounded-sm h-full">
+                                        <a href="{{ route('product.show', $product->slug) }}" class="block">
+                                            <div class="h-72 relative overflow-hidden group">
+                                                @if($product->thumbnail)
+                                                    <img src="{{ $product->thumbnail->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
+                                                @elseif($product->primaryImage && $product->primaryImage->media)
+                                                    <img src="{{ $product->primaryImage->media->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
+                                                @else
+                                                    <div class="w-full h-full bg-gradient-to-br from-deep-maroon/10 to-royal-gold/10 flex items-center justify-center">
+                                                        <svg class="w-16 h-16 text-deep-maroon/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                                    </div>
+                                                @endif
+                                                @if($product->discount > 0)
+                                                    <span class="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1.5 text-xs font-semibold rounded-full shadow-lg">{{ number_format($product->discount) }}% OFF</span>
+                                                @endif
+                                                <span class="absolute top-3 right-3 bg-deep-maroon/90 text-heritage-white px-3 py-1.5 text-xs font-semibold rounded-full shadow-lg">Featured</span>
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                            </div>
+                                        </a>
+                                        <div class="p-6">
+                                            <h4 class="font-serif text-lg text-deep-maroon mb-3 hover:text-royal-gold transition-colors duration-300">
+                                                <a href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a>
+                                            </h4>
+                                            <div class="flex justify-between items-center mb-4">
+                                                <div>
+                                                    @php
+                                                        $firstColor = $product->productColors->first();
+                                                        $priceAdjustment = $firstColor ? $firstColor->price_adjustment : 0;
+                                                        $totalOriginalPrice = $product->price + $priceAdjustment;
+                                                        $totalDiscountedPrice = $product->discount > 0 
+                                                            ? $totalOriginalPrice - ($totalOriginalPrice * $product->discount / 100)
+                                                            : $totalOriginalPrice;
+                                                    @endphp
+                                                    @if($product->discount > 0)
+                                                        <span class="text-deep-maroon/50 line-through text-sm">₹{{ number_format($totalOriginalPrice) }}</span>
+                                                    @endif
+                                                    <span class="font-serif text-2xl text-royal-gold">₹{{ number_format(round($totalDiscountedPrice)) }}</span>
+                                                </div>
+                                            </div>
+                                            <a href="{{ route('product.show', $product->slug) }}" class="cta-premium block w-full bg-deep-maroon text-heritage-white py-3 font-semibold text-center rounded-sm">
+                                                View Details
+                                            </a>
+                                        </div>
                                     </div>
-                                @endif
-                                @if($product->discount > 0)
-                                    <span class="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1.5 text-xs font-semibold rounded-full shadow-lg">{{ number_format($product->discount) }}% OFF</span>
-                                @endif
-                                <span class="absolute top-3 right-3 bg-deep-maroon/90 text-heritage-white px-3 py-1.5 text-xs font-semibold rounded-full shadow-lg">Featured</span>
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            </div>
-                        </a>
-                        <div class="p-6">
-                            <h4 class="font-serif text-lg text-deep-maroon mb-3 hover:text-royal-gold transition-colors duration-300">
-                                <a href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a>
-                            </h4>
-                            <div class="flex justify-between items-center mb-4">
-                                <div>
-                                    @php
-                                        $firstColor = $product->productColors->first();
-                                        $priceAdjustment = $firstColor ? $firstColor->price_adjustment : 0;
-                                        $totalOriginalPrice = $product->price + $priceAdjustment;
-                                        $totalDiscountedPrice = $product->discount > 0 
-                                            ? $totalOriginalPrice - ($totalOriginalPrice * $product->discount / 100)
-                                            : $totalOriginalPrice;
-                                    @endphp
-                                    @if($product->discount > 0)
-                                        <span class="text-deep-maroon/50 line-through text-sm">₹{{ number_format($totalOriginalPrice) }}</span>
-                                    @endif
-                                    <span class="font-serif text-2xl text-royal-gold">₹{{ number_format(round($totalDiscountedPrice)) }}</span>
                                 </div>
-                            </div>
-                            <a href="{{ route('product.show', $product->slug) }}" class="cta-premium block w-full bg-deep-maroon text-heritage-white py-3 font-semibold text-center rounded-sm">
-                                View Details
-                            </a>
+                            @endforeach
                         </div>
                     </div>
-                    @endforeach
+                    
+                    <!-- Carousel Navigation -->
+                    <button id="featured-prev" class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 bg-heritage-white/90 backdrop-blur-sm shadow-xl p-4 rounded-full hover:bg-royal-gold hover:text-heritage-white transition-all duration-300 z-10 hover:scale-110 border border-gray-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    <button id="featured-next" class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 bg-heritage-white/90 backdrop-blur-sm shadow-xl p-4 rounded-full hover:bg-royal-gold hover:text-heritage-white transition-all duration-300 z-10 hover:scale-110 border border-gray-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
                 </div>
                 
                 <div class="text-center mt-14 reveal-up">
@@ -503,7 +522,7 @@
                         </svg>
                     </div>
                     <h4 class="font-serif text-lg text-deep-maroon mb-1">Free Shipping</h4>
-                    <p class="text-deep-maroon/60 text-sm">On orders above ₹5000</p>
+                    <p class="text-deep-maroon/60 text-sm">On orders above ₹{{ number_format((float) App\Models\SiteSetting::get('free_shipping_threshold', 5000)) }}</p>
                 </div>
                 
                 <div class="trust-badge text-center p-6 bg-heritage-white rounded-lg shadow-lg border border-royal-gold/10">
@@ -951,6 +970,77 @@
         if (bestsellersCarousel) {
             bestsellersCarousel.addEventListener('mouseenter', () => clearInterval(bestsellerAutoSlideInterval));
             bestsellersCarousel.addEventListener('mouseleave', startBestsellerAutoSlide);
+        }
+    });
+
+    // Featured Carousel
+    let currentFeaturedSlide = 0;
+    const featuredCarousel = document.getElementById('featured-carousel');
+    const totalFeaturedItems = {{ $featuredProducts->count() }};
+    const visibleFeaturedItems = window.innerWidth >= 1024 ? 4 : (window.innerWidth >= 640 ? 2 : 1);
+    const maxFeaturedSlide = Math.max(0, totalFeaturedItems - visibleFeaturedItems);
+    let featuredAutoSlideInterval;
+
+    function updateFeaturedCarousel() {
+        if (featuredCarousel && totalFeaturedItems > 0) {
+            const itemWidth = window.innerWidth >= 1024 ? 25 : (window.innerWidth >= 640 ? 50 : 100);
+            const translateX = -(currentFeaturedSlide * itemWidth);
+            featuredCarousel.style.transform = `translateX(${translateX}%)`;
+        }
+    }
+
+    function nextFeatured() {
+        if (currentFeaturedSlide >= maxFeaturedSlide) {
+            currentFeaturedSlide = 0;
+        } else {
+            currentFeaturedSlide++;
+        }
+        updateFeaturedCarousel();
+    }
+
+    function prevFeatured() {
+        if (currentFeaturedSlide <= 0) {
+            currentFeaturedSlide = maxFeaturedSlide;
+        } else {
+            currentFeaturedSlide--;
+        }
+        updateFeaturedCarousel();
+    }
+
+    function startFeaturedAutoSlide() {
+        featuredAutoSlideInterval = setInterval(nextFeatured, 4500);
+    }
+
+    function resetFeaturedAutoSlide() {
+        clearInterval(featuredAutoSlideInterval);
+        startFeaturedAutoSlide();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const featuredNextBtn = document.getElementById('featured-next');
+        const featuredPrevBtn = document.getElementById('featured-prev');
+
+        if (featuredNextBtn && totalFeaturedItems > 0) {
+            featuredNextBtn.addEventListener('click', function() {
+                nextFeatured();
+                resetFeaturedAutoSlide();
+            });
+        }
+
+        if (featuredPrevBtn && totalFeaturedItems > 0) {
+            featuredPrevBtn.addEventListener('click', function() {
+                prevFeatured();
+                resetFeaturedAutoSlide();
+            });
+        }
+
+        if (totalFeaturedItems > visibleFeaturedItems) {
+            startFeaturedAutoSlide();
+        }
+
+        if (featuredCarousel) {
+            featuredCarousel.addEventListener('mouseenter', () => clearInterval(featuredAutoSlideInterval));
+            featuredCarousel.addEventListener('mouseleave', startFeaturedAutoSlide);
         }
     });
 

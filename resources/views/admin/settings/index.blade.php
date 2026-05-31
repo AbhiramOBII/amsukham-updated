@@ -55,6 +55,16 @@
                                         <option value="test" {{ $setting->value === 'test' ? 'selected' : '' }}>Test Mode</option>
                                         <option value="live" {{ $setting->value === 'live' ? 'selected' : '' }}>Live Mode</option>
                                     </select>
+                                @elseif($setting->type === 'number')
+                                    <input 
+                                        type="number" 
+                                        name="{{ $setting->key }}" 
+                                        id="{{ $setting->key }}" 
+                                        value="{{ $setting->value }}"
+                                        min="0"
+                                        step="1"
+                                        class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                                    >
                                 @else
                                     <input 
                                         type="text" 
