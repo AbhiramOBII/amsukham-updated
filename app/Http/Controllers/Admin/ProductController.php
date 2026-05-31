@@ -58,6 +58,7 @@ class ProductController extends Controller
             'meta_description' => 'nullable|string|max:65000',
             'meta_keywords' => 'nullable|string|max:255',
             'is_featured' => 'boolean',
+            'is_bestseller' => 'boolean',
             'is_active' => 'boolean',
             'thumbnail_id' => 'nullable|exists:media,id',
             'images' => 'nullable|array',
@@ -102,6 +103,7 @@ class ProductController extends Controller
 
         $validated['with_blouse'] = $request->has('with_blouse');
         $validated['is_featured'] = $request->has('is_featured');
+        $validated['is_bestseller'] = $request->has('is_bestseller');
         $validated['is_active'] = $request->has('is_active');
         $validated['discount'] = $validated['discount'] ?? 0;
         $validated['stock'] = $validated['stock'] ?? 0;
@@ -235,6 +237,7 @@ class ProductController extends Controller
             'meta_description' => 'nullable|string|max:65000',
             'meta_keywords' => 'nullable|string|max:255',
             'is_featured' => 'boolean',
+            'is_bestseller' => 'boolean',
             'is_active' => 'boolean',
             'thumbnail_id' => 'nullable|exists:media,id',
             'product_images' => 'nullable|array',
@@ -278,6 +281,7 @@ class ProductController extends Controller
 
         $validated['with_blouse'] = $request->has('with_blouse');
         $validated['is_featured'] = $request->has('is_featured');
+        $validated['is_bestseller'] = $request->has('is_bestseller');
         $validated['is_active'] = $request->has('is_active');
         $validated['discount'] = $validated['discount'] ?? 0;
         $validated['stock'] = $validated['stock'] ?? 0;

@@ -171,6 +171,10 @@
                         <input type="checkbox" name="is_featured" value="1" class="rounded border-gray-300 text-amber-600">
                         <span class="text-sm text-gray-700">Featured</span>
                     </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" name="is_bestseller" value="1" class="rounded border-gray-300 text-amber-600">
+                        <span class="text-sm text-gray-700">Bestseller</span>
+                    </label>
                 </div>
             </div>
 

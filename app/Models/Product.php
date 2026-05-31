@@ -28,6 +28,7 @@ class Product extends Model
         'meta_description',
         'meta_keywords',
         'is_featured',
+        'is_bestseller',
         'is_active',
     ];
 
@@ -37,6 +38,7 @@ class Product extends Model
         'discounted_price' => 'decimal:2',
         'with_blouse' => 'boolean',
         'is_featured' => 'boolean',
+        'is_bestseller' => 'boolean',
         'is_active' => 'boolean',
     ];
 
@@ -136,6 +138,11 @@ class Product extends Model
     public function scopeFeatured($query)
     {
         return $query->where('is_featured', true);
+    }
+
+    public function scopeBestseller($query)
+    {
+        return $query->where('is_bestseller', true);
     }
 
     public function getDisplayPriceAttribute(): float

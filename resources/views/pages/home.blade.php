@@ -345,12 +345,13 @@
         </div>
     </section>
 
-    <!-- Best Sellers Section -->
+    <!-- Best Sellers Carousel Section -->
     <section id="best-sellers" class="pt-24 pb-28 bg-soft-cream relative overflow-hidden">
         <div class="absolute inset-0 opacity-5" style="background-image: url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\");"></div>
         
         <div class="container mx-auto px-6 relative z-10">
             <div class="text-center mb-16 reveal-up">
+                <span class="inline-block text-royal-gold text-sm font-semibold tracking-[0.3em] uppercase mb-4">Most Loved</span>
                 <h3 class="decorative-title font-serif text-3xl md:text-5xl lg:text-6xl text-deep-maroon mb-4">Best Sellers</h3>
                 <div class="animated-line h-1 bg-gradient-to-r from-royal-gold to-yellow-400 mx-auto mb-6"></div>
                 <p class="text-deep-maroon/70 max-w-2xl mx-auto text-lg">
@@ -358,50 +359,79 @@
                 </p>
             </div>
             
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 stagger-children">
-                @foreach($featuredProducts->take(4) as $product)
-                <div class="premium-card bg-heritage-white overflow-hidden shadow-xl rounded-sm">
-                    <div class="h-72 relative overflow-hidden group">
-                        @if($product->thumbnail)
-                            <img src="{{ $product->thumbnail->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
-                        @elseif($product->primaryImage && $product->primaryImage->media)
-                            <img src="{{ $product->primaryImage->media->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
-                        @else
-                            <div class="w-full h-full bg-gradient-to-br from-deep-maroon/10 to-royal-gold/10 flex items-center justify-center">
-                                <svg class="w-16 h-16 text-deep-maroon/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            </div>
-                        @endif
-                        @if($product->discount > 0)
-                            <span class="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1.5 text-xs font-semibold rounded-full shadow-lg">{{ number_format($product->discount) }}% OFF</span>
-                        @endif
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    </div>
-                    <div class="p-6">
-                        <h4 class="font-serif text-lg text-deep-maroon mb-3 hover:text-royal-gold transition-colors duration-300">{{ $product->name }}</h4>
-                        <div class="flex justify-between items-center mb-4">
-                            <div>
-                                @php
-                                    $firstColor = $product->productColors->first();
-                                    $priceAdjustment = $firstColor ? $firstColor->price_adjustment : 0;
-                                    $totalOriginalPrice = $product->price + $priceAdjustment;
-                                    // Apply discount to total price, not base price
-                                    $totalDiscountedPrice = $product->discount > 0 
-                                        ? $totalOriginalPrice - ($totalOriginalPrice * $product->discount / 100)
-                                        : $totalOriginalPrice;
-                                @endphp
-                                @if($product->discount > 0)
-                                    <span class="text-deep-maroon/50 line-through text-sm">₹{{ number_format($totalOriginalPrice) }}</span>
-                                @endif
-                                <span class="font-serif text-2xl text-royal-gold">₹{{ number_format($totalDiscountedPrice) }}</span>
-                            </div>
-                        </div>
-                        <a href="{{ route('product.show', $product->slug) }}" class="cta-premium block w-full bg-deep-maroon text-heritage-white py-3 font-semibold text-center rounded-sm">
-                            View Details
-                        </a>
-                    </div>
+            @if($bestsellerProducts->isEmpty())
+                <div class="text-center py-12 reveal-up">
+                    <p class="text-deep-maroon/70">No bestsellers available yet.</p>
                 </div>
-                @endforeach
-            </div>
+            @else
+                <!-- Bestsellers Carousel Container -->
+                <div class="relative reveal-up" style="transition-delay: 0.2s;">
+                    <div class="overflow-hidden">
+                        <div id="bestsellers-carousel" class="py-4 flex transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                            @foreach($bestsellerProducts as $product)
+                                <div class="w-full sm:w-1/2 lg:w-1/4 flex-shrink-0 px-4">
+                                    <div class="premium-card bg-heritage-white overflow-hidden shadow-xl rounded-sm h-full">
+                                        <a href="{{ route('product.show', $product->slug) }}" class="block">
+                                            <div class="h-72 relative overflow-hidden group">
+                                                @if($product->thumbnail)
+                                                    <img src="{{ $product->thumbnail->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
+                                                @elseif($product->primaryImage && $product->primaryImage->media)
+                                                    <img src="{{ $product->primaryImage->media->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
+                                                @else
+                                                    <div class="w-full h-full bg-gradient-to-br from-deep-maroon/10 to-royal-gold/10 flex items-center justify-center">
+                                                        <svg class="w-16 h-16 text-deep-maroon/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                                    </div>
+                                                @endif
+                                                @if($product->discount > 0)
+                                                    <span class="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1.5 text-xs font-semibold rounded-full shadow-lg">{{ number_format($product->discount) }}% OFF</span>
+                                                @endif
+                                                <span class="absolute top-3 right-3 bg-gradient-to-r from-royal-gold to-yellow-500 text-deep-maroon px-3 py-1.5 text-xs font-semibold rounded-full shadow-lg">Bestseller</span>
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                            </div>
+                                        </a>
+                                        <div class="p-6">
+                                            <h4 class="font-serif text-lg text-deep-maroon mb-3 hover:text-royal-gold transition-colors duration-300">
+                                                <a href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a>
+                                            </h4>
+                                            <div class="flex justify-between items-center mb-4">
+                                                <div>
+                                                    @php
+                                                        $firstColor = $product->productColors->first();
+                                                        $priceAdjustment = $firstColor ? $firstColor->price_adjustment : 0;
+                                                        $totalOriginalPrice = $product->price + $priceAdjustment;
+                                                        $totalDiscountedPrice = $product->discount > 0 
+                                                            ? $totalOriginalPrice - ($totalOriginalPrice * $product->discount / 100)
+                                                            : $totalOriginalPrice;
+                                                    @endphp
+                                                    @if($product->discount > 0)
+                                                        <span class="text-deep-maroon/50 line-through text-sm">₹{{ number_format($totalOriginalPrice) }}</span>
+                                                    @endif
+                                                    <span class="font-serif text-2xl text-royal-gold">₹{{ number_format(round($totalDiscountedPrice)) }}</span>
+                                                </div>
+                                            </div>
+                                            <a href="{{ route('product.show', $product->slug) }}" class="cta-premium block w-full bg-deep-maroon text-heritage-white py-3 font-semibold text-center rounded-sm">
+                                                View Details
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    
+                    <!-- Carousel Navigation -->
+                    <button id="bestsellers-prev" class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 bg-heritage-white/90 backdrop-blur-sm shadow-xl p-4 rounded-full hover:bg-royal-gold hover:text-heritage-white transition-all duration-300 z-10 hover:scale-110 border border-gray-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    <button id="bestsellers-next" class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 bg-heritage-white/90 backdrop-blur-sm shadow-xl p-4 rounded-full hover:bg-royal-gold hover:text-heritage-white transition-all duration-300 z-10 hover:scale-110 border border-gray-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+            @endif
             
             <div class="text-center mt-14 reveal-up">
                 <a href="{{ route('products') }}" class="cta-premium inline-block bg-deep-maroon text-heritage-white px-10 py-4 font-semibold rounded-sm shadow-xl">
@@ -856,6 +886,77 @@
         if (collectionsCarousel) {
             collectionsCarousel.addEventListener('mouseenter', () => clearInterval(collectionAutoSlideInterval));
             collectionsCarousel.addEventListener('mouseleave', startCollectionAutoSlide);
+        }
+    });
+
+    // Bestsellers Carousel
+    let currentBestsellerSlide = 0;
+    const bestsellersCarousel = document.getElementById('bestsellers-carousel');
+    const totalBestsellerItems = {{ $bestsellerProducts->count() }};
+    const visibleBestsellerItems = window.innerWidth >= 1024 ? 4 : (window.innerWidth >= 640 ? 2 : 1);
+    const maxBestsellerSlide = Math.max(0, totalBestsellerItems - visibleBestsellerItems);
+    let bestsellerAutoSlideInterval;
+
+    function updateBestsellersCarousel() {
+        if (bestsellersCarousel && totalBestsellerItems > 0) {
+            const itemWidth = window.innerWidth >= 1024 ? 25 : (window.innerWidth >= 640 ? 50 : 100);
+            const translateX = -(currentBestsellerSlide * itemWidth);
+            bestsellersCarousel.style.transform = `translateX(${translateX}%)`;
+        }
+    }
+
+    function nextBestseller() {
+        if (currentBestsellerSlide >= maxBestsellerSlide) {
+            currentBestsellerSlide = 0;
+        } else {
+            currentBestsellerSlide++;
+        }
+        updateBestsellersCarousel();
+    }
+
+    function prevBestseller() {
+        if (currentBestsellerSlide <= 0) {
+            currentBestsellerSlide = maxBestsellerSlide;
+        } else {
+            currentBestsellerSlide--;
+        }
+        updateBestsellersCarousel();
+    }
+
+    function startBestsellerAutoSlide() {
+        bestsellerAutoSlideInterval = setInterval(nextBestseller, 4000);
+    }
+
+    function resetBestsellerAutoSlide() {
+        clearInterval(bestsellerAutoSlideInterval);
+        startBestsellerAutoSlide();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const bestsellerNextBtn = document.getElementById('bestsellers-next');
+        const bestsellerPrevBtn = document.getElementById('bestsellers-prev');
+
+        if (bestsellerNextBtn && totalBestsellerItems > 0) {
+            bestsellerNextBtn.addEventListener('click', function() {
+                nextBestseller();
+                resetBestsellerAutoSlide();
+            });
+        }
+
+        if (bestsellerPrevBtn && totalBestsellerItems > 0) {
+            bestsellerPrevBtn.addEventListener('click', function() {
+                prevBestseller();
+                resetBestsellerAutoSlide();
+            });
+        }
+
+        if (totalBestsellerItems > visibleBestsellerItems) {
+            startBestsellerAutoSlide();
+        }
+
+        if (bestsellersCarousel) {
+            bestsellersCarousel.addEventListener('mouseenter', () => clearInterval(bestsellerAutoSlideInterval));
+            bestsellersCarousel.addEventListener('mouseleave', startBestsellerAutoSlide);
         }
     });
 

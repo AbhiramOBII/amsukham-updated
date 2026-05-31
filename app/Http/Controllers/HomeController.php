@@ -19,6 +19,12 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
+        $bestsellerProducts = Product::with(['thumbnail', 'primaryImage.media', 'category', 'productColors'])
+            ->active()
+            ->bestseller()
+            ->take(12)
+            ->get();
+
         $latestProducts = Product::with(['thumbnail', 'primaryImage.media', 'category', 'productColors'])
             ->active()
             ->latest()
@@ -38,7 +44,7 @@ class HomeController extends Controller
 
         $seo = SeoSetting::getForPage('home');
 
-        return view('pages.home', compact('featuredProducts', 'latestProducts', 'categories', 'banners', 'seo'));
+        return view('pages.home', compact('featuredProducts', 'bestsellerProducts', 'latestProducts', 'categories', 'banners', 'seo'));
     }
 
     public function about()
