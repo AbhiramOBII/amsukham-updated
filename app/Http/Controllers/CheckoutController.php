@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\SiteSetting;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderConfirmation;
 use Razorpay\Api\Api;
 
 class CheckoutController extends Controller
@@ -308,6 +310,9 @@ class CheckoutController extends Controller
             }
 
             DB::commit();
+
+            // Send order confirmation email
+            Mail::to($order->billing_email)->send(new OrderConfirmation($order->load('items')));
 
             session()->forget('checkout_data');
             session()->forget('coupon');

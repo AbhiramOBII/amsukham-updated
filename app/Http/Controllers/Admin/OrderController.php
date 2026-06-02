@@ -8,6 +8,8 @@ use App\Models\Product;
 use App\Models\ProductColor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderStatusUpdate;
 
 class OrderController extends Controller
 {
@@ -103,6 +105,9 @@ class OrderController extends Controller
             $order->update(['status' => $newStatus]);
 
             DB::commit();
+
+            // Send status update email
+            Mail::to($order->billing_email)->send(new OrderStatusUpdate($order, $oldStatus));
 
             return back()->with('success', 'Order status updated successfully.');
         } catch (\Exception $e) {

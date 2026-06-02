@@ -14,6 +14,11 @@ return [
     |
     */
 
+    'zeptomail' => [
+        'token' => env('ZEPTOMAIL_TOKEN'),
+        'host' => env('ZEPTOMAIL_HOST', 'api.zeptomail.in'),
+    ],
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],
