@@ -215,11 +215,11 @@
                         <div class="space-y-2">
                             <div class="flex items-center space-x-2">
                                 <span class="font-medium text-deep-maroon text-sm">Contact Us</span>
-                                <span class="text-deep-maroon/70 text-sm">+91-9852985299</span>
+                                <a href="tel:{{ preg_replace('/[^0-9+]/', '', $siteSettings['contact_phone'] ?? '+919591579771') }}" class="text-deep-maroon/70 text-sm hover:text-deep-maroon">{{ $siteSettings['contact_phone'] ?? '+91 95915 79771' }}</a>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <span class="font-medium text-deep-maroon text-sm">Email Us</span>
-                                <span class="text-deep-maroon/70 text-sm">hello@amsukham.com</span>
+                                <a href="mailto:{{ $siteSettings['contact_email'] ?? 'info@amsukham.com' }}" class="text-deep-maroon/70 text-sm hover:text-deep-maroon">{{ $siteSettings['contact_email'] ?? 'info@amsukham.com' }}</a>
                             </div>
                         </div>
 
