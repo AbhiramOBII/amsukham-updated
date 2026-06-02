@@ -62,7 +62,7 @@
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order #</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Items</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Products</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Payment</th>
@@ -78,7 +78,22 @@
                             <div class="text-sm font-medium text-gray-900">{{ $order->billing_name }}</div>
                             <div class="text-sm text-gray-500">{{ $order->billing_email }}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $order->items->count() }} items</td>
+                        <td class="px-6 py-4">
+                            <div class="flex -space-x-2">
+                                @foreach($order->items->take(4) as $item)
+                                    @if($item->product && $item->product->thumbnail)
+                                        <img src="{{ asset('storage/' . $item->product->thumbnail->path) }}" alt="{{ $item->product_name }}" class="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm" title="{{ $item->product_name }}">
+                                    @else
+                                        <div class="w-8 h-8 rounded-full bg-gray-200 border-2 border-white shadow-sm flex items-center justify-center" title="{{ $item->product_name }}">
+                                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                        </div>
+                                    @endif
+                                @endforeach
+                                @if($order->items->count() > 4)
+                                    <div class="w-8 h-8 rounded-full bg-gray-100 border-2 border-white shadow-sm flex items-center justify-center text-xs text-gray-600 font-medium">+{{ $order->items->count() - 4 }}</div>
+                                @endif
+                            </div>
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">₹{{ number_format($order->total, 2) }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <form action="{{ route('admin.orders.update-status', $order) }}" method="POST" class="inline">
