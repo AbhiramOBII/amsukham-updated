@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\SiteSetting;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OrderConfirmation;
+use App\Mail\NewOrderAdmin;
 use Razorpay\Api\Api;
 
 class CheckoutController extends Controller
@@ -311,8 +312,11 @@ class CheckoutController extends Controller
 
             DB::commit();
 
-            // Send order confirmation email
+            // Send order confirmation email to customer
             Mail::to($order->billing_email)->send(new OrderConfirmation($order->load('items')));
+
+            // Notify admin about new order
+            Mail::to('amsukham@gmail.com')->send(new NewOrderAdmin($order));
 
             session()->forget('checkout_data');
             session()->forget('coupon');
