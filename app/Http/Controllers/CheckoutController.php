@@ -312,11 +312,13 @@ class CheckoutController extends Controller
 
             DB::commit();
 
-            // Send order confirmation email to customer
-            Mail::to($order->billing_email)->send(new OrderConfirmation($order->load('items')));
-
-            // Notify admin about new order
-            Mail::to('amsukham@gmail.com')->send(new NewOrderAdmin($order));
+            // Send emails (wrapped separately so checkout succeeds even if mail fails)
+            try {
+                Mail::to($order->billing_email)->send(new OrderConfirmation($order->load('items')));
+                Mail::to('amsukham@gmail.com')->send(new NewOrderAdmin($order));
+            } catch (\Exception $mailException) {
+                \Log::error('Order email failed for ' . $order->order_number . ': ' . $mailException->getMessage());
+            }
 
             session()->forget('checkout_data');
             session()->forget('coupon');
