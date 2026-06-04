@@ -5,6 +5,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RazorpayWebhookController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -38,3 +39,5 @@ Route::get('/order/success/{orderNumber}', [CheckoutController::class, 'success'
 Route::get('/order/failure/{orderNumber}', [CheckoutController::class, 'failure'])->name('order.failure');
 Route::post('/order/track', [CheckoutController::class, 'trackOrder'])->name('order.track');
 Route::get('/orders/{id}', [CheckoutController::class, 'viewOrder'])->name('order.view');
+
+Route::post('/webhooks/razorpay', [RazorpayWebhookController::class, 'handle'])->name('webhooks.razorpay');

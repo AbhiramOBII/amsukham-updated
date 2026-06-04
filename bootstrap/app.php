@@ -20,6 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth.admin' => \App\Http\Middleware\AdminAuth::class,
             'guest.admin' => \App\Http\Middleware\RedirectIfAdmin::class,
         ]);
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/razorpay',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
