@@ -8,7 +8,7 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body class="bg-soft-cream min-h-screen flex items-center justify-center">
-    <div class="max-w-md w-full mx-4">
+    <div id="paymentStatus" class="max-w-md w-full mx-4">
         <div class="bg-white rounded-lg shadow-lg p-8 text-center">
             <div class="animate-pulse mb-6">
                 <svg class="w-16 h-16 mx-auto text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,6 +38,10 @@
             "image": "{{ asset('images/amsukham-logo.svg') }}",
             "order_id": "{{ $razorpayOrderId }}",
             "handler": function (response) {
+                if (!response || !response.razorpay_payment_id || !response.razorpay_signature) {
+                    window.location.href = "{{ route('order.failure', $orderNumber) }}";
+                    return;
+                }
                 document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
                 document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
                 document.getElementById('razorpay_signature').value = response.razorpay_signature;
@@ -53,7 +57,7 @@
             },
             "modal": {
                 "ondismiss": function() {
-                    window.location.href = "{{ route('checkout.index') }}";
+                    window.location.href = "{{ route('order.failure', $orderNumber) }}";
                 }
             }
         };

@@ -35,5 +35,6 @@ Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.in
 Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
 Route::post('/checkout/verify', [CheckoutController::class, 'verify'])->name('checkout.verify');
 Route::get('/order/success/{orderNumber}', [CheckoutController::class, 'success'])->name('order.success');
+Route::get('/order/failure/{orderNumber}', [CheckoutController::class, 'failure'])->name('order.failure');
 Route::post('/order/track', [CheckoutController::class, 'trackOrder'])->name('order.track');
 Route::get('/orders/{id}', [CheckoutController::class, 'viewOrder'])->name('order.view');

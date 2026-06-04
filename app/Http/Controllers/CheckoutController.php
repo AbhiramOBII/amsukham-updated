@@ -159,107 +159,37 @@ class CheckoutController extends Controller
             return back()->withInput()->with('error', 'Payment error: ' . $e->getMessage());
         }
 
-        session([
-            'checkout_data' => [
-                'billing' => $validated,
+        // Create the order immediately with payment_status = pending
+        DB::beginTransaction();
+        try {
+            $order = Order::create([
+                'user_id' => Auth::id(),
+                'billing_name' => $validated['name'],
+                'billing_email' => $validated['email'],
+                'billing_phone' => $validated['phone'],
+                'billing_address' => $validated['address_line_1'] . (!empty($validated['address_line_2']) ? ', ' . $validated['address_line_2'] : ''),
+                'billing_city' => $validated['city'],
+                'billing_state' => $validated['state'],
+                'billing_pincode' => $validated['pincode'],
                 'subtotal' => $subtotal,
                 'discount' => $couponDiscount,
                 'coupon_code' => $couponData ? $couponData['code'] : null,
                 'coupon_id' => $couponData ? $couponData['id'] : null,
                 'shipping' => $shipping,
                 'total' => $total,
-                'razorpay_order_id' => $razorpayOrder->id,
-            ],
-        ]);
-
-        $razorpayKey = SiteSetting::get('razorpay_key') ?: config('services.razorpay.key');
-
-        return view('pages.payment', [
-            'razorpayOrderId' => $razorpayOrder->id,
-            'razorpayKey' => $razorpayKey,
-            'total' => $total,
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'],
-        ]);
-    }
-
-    public function verify(Request $request)
-    {
-        $request->validate([
-            'razorpay_payment_id' => 'required',
-            'razorpay_order_id' => 'required',
-            'razorpay_signature' => 'required',
-        ]);
-
-        $checkoutData = session('checkout_data');
-
-        if (!$checkoutData || $checkoutData['razorpay_order_id'] !== $request->razorpay_order_id) {
-            return redirect()->route('checkout.index')->with('error', 'Invalid payment session.');
-        }
-
-        try {
-            $api = $this->getRazorpayApi();
-        } catch (\Exception $e) {
-            return redirect()->route('checkout.index')->with('error', 'Payment gateway is not configured. Please contact the store administrator.');
-        }
-
-        $attributes = [
-            'razorpay_order_id' => $request->razorpay_order_id,
-            'razorpay_payment_id' => $request->razorpay_payment_id,
-            'razorpay_signature' => $request->razorpay_signature,
-        ];
-
-        try {
-            $api->utility->verifyPaymentSignature($attributes);
-        } catch (\Exception $e) {
-            return redirect()->route('checkout.index')->with('error', 'Payment verification failed. If money was deducted, it will be refunded within 5-7 business days.');
-        }
-
-        $cartItems = $this->getCartItems();
-        $billing = $checkoutData['billing'];
-
-        // Final stock verification before creating order
-        $stockIssues = $this->checkStockAvailability($cartItems);
-        if ($stockIssues->isNotEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Some items are no longer available: ' . $stockIssues->implode(', '));
-        }
-
-        DB::beginTransaction();
-
-        try {
-            $order = Order::create([
-                'user_id' => Auth::id(),
-                'billing_name' => $billing['name'],
-                'billing_email' => $billing['email'],
-                'billing_phone' => $billing['phone'],
-                'billing_address' => $billing['address_line_1'] . ($billing['address_line_2'] ? ', ' . $billing['address_line_2'] : ''),
-                'billing_city' => $billing['city'],
-                'billing_state' => $billing['state'],
-                'billing_pincode' => $billing['pincode'],
-                'subtotal' => $checkoutData['subtotal'],
-                'discount' => $checkoutData['discount'] ?? 0,
-                'coupon_code' => $checkoutData['coupon_code'] ?? null,
-                'coupon_id' => $checkoutData['coupon_id'] ?? null,
-                'shipping' => $checkoutData['shipping'],
-                'total' => $checkoutData['total'],
-                'status' => 'processing',
-                'payment_status' => 'paid',
+                'status' => 'pending',
+                'payment_status' => 'pending',
                 'payment_method' => 'razorpay',
-                'razorpay_order_id' => $request->razorpay_order_id,
-                'razorpay_payment_id' => $request->razorpay_payment_id,
-                'razorpay_signature' => $request->razorpay_signature,
-                'notes' => $billing['notes'] ?? null,
+                'razorpay_order_id' => $razorpayOrder->id,
+                'notes' => $validated['notes'] ?? null,
             ]);
 
             foreach ($cartItems as $item) {
-                // Lock product row for stock update
                 $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
                 $productColor = $item->product_color_id
                     ? \App\Models\ProductColor::lockForUpdate()->find($item->product_color_id)
                     : null;
 
-                // Final stock guard — prevent negative stock
                 $availableStock = $productColor ? $productColor->stock : $product->stock;
                 if ($availableStock < $item->quantity) {
                     DB::rollBack();
@@ -283,13 +213,14 @@ class CheckoutController extends Controller
                     'total' => $unitPrice * $item->quantity,
                 ]);
 
-                // Reduce stock (product-level always, color-level if applicable)
+                // Reduce stock
                 $product->decrement('stock', $item->quantity);
                 if ($productColor) {
                     $productColor->decrement('stock', $item->quantity);
                 }
             }
 
+            // Clear cart
             if (Auth::check()) {
                 Cart::where('user_id', Auth::id())->delete();
             } else {
@@ -297,37 +228,106 @@ class CheckoutController extends Controller
             }
 
             // Record coupon usage
-            if (!empty($checkoutData['coupon_id'])) {
-                $coupon = \App\Models\Coupon::find($checkoutData['coupon_id']);
+            if (!empty($couponData['id'])) {
+                $coupon = \App\Models\Coupon::find($couponData['id']);
                 if ($coupon) {
                     \App\Models\CouponUsage::create([
                         'coupon_id' => $coupon->id,
                         'user_id' => Auth::id(),
                         'order_id' => $order->id,
-                        'discount_amount' => $checkoutData['discount'],
+                        'discount_amount' => $couponDiscount,
                     ]);
                     $coupon->increment('times_used');
                 }
             }
 
             DB::commit();
-
-            // Send emails (wrapped separately so checkout succeeds even if mail fails)
-            try {
-                Mail::to($order->billing_email)->send(new OrderConfirmation($order->load('items')));
-                Mail::to('amsukham@gmail.com')->send(new NewOrderAdmin($order));
-            } catch (\Exception $mailException) {
-                \Log::error('Order email failed for ' . $order->order_number . ': ' . $mailException->getMessage());
-            }
-
-            session()->forget('checkout_data');
-            session()->forget('coupon');
-
-            return redirect()->route('order.success', $order->order_number);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('checkout.index')->with('error', 'Failed to create order. Please contact support.');
+            \Log::error('Order creation failed: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Failed to create order. Please try again.');
         }
+
+        session([
+            'checkout_data' => [
+                'order_id' => $order->id,
+                'razorpay_order_id' => $razorpayOrder->id,
+            ],
+        ]);
+
+        session()->forget('coupon');
+
+        $razorpayKey = SiteSetting::get('razorpay_key') ?: config('services.razorpay.key');
+
+        return view('pages.payment', [
+            'razorpayOrderId' => $razorpayOrder->id,
+            'razorpayKey' => $razorpayKey,
+            'total' => $total,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'orderNumber' => $order->order_number,
+        ]);
+    }
+
+    public function verify(Request $request)
+    {
+        $request->validate([
+            'razorpay_payment_id' => 'required',
+            'razorpay_order_id' => 'required',
+            'razorpay_signature' => 'required',
+        ]);
+
+        $checkoutData = session('checkout_data');
+
+        if (!$checkoutData || $checkoutData['razorpay_order_id'] !== $request->razorpay_order_id) {
+            return redirect()->route('checkout.index')->with('error', 'Invalid payment session.');
+        }
+
+        $order = Order::find($checkoutData['order_id']);
+
+        if (!$order) {
+            return redirect()->route('checkout.index')->with('error', 'Order not found. Please contact support.');
+        }
+
+        try {
+            $api = $this->getRazorpayApi();
+        } catch (\Exception $e) {
+            return redirect()->route('checkout.index')->with('error', 'Payment gateway is not configured. Please contact the store administrator.');
+        }
+
+        $attributes = [
+            'razorpay_order_id' => $request->razorpay_order_id,
+            'razorpay_payment_id' => $request->razorpay_payment_id,
+            'razorpay_signature' => $request->razorpay_signature,
+        ];
+
+        try {
+            $api->utility->verifyPaymentSignature($attributes);
+        } catch (\Exception $e) {
+            $order->update(['payment_status' => 'failed']);
+            return redirect()->route('checkout.index')->with('error', 'Payment verification failed. If money was deducted, it will be refunded within 5-7 business days.');
+        }
+
+        // Payment confirmed — update order
+        $order->update([
+            'status' => 'processing',
+            'payment_status' => 'paid',
+            'razorpay_payment_id' => $request->razorpay_payment_id,
+            'razorpay_signature' => $request->razorpay_signature,
+        ]);
+
+        // Send emails (wrapped separately so checkout succeeds even if mail fails)
+        try {
+            Mail::to($order->billing_email)->send(new OrderConfirmation($order->load('items')));
+            Mail::to('amsukham@gmail.com')->send(new NewOrderAdmin($order));
+        } catch (\Exception $mailException) {
+            \Log::error('Order email failed for ' . $order->order_number . ': ' . $mailException->getMessage());
+        }
+
+        session()->forget('checkout_data');
+
+        return redirect()->route('order.success', $order->order_number);
     }
 
     public function success($orderNumber)
@@ -335,6 +335,13 @@ class CheckoutController extends Controller
         $order = Order::where('order_number', $orderNumber)->firstOrFail();
 
         return view('pages.order-success', compact('order'));
+    }
+
+    public function failure($orderNumber)
+    {
+        $order = Order::where('order_number', $orderNumber)->firstOrFail();
+
+        return view('pages.order-failure', compact('order'));
     }
 
     public function trackOrder(Request $request)

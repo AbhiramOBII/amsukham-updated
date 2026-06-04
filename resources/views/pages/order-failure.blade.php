@@ -1,19 +1,19 @@
 @extends('layouts.app')
 
-@section('title', 'Order Confirmed')
+@section('title', 'Order Pending')
 
 @section('content')
 <section class="py-16 bg-soft-cream min-h-screen">
     <div class="container mx-auto px-6">
         <div class="max-w-2xl mx-auto bg-heritage-white rounded-lg shadow-lg p-8 text-center">
-            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-10 h-10 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.072 16.5c-.77.833.192 2.5 1.732 2.5z"/>
                 </svg>
             </div>
 
-            <h1 class="font-serif text-3xl text-deep-maroon mb-4">Order Confirmed!</h1>
-            <p class="text-deep-maroon/70 mb-6">Thank you for your purchase. Your order has been placed successfully.</p>
+            <h1 class="font-serif text-3xl text-deep-maroon mb-4">Order Pending</h1>
+            <p class="text-deep-maroon/70 mb-6">Due to a payment gateway issue, we could not confirm your order at this time. If money has been deducted from your account, don't worry — our team will reach out to you and confirm the order.</p>
 
             <div class="bg-soft-cream rounded-lg p-6 mb-6">
                 <p class="text-sm text-deep-maroon/60 mb-2">Order Number</p>
@@ -27,7 +27,7 @@
                 </div>
                 <div class="flex justify-between py-2 border-b border-deep-maroon/10">
                     <span class="text-deep-maroon/60">Payment Status</span>
-                    <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Paid</span>
+                    <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Pending</span>
                 </div>
                 <div class="flex justify-between py-2 border-b border-deep-maroon/10">
                     <span class="text-deep-maroon/60">Shipping To</span>
@@ -39,7 +39,7 @@
             </div>
 
             <p class="text-sm text-deep-maroon/60 mb-6">
-                A confirmation email has been sent to <strong>{{ $order->billing_email }}</strong>
+                If you have any questions, please contact us at <strong>{{ $siteSettings['contact_email'] ?? 'info@amsukham.com' }}</strong> or call <strong>{{ $siteSettings['contact_phone'] ?? '+91 95915 79771' }}</strong>
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center">

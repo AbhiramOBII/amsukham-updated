@@ -45,7 +45,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('coupons', CouponController::class)->except(['show']);
 
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/create', [OrderController::class, 'create'])->name('orders.create');
+        Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
         Route::get('orders/export-csv', [OrderController::class, 'exportCsv'])->name('orders.export-csv');
+        Route::get('orders/search-products', [OrderController::class, 'searchProducts'])->name('orders.search-products');
         Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
         Route::patch('orders/{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('orders.update-payment-status');
