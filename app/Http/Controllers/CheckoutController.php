@@ -6,6 +6,8 @@ use App\Models\Address;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
+use App\Models\ProductColor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -214,9 +216,9 @@ class CheckoutController extends Controller
                 ]);
 
                 // Reduce stock
-                $product->decrement('stock', $item->quantity);
+                Product::where('id', $product->id)->where('stock', '>=', $item->quantity)->update(['stock' => DB::raw('stock - ' . (int) $item->quantity)]);
                 if ($productColor) {
-                    $productColor->decrement('stock', $item->quantity);
+                    ProductColor::where('id', $productColor->id)->where('stock', '>=', $item->quantity)->update(['stock' => DB::raw('stock - ' . (int) $item->quantity)]);
                 }
             }
 

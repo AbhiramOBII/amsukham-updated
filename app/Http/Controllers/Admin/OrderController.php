@@ -97,9 +97,9 @@ class OrderController extends Controller
                         return back()->with('error', "Cannot reactivate order: {$item->product_name} only has {$availableStock} in stock.");
                     }
 
-                    $product->decrement('stock', $item->quantity);
+                    Product::where('id', $product->id)->where('stock', '>=', $item->quantity)->update(['stock' => DB::raw('stock - ' . (int) $item->quantity)]);
                     if ($productColor) {
-                        $productColor->decrement('stock', $item->quantity);
+                        ProductColor::where('id', $productColor->id)->where('stock', '>=', $item->quantity)->update(['stock' => DB::raw('stock - ' . (int) $item->quantity)]);
                     }
                 }
             }
@@ -279,9 +279,9 @@ class OrderController extends Controller
                     'total' => $data['lineTotal'],
                 ]);
 
-                $data['product']->decrement('stock', $data['quantity']);
+                Product::where('id', $data['product']->id)->where('stock', '>=', $data['quantity'])->update(['stock' => DB::raw('stock - ' . (int) $data['quantity'])]);
                 if ($data['productColor']) {
-                    $data['productColor']->decrement('stock', $data['quantity']);
+                    ProductColor::where('id', $data['productColor']->id)->where('stock', '>=', $data['quantity'])->update(['stock' => DB::raw('stock - ' . (int) $data['quantity'])]);
                 }
             }
 
