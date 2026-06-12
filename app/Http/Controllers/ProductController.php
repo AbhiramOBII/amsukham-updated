@@ -171,6 +171,17 @@ class ProductController extends Controller
         return view('pages.product-show', compact('product', 'relatedProducts', 'colorData'));
     }
 
+    public function preorder()
+    {
+        $products = Product::with(['thumbnail', 'primaryImage.media', 'productColors'])
+            ->active()
+            ->where('is_preorder', true)
+            ->latest()
+            ->paginate(16);
+
+        return view('pages.preorder', compact('products'));
+    }
+
     public function category($slug)
     {
         $category = Category::where('slug', $slug)->active()->firstOrFail();

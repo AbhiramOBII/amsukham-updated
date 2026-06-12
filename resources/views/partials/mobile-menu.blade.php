@@ -41,6 +41,17 @@
                     </svg>
                 </div>
             </a>
+            <a href="{{ route('preorder') }}" class="block py-4 px-4 text-deep-maroon hover:text-royal-gold hover:bg-soft-cream transition-colors font-medium border-b border-deep-maroon/10 relative overflow-hidden">
+                <div class="flex items-center justify-between">
+                    <span class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-royal-gold animate-pulse"></span>
+                        Pre-Booking
+                    </span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </div>
+            </a>
             {{-- <a href="{{ route('products') }}" class="block py-4 px-4 text-deep-maroon hover:text-royal-gold hover:bg-soft-cream transition-colors font-medium border-b border-deep-maroon/10 relative overflow-hidden">
                 <div class="flex items-center justify-between">
                     <span>Best Sellers</span>

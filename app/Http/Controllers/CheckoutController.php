@@ -187,13 +187,13 @@ class CheckoutController extends Controller
             ]);
 
             foreach ($cartItems as $item) {
-                $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
+                $product = \App\Models\Product::find($item->product_id);
                 $productColor = $item->product_color_id
-                    ? \App\Models\ProductColor::lockForUpdate()->find($item->product_color_id)
+                    ? \App\Models\ProductColor::find($item->product_color_id)
                     : null;
 
                 $availableStock = $productColor ? $productColor->stock : $product->stock;
-                if ($availableStock < $item->quantity) {
+                if (!$product->is_preorder && $availableStock < $item->quantity) {
                     DB::rollBack();
                     $colorLabel = $productColor && $productColor->color ? " ({$productColor->color->name})" : '';
                     return redirect()->route('cart.index')->with('error', "{$product->name}{$colorLabel} only has {$availableStock} in stock. Please update your cart.");
@@ -214,12 +214,6 @@ class CheckoutController extends Controller
                     'with_blouse' => $item->with_blouse,
                     'total' => $unitPrice * $item->quantity,
                 ]);
-
-                // Reduce stock
-                Product::where('id', $product->id)->where('stock', '>=', $item->quantity)->update(['stock' => DB::raw('stock - ' . (int) $item->quantity)]);
-                if ($productColor) {
-                    ProductColor::where('id', $productColor->id)->where('stock', '>=', $item->quantity)->update(['stock' => DB::raw('stock - ' . (int) $item->quantity)]);
-                }
             }
 
             // Clear cart
@@ -307,11 +301,13 @@ class CheckoutController extends Controller
         try {
             $api->utility->verifyPaymentSignature($attributes);
         } catch (\Exception $e) {
+            $this->deductOrderStock($order);
             $order->update(['payment_status' => 'failed']);
             return redirect()->route('checkout.index')->with('error', 'Payment verification failed. If money was deducted, it will be refunded within 5-7 business days.');
         }
 
-        // Payment confirmed — update order
+        // Payment confirmed — deduct stock and update order
+        $this->deductOrderStock($order);
         $order->update([
             'status' => 'processing',
             'payment_status' => 'paid',
@@ -417,6 +413,11 @@ class CheckoutController extends Controller
                 continue;
             }
 
+            // Preorder products skip all stock checks
+            if ($product->is_preorder) {
+                continue;
+            }
+
             $availableStock = $item->product_color_id
                 ? (\App\Models\ProductColor::find($item->product_color_id)->stock ?? 0)
                 : $product->stock;
@@ -444,5 +445,28 @@ class CheckoutController extends Controller
         return Cart::with(['product.primaryImage.media', 'productColor.color'])
             ->where('session_id', session()->getId())
             ->get();
+    }
+
+    private function deductOrderStock(Order $order): void
+    {
+        if ($order->payment_status !== 'pending') {
+            return;
+        }
+
+        $order->loadMissing('items');
+
+        DB::transaction(function () use ($order) {
+            foreach ($order->items as $item) {
+                Product::where('id', $item->product_id)
+                    ->where('stock', '>=', $item->quantity)
+                    ->update(['stock' => DB::raw('stock - ' . (int) $item->quantity)]);
+
+                if ($item->product_color_id) {
+                    ProductColor::where('id', $item->product_color_id)
+                        ->where('stock', '>=', $item->quantity)
+                        ->update(['stock' => DB::raw('stock - ' . (int) $item->quantity)]);
+                }
+            }
+        });
     }
 }

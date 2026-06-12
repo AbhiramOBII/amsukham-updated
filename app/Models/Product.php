@@ -30,6 +30,7 @@ class Product extends Model
         'is_featured',
         'is_bestseller',
         'is_active',
+        'is_preorder',
     ];
 
     protected $casts = [
@@ -40,6 +41,7 @@ class Product extends Model
         'is_featured' => 'boolean',
         'is_bestseller' => 'boolean',
         'is_active' => 'boolean',
+        'is_preorder' => 'boolean',
     ];
 
     protected static function boot()

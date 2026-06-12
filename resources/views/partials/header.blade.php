@@ -8,8 +8,10 @@
             <nav class="flex space-x-8 justify-start">
                 <a href="{{ route('latest-collections') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">Latest Collections</a>
                 <a href="{{ route('products') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">Collections</a>
-                {{-- <a href="{{ route('products') }}" class="text-deep-maroon hover:text-royal-gold transition-colors font-medium">Best Sellers</a> --}}
-                
+                <a href="{{ route('preorder') }}" class="inline-flex items-center gap-1 text-deep-maroon hover:text-royal-gold transition-colors font-medium">
+                    <span class="w-2 h-2 rounded-full bg-royal-gold animate-pulse"></span>
+                    Pre-Booking
+                </a>
             </nav>
             
             <!-- Brand Logo Center -->

@@ -21,6 +21,7 @@ Route::get('/return-policy', [HomeController::class, 'returnPolicy'])->name('ret
 
 Route::get('/products', [ProductController::class, 'index'])->name('products');
 Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
+Route::get('/preorder', [ProductController::class, 'preorder'])->name('preorder');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 Route::get('/category/{slug}', [ProductController::class, 'category'])->name('category.show');
 

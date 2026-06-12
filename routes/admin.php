@@ -40,6 +40,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('products/bulk-upload', [BulkProductController::class, 'upload'])->name('products.bulk.upload');
 
         Route::resource('products', ProductController::class)->except(['show']);
+        Route::patch('products/{product}/toggle-prebooking', [ProductController::class, 'togglePrebooking'])->name('products.toggle-prebooking');
 
         // Coupons
         Route::resource('coupons', CouponController::class)->except(['show']);

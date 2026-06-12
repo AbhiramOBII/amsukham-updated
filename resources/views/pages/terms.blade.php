@@ -71,15 +71,23 @@
                 <div class="bg-soft-cream p-8 md:p-12 shadow-lg mb-8">
                     <h2 class="font-serif text-2xl text-deep-maroon mb-4">5. Shipping and Delivery</h2>
                     <p class="text-deep-maroon/80 leading-relaxed mb-4">
-                        We aim to dispatch orders within 2-3 business days. Delivery times vary based on location:
+                        We aim to dispatch orders within 2-3 business days. All domestic orders are delivered within <strong>7–10 working days</strong> from the date of dispatch.
                     </p>
-                    <ul class="list-disc list-inside text-deep-maroon/80 leading-relaxed space-y-2 mb-4">
-                        <li>Domestic orders: 3-7 business days</li>
-                        <li>International orders: 7-14 business days</li>
-                    </ul>
                     <p class="text-deep-maroon/80 leading-relaxed">
                         While we make every effort to meet these timeframes, we are not responsible for delays caused by circumstances beyond our control.
                     </p>
+                </div>
+
+                <div class="bg-soft-cream p-8 md:p-12 shadow-lg mb-8">
+                    <h2 class="font-serif text-2xl text-deep-maroon mb-4">5a. Exchanges</h2>
+                    <p class="text-deep-maroon/80 leading-relaxed mb-4">
+                        We accept exchange requests subject to the following condition:
+                    </p>
+                    <ul class="list-disc list-inside text-deep-maroon/80 leading-relaxed space-y-2">
+                        <li><strong>An unboxing video is mandatory</strong> for all exchange requests. Requests raised without an unboxing video will not be processed.</li>
+                        <li>The unboxing video must show the sealed package being opened and must be recorded in a single, unedited take.</li>
+                        <li>Exchange requests must be raised within the return window specified in our Return Policy.</li>
+                    </ul>
                 </div>
 
                 <div class="bg-soft-cream p-8 md:p-12 shadow-lg mb-8">

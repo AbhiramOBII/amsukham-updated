@@ -175,6 +175,10 @@
                         <input type="checkbox" name="is_bestseller" value="1" class="rounded border-gray-300 text-amber-600">
                         <span class="text-sm text-gray-700">Bestseller</span>
                     </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" name="is_preorder" value="1" class="rounded border-gray-300 text-amber-600">
+                        <span class="text-sm text-gray-700">Pre-Booking <span class="text-xs text-gray-400">(accepts orders with zero stock)</span></span>
+                    </label>
                 </div>
             </div>
 

@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Mail\NewOrderAdmin;
 use App\Mail\OrderConfirmation;
 use App\Models\Order;
+use App\Models\Product;
+use App\Models\ProductColor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -73,6 +76,11 @@ class RazorpayWebhookController extends Controller
             return;
         }
 
+        // Deduct stock only if not yet deducted (verify() may not have run for this order)
+        if ($order->payment_status === 'pending') {
+            $this->deductOrderStock($order);
+        }
+
         // Update order to paid
         $order->update([
             'status' => 'processing',
@@ -111,8 +119,32 @@ class RazorpayWebhookController extends Controller
 
         // Only mark as failed if still pending
         if ($order->payment_status === 'pending') {
+            $this->deductOrderStock($order);
             $order->update(['payment_status' => 'failed']);
             Log::info('Razorpay webhook: order marked as failed', ['order' => $order->order_number]);
         }
+    }
+
+    private function deductOrderStock(Order $order): void
+    {
+        if ($order->payment_status !== 'pending') {
+            return;
+        }
+
+        $order->loadMissing('items');
+
+        DB::transaction(function () use ($order) {
+            foreach ($order->items as $item) {
+                Product::where('id', $item->product_id)
+                    ->where('stock', '>=', $item->quantity)
+                    ->update(['stock' => DB::raw('stock - ' . (int) $item->quantity)]);
+
+                if ($item->product_color_id) {
+                    ProductColor::where('id', $item->product_color_id)
+                        ->where('stock', '>=', $item->quantity)
+                        ->update(['stock' => DB::raw('stock - ' . (int) $item->quantity)]);
+                }
+            }
+        });
     }
 }

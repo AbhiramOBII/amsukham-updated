@@ -18,13 +18,23 @@ use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['category', 'fabric', 'work', 'thumbnail', 'primaryImage.media'])
-            ->latest()
-            ->paginate(15);
+        $search = $request->input('search');
 
-        return view('admin.products.index', compact('products'));
+        $products = Product::with(['category', 'fabric', 'work', 'thumbnail', 'primaryImage.media'])
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('sku', 'like', "%{$search}%")
+                      ->orWhereHas('category', fn ($c) => $c->where('name', 'like', "%{$search}%"));
+                });
+            })
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('admin.products.index', compact('products', 'search'));
     }
 
     public function create()
@@ -60,6 +70,7 @@ class ProductController extends Controller
             'is_featured' => 'boolean',
             'is_bestseller' => 'boolean',
             'is_active' => 'boolean',
+            'is_preorder' => 'boolean',
             'thumbnail_id' => 'nullable|exists:media,id',
             'images' => 'nullable|array',
             'images.*' => 'exists:media,id',
@@ -105,6 +116,7 @@ class ProductController extends Controller
         $validated['is_featured'] = $request->has('is_featured');
         $validated['is_bestseller'] = $request->has('is_bestseller');
         $validated['is_active'] = $request->has('is_active');
+        $validated['is_preorder'] = $request->has('is_preorder');
         $validated['discount'] = $validated['discount'] ?? 0;
         $validated['stock'] = $validated['stock'] ?? 0;
         $validated['thumbnail_id'] = $request->input('thumbnail_id') ?: null;
@@ -239,6 +251,7 @@ class ProductController extends Controller
             'is_featured' => 'boolean',
             'is_bestseller' => 'boolean',
             'is_active' => 'boolean',
+            'is_preorder' => 'boolean',
             'thumbnail_id' => 'nullable|exists:media,id',
             'product_images' => 'nullable|array',
             'product_images.*' => 'exists:media,id',
@@ -283,6 +296,7 @@ class ProductController extends Controller
         $validated['is_featured'] = $request->has('is_featured');
         $validated['is_bestseller'] = $request->has('is_bestseller');
         $validated['is_active'] = $request->has('is_active');
+        $validated['is_preorder'] = $request->has('is_preorder');
         $validated['discount'] = $validated['discount'] ?? 0;
         $validated['stock'] = $validated['stock'] ?? 0;
         $validated['thumbnail_id'] = $request->input('thumbnail_id') ?: null;
@@ -369,6 +383,16 @@ class ProductController extends Controller
         }
 
         return $slug;
+    }
+
+    public function togglePrebooking(Product $product)
+    {
+        $product->update(['is_preorder' => !$product->is_preorder]);
+
+        return response()->json([
+            'success' => true,
+            'is_preorder' => $product->is_preorder,
+        ]);
     }
 
     public function destroy(Product $product)

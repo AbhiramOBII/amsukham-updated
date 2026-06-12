@@ -60,20 +60,23 @@ class CartController extends Controller
         $currentCartQty = $existingItem ? $existingItem->quantity : 0;
         $totalQty = $currentCartQty + $requestedQty;
 
-        if ($availableStock <= 0) {
-            $msg = 'This product is currently out of stock.';
-            if ($request->ajax()) {
-                return response()->json(['success' => false, 'message' => $msg], 422);
+        // Preorder products have no stock restrictions
+        if (!$product->is_preorder) {
+            if ($availableStock <= 0) {
+                $msg = 'This product is currently out of stock.';
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => $msg], 422);
+                }
+                return back()->with('error', $msg);
             }
-            return back()->with('error', $msg);
-        }
 
-        if ($totalQty > $availableStock) {
-            $msg = "Only {$availableStock} item(s) available in stock." . ($currentCartQty > 0 ? " You already have {$currentCartQty} in your cart." : '');
-            if ($request->ajax()) {
-                return response()->json(['success' => false, 'message' => $msg], 422);
+            if ($totalQty > $availableStock) {
+                $msg = "Only {$availableStock} item(s) available in stock." . ($currentCartQty > 0 ? " You already have {$currentCartQty} in your cart." : '');
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => $msg], 422);
+                }
+                return back()->with('error', $msg);
             }
-            return back()->with('error', $msg);
         }
 
         // Calculate price based on color selection
@@ -125,20 +128,22 @@ class CartController extends Controller
             abort(403);
         }
 
-        // Stock verification on update
-        $availableStock = $cart->product_color_id
-            ? (ProductColor::find($cart->product_color_id)->stock ?? 0)
-            : ($cart->product->stock ?? 0);
+        // Stock verification on update (skipped for preorder products)
+        if (!$cart->product->is_preorder) {
+            $availableStock = $cart->product_color_id
+                ? (ProductColor::find($cart->product_color_id)->stock ?? 0)
+                : ($cart->product->stock ?? 0);
 
-        if ($request->quantity > $availableStock) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Only {$availableStock} item(s) available in stock.",
-                    'availableStock' => $availableStock,
-                ], 422);
+            if ($request->quantity > $availableStock) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Only {$availableStock} item(s) available in stock.",
+                        'availableStock' => $availableStock,
+                    ], 422);
+                }
+                return back()->with('error', "Only {$availableStock} item(s) available in stock.");
             }
-            return back()->with('error', "Only {$availableStock} item(s) available in stock.");
         }
 
         $cart->update(['quantity' => $request->quantity]);

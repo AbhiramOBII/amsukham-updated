@@ -123,7 +123,9 @@
                                 @php
                                     $initialStock = $firstColor ? $firstColor->stock : $product->stock;
                                 @endphp
-                                @if($initialStock > 10)
+                                @if($product->is_preorder)
+                                    <span class="inline-flex items-center gap-1 ml-2 px-2 py-0.5 bg-royal-gold/20 text-deep-maroon text-xs font-semibold rounded-full">Pre-Booking</span>
+                                @elseif($initialStock > 10)
                                     <span class="text-green-600 ml-2 font-medium">In Stock</span>
                                 @elseif($initialStock > 0)
                                     <span class="text-orange-500 ml-2 font-medium">Only {{ $initialStock }} left</span>
@@ -171,12 +173,21 @@
 
                             <div class="flex-1 flex items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
                                 <!-- Add to Cart Button -->
-                                <button type="button" id="addToCartBtn" onclick="addToCart()" class="flex-1 bg-deep-maroon text-heritage-white py-2.5 px-4 text-sm font-medium hover:bg-royal-gold transition-colors rounded-full shadow-lg whitespace-nowrap {{ $initialStock <= 0 ? 'opacity-50 cursor-not-allowed' : '' }}" {{ $initialStock <= 0 ? 'disabled' : '' }}>
-                                    {{ $initialStock > 0 ? 'ADD TO CART' : 'OUT OF STOCK' }}
+                                @php
+                                    $addToCartDisabled = !$product->is_preorder && $initialStock <= 0;
+                                @endphp
+                                <button type="button" id="addToCartBtn" onclick="addToCart()" class="flex-1 bg-deep-maroon text-heritage-white py-2.5 px-4 text-sm font-medium hover:bg-royal-gold transition-colors rounded-full shadow-lg whitespace-nowrap {{ $addToCartDisabled ? 'opacity-50 cursor-not-allowed' : '' }}" {{ $addToCartDisabled ? 'disabled' : '' }}>
+                                    @if($product->is_preorder)
+                                        PRE-BOOK
+                                    @elseif($initialStock > 0)
+                                        ADD TO CART
+                                    @else
+                                        OUT OF STOCK
+                                    @endif
                                 </button>
 
                                 <!-- Buy Now Button -->
-                                <button type="button" id="buyNowBtn" onclick="buyNow()" class="flex-1 bg-royal-gold text-deep-maroon py-2.5 px-4 text-sm font-medium hover:bg-deep-maroon hover:text-heritage-white transition-colors rounded-full shadow-lg whitespace-nowrap {{ $initialStock <= 0 ? 'hidden' : '' }}">
+                                <button type="button" id="buyNowBtn" onclick="buyNow()" class="flex-1 bg-royal-gold text-deep-maroon py-2.5 px-4 text-sm font-medium hover:bg-deep-maroon hover:text-heritage-white transition-colors rounded-full shadow-lg whitespace-nowrap {{ $addToCartDisabled ? 'hidden' : '' }}">
                                     BUY NOW
                                 </button>
                             </div>
@@ -226,17 +237,18 @@
                         <!-- Service Features -->
                         <div class="grid grid-cols-2 gap-4 mt-6">
                             <div class="flex items-center space-x-3">
-                                <div class="w-8 h-8 bg-deep-maroon/10 rounded-full flex items-center justify-center">
+                                <div class="w-8 h-8 bg-deep-maroon/10 rounded-full flex items-center justify-center flex-shrink-0">
                                     <svg class="w-4 h-4 text-deep-maroon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="font-medium text-deep-maroon text-sm">FREE DELIVERY</p>
+                                    <p class="font-medium text-deep-maroon text-sm">FREE SHIPPING</p>
+                                    <p class="text-deep-maroon/60 text-xs">above ₹{{ number_format($siteSettings['free_shipping_threshold'] ?? 5000) }}</p>
                                 </div>
                             </div>
                             <div class="flex items-center space-x-3">
-                                <div class="w-8 h-8 bg-deep-maroon/10 rounded-full flex items-center justify-center">
+                                <div class="w-8 h-8 bg-deep-maroon/10 rounded-full flex items-center justify-center flex-shrink-0">
                                     <svg class="w-4 h-4 text-deep-maroon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                                     </svg>
@@ -244,6 +256,28 @@
                                 <div>
                                     <p class="font-medium text-deep-maroon text-sm">PAYMENT SECURED</p>
                                     <p class="text-deep-maroon/60 text-xs">Safe with Our Payment</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-deep-maroon/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4 text-deep-maroon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-deep-maroon text-sm">DELIVERY</p>
+                                    <p class="text-deep-maroon/60 text-xs">7–10 working days</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-deep-maroon/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4 text-deep-maroon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.069A1 1 0 0121 8.868v6.264a1 1 0 01-1.447.894L15 14M3 8a1 1 0 011-1h8a1 1 0 011 1v8a1 1 0 01-1 1H4a1 1 0 01-1-1V8z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-deep-maroon text-sm">EXCHANGES</p>
+                                    <p class="text-deep-maroon/60 text-xs">Unboxing video mandatory</p>
                                 </div>
                             </div>
                         </div>
@@ -373,6 +407,7 @@
     const originalPrice = {{ $product->price }};
     const discount = {{ $product->discount ?? 0 }};
     const productStock = {{ $product->stock ?? 0 }};
+    const isPreorder = {{ $product->is_preorder ? 'true' : 'false' }};
     const colorData = @json($colorData);
     const galleryImages = @json($allImages->values());
 
@@ -386,7 +421,9 @@
         stockInput.value = stock;
 
         let html = '<span class="text-deep-maroon/70 font-medium">Availability:</span> ';
-        if (stock > 10) {
+        if (isPreorder) {
+            html += '<span class="inline-flex items-center gap-1 ml-2 px-2 py-0.5 bg-royal-gold/20 text-deep-maroon text-xs font-semibold rounded-full">Pre-Booking</span>';
+        } else if (stock > 10) {
             html += '<span class="text-green-600 ml-2 font-medium">In Stock</span>';
         } else if (stock > 0) {
             html += '<span class="text-orange-500 ml-2 font-medium">Only ' + stock + ' left</span>';
@@ -395,21 +432,23 @@
         }
         stockEl.innerHTML = html;
 
-        if (stock <= 0) {
+        if (!isPreorder && stock <= 0) {
             addBtn.disabled = true;
             addBtn.textContent = 'OUT OF STOCK';
             addBtn.classList.add('opacity-50', 'cursor-not-allowed');
             buyBtn.classList.add('hidden');
         } else {
             addBtn.disabled = false;
-            addBtn.textContent = 'ADD TO CART';
+            addBtn.textContent = isPreorder ? 'PRE-BOOK' : 'ADD TO CART';
             addBtn.classList.remove('opacity-50', 'cursor-not-allowed');
             buyBtn.classList.remove('hidden');
-            // Cap quantity to available stock
-            if (parseInt(qtyInput.value) > stock) {
-                qtyInput.value = stock;
+            if (!isPreorder) {
+                // Cap quantity to available stock
+                if (parseInt(qtyInput.value) > stock) {
+                    qtyInput.value = stock;
+                }
+                qtyInput.max = Math.min(10, stock);
             }
-            qtyInput.max = Math.min(10, stock);
         }
     }
 

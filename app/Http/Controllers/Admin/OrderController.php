@@ -67,8 +67,10 @@ class OrderController extends Controller
 
         // Statuses that mean stock was released back
         $stockReleasedStatuses = ['cancelled', 'refunded'];
-        $needsStockRestore = in_array($newStatus, $stockReleasedStatuses) && !in_array($oldStatus, $stockReleasedStatuses);
-        $needsStockDeduct = !in_array($newStatus, $stockReleasedStatuses) && in_array($oldStatus, $stockReleasedStatuses);
+        // Stock is only deducted when payment completes (paid/failed). Abandoned pending orders never had stock deducted.
+        $stockWasDeducted = in_array($order->payment_status, ['paid', 'failed']);
+        $needsStockRestore = in_array($newStatus, $stockReleasedStatuses) && !in_array($oldStatus, $stockReleasedStatuses) && $stockWasDeducted;
+        $needsStockDeduct = !in_array($newStatus, $stockReleasedStatuses) && in_array($oldStatus, $stockReleasedStatuses) && $stockWasDeducted;
 
         DB::beginTransaction();
 
