@@ -26,11 +26,13 @@ class CartController extends Controller
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'product_color_id' => 'nullable|exists:product_colors,id',
-            'quantity' => 'integer|min:1|max:10',
             'with_blouse' => 'boolean',
         ]);
 
         $product = Product::findOrFail($request->product_id);
+
+        $maxQty = $product->is_preorder ? 999 : 10;
+        $request->validate(['quantity' => "integer|min:1|max:{$maxQty}"]);
 
         if (!$product->is_active) {
             if ($request->ajax()) {
@@ -120,8 +122,9 @@ class CartController extends Controller
 
     public function update(Request $request, Cart $cart)
     {
+        $maxQty = $cart->product && $cart->product->is_preorder ? 999 : 10;
         $request->validate([
-            'quantity' => 'required|integer|min:1|max:10',
+            'quantity' => "required|integer|min:1|max:{$maxQty}",
         ]);
 
         if (!$this->ownsCartItem($cart)) {

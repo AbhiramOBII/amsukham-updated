@@ -165,7 +165,7 @@
                                 <button type="button" id="decreaseQty" class="w-10 h-10 flex items-center justify-center text-deep-maroon hover:bg-soft-cream transition-colors rounded-l-full">
                                     <span class="text-lg font-medium">−</span>
                                 </button>
-                                <input type="number" id="quantity" value="1" min="1" max="10" class="px-2 py-2 text-deep-maroon font-medium w-12 text-center border-0 focus:ring-0">
+                                <input type="number" id="quantity" value="1" min="1" max="{{ $product->is_preorder ? 999 : 10 }}" class="px-2 py-2 text-deep-maroon font-medium w-12 text-center border-0 focus:ring-0">
                                 <button type="button" id="increaseQty" class="w-10 h-10 flex items-center justify-center text-deep-maroon hover:bg-soft-cream transition-colors rounded-r-full">
                                     <span class="text-lg font-medium">+</span>
                                 </button>
@@ -448,6 +448,8 @@
                     qtyInput.value = stock;
                 }
                 qtyInput.max = Math.min(10, stock);
+            } else {
+                qtyInput.max = 999;
             }
         }
     }
@@ -673,9 +675,13 @@
         if (increaseBtn) {
             increaseBtn.addEventListener('click', function() {
                 let val = parseInt(quantityInput.value) || 1;
-                let maxStock = parseInt(document.getElementById('available_stock').value) || 10;
-                let maxQty = Math.min(10, maxStock);
-                if (val < maxQty) quantityInput.value = val + 1;
+                if (isPreorder) {
+                    quantityInput.value = val + 1;
+                } else {
+                    let maxStock = parseInt(document.getElementById('available_stock').value) || 10;
+                    let maxQty = Math.min(10, maxStock);
+                    if (val < maxQty) quantityInput.value = val + 1;
+                }
             });
         }
 
